@@ -221,6 +221,18 @@ set(msg_files
 	VtolVehicleStatus.msg
 	Wind.msg
 	YawEstimatorStatus.msg
+	YawDamperInfo.msg
+	WaypointNavDebug.msg
+	TecsDebug.msg
+	VehicleEnergy.msg
+	Gains.msg
+	DeltaFixedWing.msg
+	MomentChangeCommand.msg
+	RateCommandError.msg
+	RateCommand.msg
+	AttitudeCommand.msg
+	EstimatedActuatorPositions.msg
+	SimulinkCustomMessage.msg
 )
 list(SORT msg_files)
 

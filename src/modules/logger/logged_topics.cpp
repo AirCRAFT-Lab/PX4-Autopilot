@@ -129,6 +129,17 @@ void LoggedTopics::add_default_topics()
 	add_topic("vehicle_status");
 	add_optional_topic("vtol_vehicle_status", 200);
 	add_topic("wind", 1000);
+	add_optional_topic("estimated_actuator_positions", 20);
+	add_optional_topic("attitude_command", 20);
+	add_optional_topic("rate_command", 20);
+	add_optional_topic("rate_command_error", 20);
+	add_optional_topic("moment_change_command", 20);
+	add_optional_topic("delta_fixed_wing", 20);
+	add_optional_topic("gains");
+	add_optional_topic("vehicle_energy");
+	add_optional_topic("tecs_debug");
+	add_optional_topic("waypoint_nav_debug");
+	add_optional_topic("yaw_damper_info",20);
 
 	// multi topics
 	add_optional_topic_multi("actuator_outputs", 100, 3);
