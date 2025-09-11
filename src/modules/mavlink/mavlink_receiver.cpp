@@ -273,6 +273,9 @@ MavlinkReceiver::handle_message(mavlink_message_t *msg)
 	case MAVLINK_MSG_ID_STATUSTEXT:
 		handle_message_statustext(msg);
 		break;
+	case MAVLINK_MSG_ID_ACTUATOR_POSITION:
+		handle_message_actuator_position(msg);
+		break;
 
 #if !defined(CONSTRAINED_FLASH)
 
@@ -2380,6 +2383,33 @@ MavlinkReceiver::handle_message_hil_gps(mavlink_message_t *msg)
 	gps.timestamp = hrt_absolute_time();
 
 	_sensor_gps_pub.publish(gps);
+}
+
+void
+MavlinkReceiver::handle_message_actuator_position(mavlink_message_t *msg)
+{
+    mavlink_actuator_position_t act_pos;
+    mavlink_msg_actuator_position_decode(msg, &act_pos);
+
+    actuator_position_s actuator_position{};
+    actuator_position.timestamp = hrt_abstime();
+
+    // Copy fields from MAVLink message into the uORB array
+    actuator_position.positions[0]  = act_pos.de;
+    actuator_position.positions[1]  = act_pos.da;
+    actuator_position.positions[2]  = act_pos.dr;
+    actuator_position.positions[3]  = act_pos.dt;
+    actuator_position.positions[4]  = act_pos.rpm1;
+    actuator_position.positions[5]  = act_pos.rpm2;
+    actuator_position.positions[6]  = act_pos.rpm3;
+    actuator_position.positions[7]  = act_pos.rpm4;
+    actuator_position.positions[8]  = act_pos.rpm5;
+    actuator_position.positions[9]  = act_pos.rpm6;
+    actuator_position.positions[10] = act_pos.rpm7;
+    actuator_position.positions[11] = act_pos.rpm8;
+
+    // Publish
+    _actuator_position_pub.publish(actuator_position);
 }
 
 void

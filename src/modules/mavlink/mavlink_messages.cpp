@@ -142,6 +142,7 @@
 # include "streams/UAVIONIX_ADSB_OUT_CFG.hpp"
 # include "streams/UAVIONIX_ADSB_OUT_DYNAMIC.hpp"
 # include "streams/UTM_GLOBAL_POSITION.hpp"
+# include "streams/ACTUATOR_POSITION.hpp"
 #endif // !CONSTRAINED_FLASH
 
 // ensure PX4 rotation enum and MAV_SENSOR_ROTATION align
@@ -483,6 +484,9 @@ static const StreamListItem streams_list[] = {
 #if defined(UAVIONIX_ADSB_OUT_DYNAMIC_HPP)
 	create_stream_list_item<MavlinkStreamUavionixADSBOutDynamic>()
 #endif // UAVIONIX_ADSB_OUT_DYNAMIC_HPP
+#if defined(ACTUATOR_POSITION_HPP)
+	create_stream_list_item<MavlinkStreamActuatorPosition>(),
+#endif
 };
 
 const char *get_stream_name(const uint16_t msg_id)

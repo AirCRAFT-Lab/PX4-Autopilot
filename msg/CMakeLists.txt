@@ -231,8 +231,8 @@ set(msg_files
 	RateCommandError.msg
 	RateCommand.msg
 	AttitudeCommand.msg
+	ActuatorPosition.msg
 	EstimatedActuatorPositions.msg
-	SimulinkCustomMessage.msg
 )
 list(SORT msg_files)
 

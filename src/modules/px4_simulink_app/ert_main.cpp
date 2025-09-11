@@ -5,11 +5,11 @@
 //
 // File: ert_main.cpp
 //
-// Code generated for Simulink model 'Modular_HITL'.
+// Code generated for Simulink model 'Hummingbird_Flight_Controller'.
 //
-// Model version                  : 2.20
+// Model version                  : 2.127
 // Simulink Coder version         : 25.1 (R2025a) 21-Nov-2024
-// C/C++ source code generated on : Thu Aug 28 13:20:24 2025
+// C/C++ source code generated on : Fri Sep  5 14:48:50 2025
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -18,8 +18,8 @@
 //
 #include <stdio.h>
 #include <stdlib.h>
-#include "Modular_HITL.h"
-#include "Modular_HITL_private.h"
+#include "Hummingbird_Flight_Controller.h"
+#include "Hummingbird_Flight_Controller_private.h"
 #include "rtwtypes.h"
 #include "limits.h"
 #include "rt_nonfinite.h"
@@ -37,14 +37,14 @@ volatile boolean_T stopRequested = false;
 volatile boolean_T runModel = true;
 px4_sem_t stopSem;
 px4_sem_t baserateTaskSem;
-px4_sem_t subrateTaskSem[2];
-int taskId[2];
+px4_sem_t subrateTaskSem[3];
+int taskId[3];
 pthread_t schedulerThread;
 pthread_t baseRateThread;
 void *threadJoinStatus;
 int terminatingmodel = 0;
-pthread_t subRateThread[2];
-int subratePriority[2];
+pthread_t subRateThread[3];
+int subratePriority[3];
 void *subrateTask(void *arg)
 {
   int_T tid = *((int_T *) arg);
@@ -61,7 +61,7 @@ void *subrateTask(void *arg)
 
 #endif
 
-    Modular_HITL_step(subRateId);
+    Hummingbird_Flight_Controller_step(subRateId);
 
     // Get model outputs here
   }
@@ -73,7 +73,7 @@ void *subrateTask(void *arg)
 void *baseRateTask(void *arg)
 {
   int_T i;
-  runModel = (Modular_HITL_M->getErrorStatus() == (NULL));
+  runModel = (Hummingbird_Flight_Controlle_M->getErrorStatus() == (NULL));
   while (runModel) {
     px4_sem_wait(&baserateTaskSem);
 
@@ -85,18 +85,18 @@ void *baseRateTask(void *arg)
 #endif
 
     for (i = 1
-         ; i <= 2; i++) {
-      if (Modular_HITL_M->StepTask(i)
+         ; i <= 3; i++) {
+      if (Hummingbird_Flight_Controlle_M->StepTask(i)
           ) {
         px4_sem_post(&subrateTaskSem[ i - 1
                      ]);
       }
     }
 
-    Modular_HITL_step(0);
+    Hummingbird_Flight_Controller_step(0);
 
     // Get model outputs here
-    stopRequested = !((Modular_HITL_M->getErrorStatus() == (NULL)));
+    stopRequested = !((Hummingbird_Flight_Controlle_M->getErrorStatus() == (NULL)));
   }
 
   terminateTask(arg);
@@ -107,7 +107,7 @@ void *baseRateTask(void *arg)
 void exitFcn(int sig)
 {
   UNUSED(sig);
-  Modular_HITL_M->setErrorStatus("stopping the model");
+  Hummingbird_Flight_Controlle_M->setErrorStatus("stopping the model");
   runModel = 0;
 }
 
@@ -120,13 +120,13 @@ void *terminateTask(void *arg)
     int i;
 
     // Signal all periodic tasks to complete
-    for (i=0; i<2; i++) {
+    for (i=0; i<3; i++) {
       CHECK_STATUS(px4_sem_post(&subrateTaskSem[i]), 0, "px4_sem_post");
       CHECK_STATUS(px4_sem_destroy(&subrateTaskSem[i]), 0, "px4_sem_destroy");
     }
 
     // Wait for all periodic tasks to complete
-    for (i=0; i<2; i++) {
+    for (i=0; i<3; i++) {
       CHECK_STATUS(pthread_join(subRateThread[i], &threadJoinStatus), 0,
                    "pthread_join");
     }
@@ -137,7 +137,7 @@ void *terminateTask(void *arg)
   MW_PX4_Terminate();
 
   // Terminate model
-  Modular_HITL_terminate();
+  Hummingbird_Flight_Controller_terminate();
   px4_sem_post(&stopSem);
   return NULL;
 }
@@ -146,14 +146,15 @@ int px4_simulink_app_task_main (int argc, char *argv[])
 {
   subratePriority[0] = 249;
   subratePriority[1] = 248;
+  subratePriority[2] = 247;
   px4_simulink_app_control_MAVLink();
-  Modular_HITL_M->setErrorStatus(0);
+  Hummingbird_Flight_Controlle_M->setErrorStatus(0);
 
   // Initialize model
-  Modular_HITL_initialize();
+  Hummingbird_Flight_Controller_initialize();
 
   // Call RTOS Initialization function
-  nuttxRTOSInit(0.001, 2);
+  nuttxRTOSInit(0.001, 3);
 
   // Wait for stop semaphore
   px4_sem_wait(&stopSem);
