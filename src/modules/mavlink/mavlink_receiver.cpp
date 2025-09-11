@@ -2392,7 +2392,7 @@ MavlinkReceiver::handle_message_actuator_position(mavlink_message_t *msg)
     mavlink_msg_actuator_position_decode(msg, &act_pos);
 
     actuator_position_s actuator_position{};
-    actuator_position.timestamp = hrt_abstime();
+    actuator_position.timestamp = hrt_absolute_time();
 
     // Copy fields from MAVLink message into the uORB array
     actuator_position.positions[0]  = act_pos.de;

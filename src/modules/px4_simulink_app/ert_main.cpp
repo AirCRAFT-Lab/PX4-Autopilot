@@ -7,9 +7,9 @@
 //
 // Code generated for Simulink model 'Hummingbird_Flight_Controller'.
 //
-// Model version                  : 2.127
+// Model version                  : 2.132
 // Simulink Coder version         : 25.1 (R2025a) 21-Nov-2024
-// C/C++ source code generated on : Fri Sep  5 14:48:50 2025
+// C/C++ source code generated on : Thu Sep 11 14:51:16 2025
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: ARM Compatible->ARM Cortex

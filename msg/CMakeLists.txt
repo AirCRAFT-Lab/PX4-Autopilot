@@ -232,7 +232,6 @@ set(msg_files
 	RateCommand.msg
 	AttitudeCommand.msg
 	ActuatorPosition.msg
-	EstimatedActuatorPositions.msg
 )
 list(SORT msg_files)
 
