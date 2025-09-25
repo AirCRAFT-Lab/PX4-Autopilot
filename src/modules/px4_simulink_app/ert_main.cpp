@@ -5,11 +5,11 @@
 //
 // File: ert_main.cpp
 //
-// Code generated for Simulink model 'Modular_HITL'.
+// Code generated for Simulink model 'Modular_Yaw_Damper'.
 //
-// Model version                  : 2.20
+// Model version                  : 2.23
 // Simulink Coder version         : 25.1 (R2025a) 21-Nov-2024
-// C/C++ source code generated on : Thu Aug 28 13:20:24 2025
+// C/C++ source code generated on : Thu Sep 25 11:10:05 2025
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -18,8 +18,8 @@
 //
 #include <stdio.h>
 #include <stdlib.h>
-#include "Modular_HITL.h"
-#include "Modular_HITL_private.h"
+#include "Modular_Yaw_Damper.h"
+#include "Modular_Yaw_Damper_private.h"
 #include "rtwtypes.h"
 #include "limits.h"
 #include "rt_nonfinite.h"
@@ -61,7 +61,7 @@ void *subrateTask(void *arg)
 
 #endif
 
-    Modular_HITL_step(subRateId);
+    Modular_Yaw_Damper_step(subRateId);
 
     // Get model outputs here
   }
@@ -73,7 +73,7 @@ void *subrateTask(void *arg)
 void *baseRateTask(void *arg)
 {
   int_T i;
-  runModel = (Modular_HITL_M->getErrorStatus() == (NULL));
+  runModel = (Modular_Yaw_Damper_M->getErrorStatus() == (NULL));
   while (runModel) {
     px4_sem_wait(&baserateTaskSem);
 
@@ -86,17 +86,17 @@ void *baseRateTask(void *arg)
 
     for (i = 1
          ; i <= 2; i++) {
-      if (Modular_HITL_M->StepTask(i)
+      if (Modular_Yaw_Damper_M->StepTask(i)
           ) {
         px4_sem_post(&subrateTaskSem[ i - 1
                      ]);
       }
     }
 
-    Modular_HITL_step(0);
+    Modular_Yaw_Damper_step(0);
 
     // Get model outputs here
-    stopRequested = !((Modular_HITL_M->getErrorStatus() == (NULL)));
+    stopRequested = !((Modular_Yaw_Damper_M->getErrorStatus() == (NULL)));
   }
 
   terminateTask(arg);
@@ -107,7 +107,7 @@ void *baseRateTask(void *arg)
 void exitFcn(int sig)
 {
   UNUSED(sig);
-  Modular_HITL_M->setErrorStatus("stopping the model");
+  Modular_Yaw_Damper_M->setErrorStatus("stopping the model");
   runModel = 0;
 }
 
@@ -137,7 +137,7 @@ void *terminateTask(void *arg)
   MW_PX4_Terminate();
 
   // Terminate model
-  Modular_HITL_terminate();
+  Modular_Yaw_Damper_terminate();
   px4_sem_post(&stopSem);
   return NULL;
 }
@@ -147,10 +147,10 @@ int px4_simulink_app_task_main (int argc, char *argv[])
   subratePriority[0] = 249;
   subratePriority[1] = 248;
   px4_simulink_app_control_MAVLink();
-  Modular_HITL_M->setErrorStatus(0);
+  Modular_Yaw_Damper_M->setErrorStatus(0);
 
   // Initialize model
-  Modular_HITL_initialize();
+  Modular_Yaw_Damper_initialize();
 
   // Call RTOS Initialization function
   nuttxRTOSInit(0.001, 2);
