@@ -5,11 +5,11 @@
 //
 // File: rtGetInf.cpp
 //
-// Code generated for Simulink model 'Hummingbird_Flight_Controller'.
+// Code generated for Simulink model 'Hummingbird_Flight_Controller_Lower_Memory'.
 //
-// Model version                  : 2.132
+// Model version                  : 2.189
 // Simulink Coder version         : 25.1 (R2025a) 21-Nov-2024
-// C/C++ source code generated on : Thu Sep 11 14:51:16 2025
+// C/C++ source code generated on : Thu Sep 25 09:50:43 2025
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: ARM Compatible->ARM Cortex
