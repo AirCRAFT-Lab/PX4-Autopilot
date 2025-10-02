@@ -7,9 +7,9 @@
 //
 // Code generated for Simulink model 'Hummingbird_Flight_Controller_Lower_Memory'.
 //
-// Model version                  : 2.189
+// Model version                  : 2.238
 // Simulink Coder version         : 25.1 (R2025a) 21-Nov-2024
-// C/C++ source code generated on : Thu Sep 25 09:50:43 2025
+// C/C++ source code generated on : Wed Oct  1 21:21:18 2025
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -37,14 +37,14 @@ volatile boolean_T stopRequested = false;
 volatile boolean_T runModel = true;
 px4_sem_t stopSem;
 px4_sem_t baserateTaskSem;
-px4_sem_t subrateTaskSem[2];
-int taskId[2];
+px4_sem_t subrateTaskSem[1];
+int taskId[1];
 pthread_t schedulerThread;
 pthread_t baseRateThread;
 void *threadJoinStatus;
 int terminatingmodel = 0;
-pthread_t subRateThread[2];
-int subratePriority[2];
+pthread_t subRateThread[1];
+int subratePriority[1];
 void *subrateTask(void *arg)
 {
   int_T tid = *((int_T *) arg);
@@ -72,7 +72,6 @@ void *subrateTask(void *arg)
 
 void *baseRateTask(void *arg)
 {
-  int_T i;
   runModel = (Hummingbird_Flight_Controlle_M->getErrorStatus() == (NULL));
   while (runModel) {
     px4_sem_wait(&baserateTaskSem);
@@ -84,13 +83,9 @@ void *baseRateTask(void *arg)
 
 #endif
 
-    for (i = 1
-         ; i <= 2; i++) {
-      if (Hummingbird_Flight_Controlle_M->StepTask(i)
-          ) {
-        px4_sem_post(&subrateTaskSem[ i - 1
-                     ]);
-      }
+    if (Hummingbird_Flight_Controlle_M->StepTask(1)
+        ) {
+      px4_sem_post(&subrateTaskSem[0]);
     }
 
     Hummingbird_Flight_Controller_Lower_Memory_step(0);
@@ -120,13 +115,13 @@ void *terminateTask(void *arg)
     int i;
 
     // Signal all periodic tasks to complete
-    for (i=0; i<2; i++) {
+    for (i=0; i<1; i++) {
       CHECK_STATUS(px4_sem_post(&subrateTaskSem[i]), 0, "px4_sem_post");
       CHECK_STATUS(px4_sem_destroy(&subrateTaskSem[i]), 0, "px4_sem_destroy");
     }
 
     // Wait for all periodic tasks to complete
-    for (i=0; i<2; i++) {
+    for (i=0; i<1; i++) {
       CHECK_STATUS(pthread_join(subRateThread[i], &threadJoinStatus), 0,
                    "pthread_join");
     }
@@ -145,7 +140,6 @@ void *terminateTask(void *arg)
 int px4_simulink_app_task_main (int argc, char *argv[])
 {
   subratePriority[0] = 249;
-  subratePriority[1] = 248;
   px4_simulink_app_control_MAVLink();
   Hummingbird_Flight_Controlle_M->setErrorStatus(0);
 
@@ -153,7 +147,7 @@ int px4_simulink_app_task_main (int argc, char *argv[])
   Hummingbird_Flight_Controller_Lower_Memory_initialize();
 
   // Call RTOS Initialization function
-  nuttxRTOSInit(0.001, 2);
+  nuttxRTOSInit(0.001, 1);
 
   // Wait for stop semaphore
   px4_sem_wait(&stopSem);

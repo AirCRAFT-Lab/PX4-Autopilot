@@ -2255,6 +2255,7 @@ MavlinkReceiver::handle_message_hil_sensor(mavlink_message_t *msg)
 	}
 
 	// accelerometer
+	/*
 	if ((hil_sensor.fields_updated & SensorSource::ACCEL) == SensorSource::ACCEL) {
 		if (_px4_accel == nullptr) {
 			// 1310988: DRV_IMU_DEVTYPE_SIM, BUS: 1, ADDR: 1, TYPE: SIMULATION
@@ -2268,7 +2269,7 @@ MavlinkReceiver::handle_message_hil_sensor(mavlink_message_t *msg)
 
 			_px4_accel->update(timestamp, hil_sensor.xacc, hil_sensor.yacc, hil_sensor.zacc);
 		}
-	}
+	}*/
 
 	// magnetometer
 	if ((hil_sensor.fields_updated & SensorSource::MAG) == SensorSource::MAG) {
@@ -2665,6 +2666,7 @@ MavlinkReceiver::handle_message_hil_state_quaternion(mavlink_message_t *msg)
 	const uint64_t timestamp_sample = hrt_absolute_time();
 
 	/* airspeed */
+	/* Remove Airspeed Publication so airspeed comes from diff pressure sensor
 	{
 		airspeed_s airspeed{};
 		airspeed.timestamp_sample = timestamp_sample;
@@ -2674,6 +2676,7 @@ MavlinkReceiver::handle_message_hil_state_quaternion(mavlink_message_t *msg)
 		airspeed.timestamp = hrt_absolute_time();
 		_airspeed_pub.publish(airspeed);
 	}
+	*/
 
 	/* attitude */
 	{
@@ -2700,6 +2703,7 @@ MavlinkReceiver::handle_message_hil_state_quaternion(mavlink_message_t *msg)
 	}
 
 	/* local position */
+	/*  Remove Local Position Publication so local position comes from EKF */
 	{
 		const double lat = hil_state.lat * 1e-7;
 		const double lon = hil_state.lon * 1e-7;
@@ -2743,6 +2747,7 @@ MavlinkReceiver::handle_message_hil_state_quaternion(mavlink_message_t *msg)
 	}
 
 	/* accelerometer */
+	/* Remove publication of accelerometers to avoid double publication */
 	{
 		if (_px4_accel == nullptr) {
 			// 1310988: DRV_IMU_DEVTYPE_SIM, BUS: 1, ADDR: 1, TYPE: SIMULATION

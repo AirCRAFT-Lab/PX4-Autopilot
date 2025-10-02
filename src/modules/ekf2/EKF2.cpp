@@ -681,7 +681,7 @@ void EKF2::Run()
 		if (_ekf.update()) {
 			perf_set_elapsed(_ecl_ekf_update_full_perf, hrt_elapsed_time(&ekf_update_start));
 
-			PublishLocalPosition(now);
+			// PublishLocalPosition(now);
 			PublishOdometry(now, imu_sample_new);
 			PublishGlobalPosition(now);
 			PublishWindEstimate(now);
