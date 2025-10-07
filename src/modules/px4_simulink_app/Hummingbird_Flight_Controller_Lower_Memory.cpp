@@ -7,9 +7,9 @@
 //
 // Code generated for Simulink model 'Hummingbird_Flight_Controller_Lower_Memory'.
 //
-// Model version                  : 2.238
+// Model version                  : 2.240
 // Simulink Coder version         : 25.1 (R2025a) 21-Nov-2024
-// C/C++ source code generated on : Wed Oct  1 21:21:18 2025
+// C/C++ source code generated on : Fri Oct  3 14:35:14 2025
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -103,8 +103,8 @@ static void Hummingbird_Flight_Co_lla2ned_f(const real_T lla[3], const real_T
   lla0[3], real_T xyzNED[3]);
 static real_T Hummingbird_Flight_Contr_norm_j(const real_T x[2]);
 static void exit_internal_Flight_controller(void);
-static void Hu_enter_atomic_Mixed_MR_Assist(real_T *assist, const real32_T
-  TmpSignalConversionAtSFunctionI[8]);
+static void Hu_enter_atomic_Mixed_MR_Assist(real_T *assist, real_T *arms_pos,
+  const real32_T TmpSignalConversionAtSFunctionI[8]);
 static void Hummingb_PX4Actuators_setupImpl(px4_internal_block_PX4Actuato_T *obj);
 static void rate_monotonic_scheduler(void);
 
@@ -2989,27 +2989,43 @@ static void exit_internal_Flight_controller(void)
 }
 
 // Function for Chart: '<S1402>/Chart'
-static void Hu_enter_atomic_Mixed_MR_Assist(real_T *assist, const real32_T
-  TmpSignalConversionAtSFunctionI[8])
+static void Hu_enter_atomic_Mixed_MR_Assist(real_T *assist, real_T *arms_pos,
+  const real32_T TmpSignalConversionAtSFunctionI[8])
 {
   if ((Hummingbird_Flight_Controller_B.dM[0] < 0.0) &&
-      (TmpSignalConversionAtSFunctionI[0] < -0.47123889803846897)) {
-    Hummingbird_Flight_Controller_B.mixer[0] = 0.0;
+      (TmpSignalConversionAtSFunctionI[0] < -0.31415926535897926)) {
+    // SignalConversion generated from: '<S1405>/ SFunction '
+    Hummingbird_Flight_Controller_B.mixer[0] = 1.0F - (static_cast<real32_T>
+      (fabs(static_cast<real_T>(TmpSignalConversionAtSFunctionI[0] / 0.52359879F)))
+      - 0.6F) / 0.4F;
   } else if (Hummingbird_Flight_Controller_B.dM[0] > 0.0) {
     // SignalConversion generated from: '<S1405>/ SFunction '
-    Hummingbird_Flight_Controller_B.mixer[0] =
-      !(TmpSignalConversionAtSFunctionI[0] > 0.47123889803846897);
+    if (TmpSignalConversionAtSFunctionI[0] > 0.31415926535897926) {
+      Hummingbird_Flight_Controller_B.mixer[0] = 1.0F - (static_cast<real32_T>
+        (fabs(static_cast<real_T>(TmpSignalConversionAtSFunctionI[0] /
+        0.52359879F))) - 0.6F) / 0.4F;
+    } else {
+      Hummingbird_Flight_Controller_B.mixer[0] = 1.0;
+    }
   } else {
     Hummingbird_Flight_Controller_B.mixer[0] = 1.0;
   }
 
   if ((Hummingbird_Flight_Controller_B.dM[1] > 0.0) &&
       (TmpSignalConversionAtSFunctionI[1] < -0.47123889803846897)) {
-    Hummingbird_Flight_Controller_B.mixer[1] = 0.0;
+    // SignalConversion generated from: '<S1405>/ SFunction '
+    Hummingbird_Flight_Controller_B.mixer[1] = 1.0F - (static_cast<real32_T>
+      (fabs(static_cast<real_T>(TmpSignalConversionAtSFunctionI[1] / 0.52359879F)))
+      - 0.6F) / 0.4F;
   } else if (Hummingbird_Flight_Controller_B.dM[1] < 0.0) {
     // SignalConversion generated from: '<S1405>/ SFunction '
-    Hummingbird_Flight_Controller_B.mixer[1] =
-      !(TmpSignalConversionAtSFunctionI[1] > 0.47123889803846897);
+    if (TmpSignalConversionAtSFunctionI[1] > 0.47123889803846897) {
+      Hummingbird_Flight_Controller_B.mixer[1] = 1.0F - (static_cast<real32_T>
+        (fabs(static_cast<real_T>(TmpSignalConversionAtSFunctionI[1] /
+        0.52359879F))) - 0.6F) / 0.4F;
+    } else {
+      Hummingbird_Flight_Controller_B.mixer[1] = 1.0;
+    }
   } else {
     Hummingbird_Flight_Controller_B.mixer[1] = 1.0;
   }
@@ -3018,14 +3034,17 @@ static void Hu_enter_atomic_Mixed_MR_Assist(real_T *assist, const real32_T
       (TmpSignalConversionAtSFunctionI[2] < -0.47123889803846897)) {
     Hummingbird_Flight_Controller_B.mixer[2] = 0.0;
   } else if (Hummingbird_Flight_Controller_B.dM[2] < 0.0) {
-    // SignalConversion generated from: '<S1405>/ SFunction '
-    Hummingbird_Flight_Controller_B.mixer[2] =
-      !(TmpSignalConversionAtSFunctionI[2] > 0.47123889803846897);
+    if (TmpSignalConversionAtSFunctionI[2] > 0.47123889803846897) {
+      Hummingbird_Flight_Controller_B.mixer[2] = 0.0;
+    } else {
+      Hummingbird_Flight_Controller_B.mixer[2] = 1.0;
+    }
   } else {
     Hummingbird_Flight_Controller_B.mixer[2] = 1.0;
   }
 
   *assist = 1.0;
+  *arms_pos = 0.0;
 }
 
 static void Hummingb_PX4Actuators_setupImpl(px4_internal_block_PX4Actuato_T *obj)
@@ -4779,13 +4798,13 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
       //   Gain: '<S1087>/Derivative Gain'
       //   Sum: '<S1089>/SumD'
 
-      Hummingbird_Flight_Controller_B.Saturation1 =
+      Hummingbird_Flight_Controller_B.Saturation4 =
         (Hummingbird_Flight_Controller_P.PIDController9_D[0] *
          Hummingbird_Flight_Controller_B.prev_waypoint[0] -
          Hummingbird_Flight_Controlle_DW.Filter_DSTATE_e[0]) *
         Hummingbird_Flight_Controller_P.PIDController9_N;
       Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_0 =
-        Hummingbird_Flight_Controller_B.Saturation1;
+        Hummingbird_Flight_Controller_B.Saturation4;
 
       // Sum: '<S1103>/Sum' incorporates:
       //   DiscreteIntegrator: '<S1094>/Integrator'
@@ -4796,7 +4815,7 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
         (Hummingbird_Flight_Controller_P.PIDController9_P[0] *
          Hummingbird_Flight_Controller_B.prev_waypoint[0] +
          Hummingbird_Flight_Controlle_DW.Integrator_DSTATE_c[0]) +
-        Hummingbird_Flight_Controller_B.Saturation1;
+        Hummingbird_Flight_Controller_B.Saturation4;
 
       // Saturate: '<S1101>/Saturation'
       if (Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_0 >
@@ -4815,13 +4834,13 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
       //   Gain: '<S1087>/Derivative Gain'
       //   Sum: '<S1089>/SumD'
 
-      Hummingbird_Flight_Controller_B.Saturation1 =
+      Hummingbird_Flight_Controller_B.Saturation4 =
         (Hummingbird_Flight_Controller_P.PIDController9_D[1] *
          Hummingbird_Flight_Controller_B.prev_waypoint[1] -
          Hummingbird_Flight_Controlle_DW.Filter_DSTATE_e[1]) *
         Hummingbird_Flight_Controller_P.PIDController9_N;
       Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_1 =
-        Hummingbird_Flight_Controller_B.Saturation1;
+        Hummingbird_Flight_Controller_B.Saturation4;
 
       // Sum: '<S1103>/Sum' incorporates:
       //   DiscreteIntegrator: '<S1094>/Integrator'
@@ -4832,7 +4851,7 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
         (Hummingbird_Flight_Controller_P.PIDController9_P[1] *
          Hummingbird_Flight_Controller_B.prev_waypoint[1] +
          Hummingbird_Flight_Controlle_DW.Integrator_DSTATE_c[1]) +
-        Hummingbird_Flight_Controller_B.Saturation1;
+        Hummingbird_Flight_Controller_B.Saturation4;
 
       // Saturate: '<S1101>/Saturation'
       if (Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1 >
@@ -4851,7 +4870,7 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
       //   Gain: '<S1087>/Derivative Gain'
       //   Sum: '<S1089>/SumD'
 
-      Hummingbird_Flight_Controller_B.Saturation1 =
+      Hummingbird_Flight_Controller_B.Saturation4 =
         (Hummingbird_Flight_Controller_P.PIDController9_D[2] *
          Hummingbird_Flight_Controller_B.prev_waypoint[2] -
          Hummingbird_Flight_Controlle_DW.Filter_DSTATE_e[2]) *
@@ -4866,7 +4885,7 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
         (Hummingbird_Flight_Controller_P.PIDController9_P[2] *
          Hummingbird_Flight_Controller_B.prev_waypoint[2] +
          Hummingbird_Flight_Controlle_DW.Integrator_DSTATE_c[2]) +
-        Hummingbird_Flight_Controller_B.Saturation1;
+        Hummingbird_Flight_Controller_B.Saturation4;
 
       // Saturate: '<S1101>/Saturation'
       if (Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 >
@@ -5330,7 +5349,7 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
 
       Hummingbird_Flight_Controlle_DW.Filter_DSTATE_e[2] +=
         Hummingbird_Flight_Controller_P.Filter_gainval_lu *
-        Hummingbird_Flight_Controller_B.Saturation1;
+        Hummingbird_Flight_Controller_B.Saturation4;
 
       // Update for DiscreteIntegrator: '<S974>/Filter'
       Hummingbird_Flight_Controlle_DW.Filter_DSTATE_k[2] +=
@@ -7038,13 +7057,13 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
       //   Gain: '<S1087>/Derivative Gain'
       //   Sum: '<S1089>/SumD'
 
-      Hummingbird_Flight_Controller_B.Saturation1 =
+      Hummingbird_Flight_Controller_B.Saturation4 =
         (Hummingbird_Flight_Controller_P.PIDController9_D[0] *
          Hummingbird_Flight_Controller_B.prev_waypoint[0] -
          Hummingbird_Flight_Controlle_DW.Filter_DSTATE_e[0]) *
         Hummingbird_Flight_Controller_P.PIDController9_N;
       Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_0 =
-        Hummingbird_Flight_Controller_B.Saturation1;
+        Hummingbird_Flight_Controller_B.Saturation4;
 
       // Sum: '<S1103>/Sum' incorporates:
       //   DiscreteIntegrator: '<S1094>/Integrator'
@@ -7055,7 +7074,7 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
         (Hummingbird_Flight_Controller_P.PIDController9_P[0] *
          Hummingbird_Flight_Controller_B.prev_waypoint[0] +
          Hummingbird_Flight_Controlle_DW.Integrator_DSTATE_c[0]) +
-        Hummingbird_Flight_Controller_B.Saturation1;
+        Hummingbird_Flight_Controller_B.Saturation4;
 
       // Saturate: '<S1101>/Saturation'
       if (Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_0 >
@@ -7074,13 +7093,13 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
       //   Gain: '<S1087>/Derivative Gain'
       //   Sum: '<S1089>/SumD'
 
-      Hummingbird_Flight_Controller_B.Saturation1 =
+      Hummingbird_Flight_Controller_B.Saturation4 =
         (Hummingbird_Flight_Controller_P.PIDController9_D[1] *
          Hummingbird_Flight_Controller_B.prev_waypoint[1] -
          Hummingbird_Flight_Controlle_DW.Filter_DSTATE_e[1]) *
         Hummingbird_Flight_Controller_P.PIDController9_N;
       Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_1 =
-        Hummingbird_Flight_Controller_B.Saturation1;
+        Hummingbird_Flight_Controller_B.Saturation4;
 
       // Sum: '<S1103>/Sum' incorporates:
       //   DiscreteIntegrator: '<S1094>/Integrator'
@@ -7091,7 +7110,7 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
         (Hummingbird_Flight_Controller_P.PIDController9_P[1] *
          Hummingbird_Flight_Controller_B.prev_waypoint[1] +
          Hummingbird_Flight_Controlle_DW.Integrator_DSTATE_c[1]) +
-        Hummingbird_Flight_Controller_B.Saturation1;
+        Hummingbird_Flight_Controller_B.Saturation4;
 
       // Saturate: '<S1101>/Saturation'
       if (Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1 >
@@ -7110,7 +7129,7 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
       //   Gain: '<S1087>/Derivative Gain'
       //   Sum: '<S1089>/SumD'
 
-      Hummingbird_Flight_Controller_B.Saturation1 =
+      Hummingbird_Flight_Controller_B.Saturation4 =
         (Hummingbird_Flight_Controller_P.PIDController9_D[2] *
          Hummingbird_Flight_Controller_B.prev_waypoint[2] -
          Hummingbird_Flight_Controlle_DW.Filter_DSTATE_e[2]) *
@@ -7125,7 +7144,7 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
         (Hummingbird_Flight_Controller_P.PIDController9_P[2] *
          Hummingbird_Flight_Controller_B.prev_waypoint[2] +
          Hummingbird_Flight_Controlle_DW.Integrator_DSTATE_c[2]) +
-        Hummingbird_Flight_Controller_B.Saturation1;
+        Hummingbird_Flight_Controller_B.Saturation4;
 
       // Saturate: '<S1101>/Saturation'
       if (Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 >
@@ -7589,7 +7608,7 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
 
       Hummingbird_Flight_Controlle_DW.Filter_DSTATE_e[2] +=
         Hummingbird_Flight_Controller_P.Filter_gainval_lu *
-        Hummingbird_Flight_Controller_B.Saturation1;
+        Hummingbird_Flight_Controller_B.Saturation4;
 
       // Update for DiscreteIntegrator: '<S974>/Filter'
       Hummingbird_Flight_Controlle_DW.Filter_DSTATE_k[2] +=
@@ -8690,21 +8709,21 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
           Hummingbird_Flight_Controller_B.t;
       }
 
-      Hummingbird_Flight_Controller_B.Saturation1 = fabs
+      Hummingbird_Flight_Controller_B.Saturation4 = fabs
         (Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1);
-      if (Hummingbird_Flight_Controller_B.Saturation1 >
+      if (Hummingbird_Flight_Controller_B.Saturation4 >
           Hummingbird_Flight_Controller_B.scale) {
         Hummingbird_Flight_Controller_B.t =
           Hummingbird_Flight_Controller_B.scale /
-          Hummingbird_Flight_Controller_B.Saturation1;
+          Hummingbird_Flight_Controller_B.Saturation4;
         Hummingbird_Flight_Controller_B.V = Hummingbird_Flight_Controller_B.V *
           Hummingbird_Flight_Controller_B.t * Hummingbird_Flight_Controller_B.t
           + 1.0;
         Hummingbird_Flight_Controller_B.scale =
-          Hummingbird_Flight_Controller_B.Saturation1;
+          Hummingbird_Flight_Controller_B.Saturation4;
       } else {
         Hummingbird_Flight_Controller_B.t =
-          Hummingbird_Flight_Controller_B.Saturation1 /
+          Hummingbird_Flight_Controller_B.Saturation4 /
           Hummingbird_Flight_Controller_B.scale;
         Hummingbird_Flight_Controller_B.V += Hummingbird_Flight_Controller_B.t *
           Hummingbird_Flight_Controller_B.t;
@@ -9252,20 +9271,20 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
           Hummingbird_Flight_Controller_B.t * Hummingbird_Flight_Controller_B.t;
       }
 
-      if (Hummingbird_Flight_Controller_B.Saturation1 >
+      if (Hummingbird_Flight_Controller_B.Saturation4 >
           Hummingbird_Flight_Controller_B.scale) {
         Hummingbird_Flight_Controller_B.t =
           Hummingbird_Flight_Controller_B.scale /
-          Hummingbird_Flight_Controller_B.Saturation1;
+          Hummingbird_Flight_Controller_B.Saturation4;
         Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 =
           Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 *
           Hummingbird_Flight_Controller_B.t * Hummingbird_Flight_Controller_B.t
           + 1.0;
         Hummingbird_Flight_Controller_B.scale =
-          Hummingbird_Flight_Controller_B.Saturation1;
+          Hummingbird_Flight_Controller_B.Saturation4;
       } else {
         Hummingbird_Flight_Controller_B.t =
-          Hummingbird_Flight_Controller_B.Saturation1 /
+          Hummingbird_Flight_Controller_B.Saturation4 /
           Hummingbird_Flight_Controller_B.scale;
         Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 +=
           Hummingbird_Flight_Controller_B.t * Hummingbird_Flight_Controller_B.t;
@@ -11015,13 +11034,13 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
       //   Gain: '<S1087>/Derivative Gain'
       //   Sum: '<S1089>/SumD'
 
-      Hummingbird_Flight_Controller_B.Saturation1 =
+      Hummingbird_Flight_Controller_B.Saturation4 =
         (Hummingbird_Flight_Controller_P.PIDController9_D[0] *
          Hummingbird_Flight_Controller_B.prev_waypoint[0] -
          Hummingbird_Flight_Controlle_DW.Filter_DSTATE_e[0]) *
         Hummingbird_Flight_Controller_P.PIDController9_N;
       Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_0 =
-        Hummingbird_Flight_Controller_B.Saturation1;
+        Hummingbird_Flight_Controller_B.Saturation4;
 
       // Sum: '<S1103>/Sum' incorporates:
       //   DiscreteIntegrator: '<S1094>/Integrator'
@@ -11032,7 +11051,7 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
         (Hummingbird_Flight_Controller_P.PIDController9_P[0] *
          Hummingbird_Flight_Controller_B.prev_waypoint[0] +
          Hummingbird_Flight_Controlle_DW.Integrator_DSTATE_c[0]) +
-        Hummingbird_Flight_Controller_B.Saturation1;
+        Hummingbird_Flight_Controller_B.Saturation4;
 
       // Saturate: '<S1101>/Saturation'
       if (Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_0 >
@@ -11051,13 +11070,13 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
       //   Gain: '<S1087>/Derivative Gain'
       //   Sum: '<S1089>/SumD'
 
-      Hummingbird_Flight_Controller_B.Saturation1 =
+      Hummingbird_Flight_Controller_B.Saturation4 =
         (Hummingbird_Flight_Controller_P.PIDController9_D[1] *
          Hummingbird_Flight_Controller_B.prev_waypoint[1] -
          Hummingbird_Flight_Controlle_DW.Filter_DSTATE_e[1]) *
         Hummingbird_Flight_Controller_P.PIDController9_N;
       Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_1 =
-        Hummingbird_Flight_Controller_B.Saturation1;
+        Hummingbird_Flight_Controller_B.Saturation4;
 
       // Sum: '<S1103>/Sum' incorporates:
       //   DiscreteIntegrator: '<S1094>/Integrator'
@@ -11068,7 +11087,7 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
         (Hummingbird_Flight_Controller_P.PIDController9_P[1] *
          Hummingbird_Flight_Controller_B.prev_waypoint[1] +
          Hummingbird_Flight_Controlle_DW.Integrator_DSTATE_c[1]) +
-        Hummingbird_Flight_Controller_B.Saturation1;
+        Hummingbird_Flight_Controller_B.Saturation4;
 
       // Saturate: '<S1101>/Saturation'
       if (Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1 >
@@ -11087,7 +11106,7 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
       //   Gain: '<S1087>/Derivative Gain'
       //   Sum: '<S1089>/SumD'
 
-      Hummingbird_Flight_Controller_B.Saturation1 =
+      Hummingbird_Flight_Controller_B.Saturation4 =
         (Hummingbird_Flight_Controller_P.PIDController9_D[2] *
          Hummingbird_Flight_Controller_B.prev_waypoint[2] -
          Hummingbird_Flight_Controlle_DW.Filter_DSTATE_e[2]) *
@@ -11102,7 +11121,7 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
         (Hummingbird_Flight_Controller_P.PIDController9_P[2] *
          Hummingbird_Flight_Controller_B.prev_waypoint[2] +
          Hummingbird_Flight_Controlle_DW.Integrator_DSTATE_c[2]) +
-        Hummingbird_Flight_Controller_B.Saturation1;
+        Hummingbird_Flight_Controller_B.Saturation4;
 
       // Saturate: '<S1101>/Saturation'
       if (Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 >
@@ -11566,7 +11585,7 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
 
       Hummingbird_Flight_Controlle_DW.Filter_DSTATE_e[2] +=
         Hummingbird_Flight_Controller_P.Filter_gainval_lu *
-        Hummingbird_Flight_Controller_B.Saturation1;
+        Hummingbird_Flight_Controller_B.Saturation4;
 
       // Update for DiscreteIntegrator: '<S974>/Filter'
       Hummingbird_Flight_Controlle_DW.Filter_DSTATE_k[2] +=
@@ -12353,21 +12372,21 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
           Hummingbird_Flight_Controller_B.t;
       }
 
-      Hummingbird_Flight_Controller_B.Saturation1 = fabs
+      Hummingbird_Flight_Controller_B.Saturation4 = fabs
         (Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1);
-      if (Hummingbird_Flight_Controller_B.Saturation1 >
+      if (Hummingbird_Flight_Controller_B.Saturation4 >
           Hummingbird_Flight_Controller_B.scale) {
         Hummingbird_Flight_Controller_B.t =
           Hummingbird_Flight_Controller_B.scale /
-          Hummingbird_Flight_Controller_B.Saturation1;
+          Hummingbird_Flight_Controller_B.Saturation4;
         Hummingbird_Flight_Controller_B.V = Hummingbird_Flight_Controller_B.V *
           Hummingbird_Flight_Controller_B.t * Hummingbird_Flight_Controller_B.t
           + 1.0;
         Hummingbird_Flight_Controller_B.scale =
-          Hummingbird_Flight_Controller_B.Saturation1;
+          Hummingbird_Flight_Controller_B.Saturation4;
       } else {
         Hummingbird_Flight_Controller_B.t =
-          Hummingbird_Flight_Controller_B.Saturation1 /
+          Hummingbird_Flight_Controller_B.Saturation4 /
           Hummingbird_Flight_Controller_B.scale;
         Hummingbird_Flight_Controller_B.V += Hummingbird_Flight_Controller_B.t *
           Hummingbird_Flight_Controller_B.t;
@@ -12915,20 +12934,20 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
           Hummingbird_Flight_Controller_B.t * Hummingbird_Flight_Controller_B.t;
       }
 
-      if (Hummingbird_Flight_Controller_B.Saturation1 >
+      if (Hummingbird_Flight_Controller_B.Saturation4 >
           Hummingbird_Flight_Controller_B.scale) {
         Hummingbird_Flight_Controller_B.t =
           Hummingbird_Flight_Controller_B.scale /
-          Hummingbird_Flight_Controller_B.Saturation1;
+          Hummingbird_Flight_Controller_B.Saturation4;
         Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 =
           Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 *
           Hummingbird_Flight_Controller_B.t * Hummingbird_Flight_Controller_B.t
           + 1.0;
         Hummingbird_Flight_Controller_B.scale =
-          Hummingbird_Flight_Controller_B.Saturation1;
+          Hummingbird_Flight_Controller_B.Saturation4;
       } else {
         Hummingbird_Flight_Controller_B.t =
-          Hummingbird_Flight_Controller_B.Saturation1 /
+          Hummingbird_Flight_Controller_B.Saturation4 /
           Hummingbird_Flight_Controller_B.scale;
         Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 +=
           Hummingbird_Flight_Controller_B.t * Hummingbird_Flight_Controller_B.t;
@@ -14086,13 +14105,15 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
           Hummingbird_Flight_Controller_B.mixer[0] = 1.0;
           Hummingbird_Flight_Controller_B.mixer[1] = 1.0;
           Hummingbird_Flight_Controller_B.mixer[2] = 1.0;
-          Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1 = 0.0;
+          Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 = 0.0;
+          Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1 = 1.0;
         } else if (Hummingbird_Flight_Controller_B.BusCreator.VTOL_Mode < 1700)
         {
           Hummingbird_Flight_Controlle_DW.is_Mixer_Control =
             Hummingbird__IN_Mixed_MR_Assist;
           Hu_enter_atomic_Mixed_MR_Assist
-            (&Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1,
+            (&Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2,
+             &Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1,
              Hummingbird_Flight_Controller_B.TmpSignalConversionAtSFunct);
         } else {
           Hummingbird_Flight_Controlle_DW.is_Mixer_Control =
@@ -14100,6 +14121,7 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
           Hummingbird_Flight_Controller_B.mixer[0] = 0.0;
           Hummingbird_Flight_Controller_B.mixer[1] = 0.0;
           Hummingbird_Flight_Controller_B.mixer[2] = 0.0;
+          Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 = 0.0;
           Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1 = 0.0;
         }
       } else if ((Hummingbird_Flight_Controller_B.RC_Flight_Mode_prev_f !=
@@ -14112,13 +14134,15 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
           Hummingbird_Flight_Controller_B.mixer[0] = 1.0;
           Hummingbird_Flight_Controller_B.mixer[1] = 1.0;
           Hummingbird_Flight_Controller_B.mixer[2] = 1.0;
-          Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1 = 0.0;
+          Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 = 0.0;
+          Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1 = 1.0;
         } else if (Hummingbird_Flight_Controller_B.BusCreator.VTOL_Mode < 1700)
         {
           Hummingbird_Flight_Controlle_DW.is_Mixer_Control =
             Hummingbird__IN_Mixed_MR_Assist;
           Hu_enter_atomic_Mixed_MR_Assist
-            (&Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1,
+            (&Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2,
+             &Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1,
              Hummingbird_Flight_Controller_B.TmpSignalConversionAtSFunct);
         } else {
           Hummingbird_Flight_Controlle_DW.is_Mixer_Control =
@@ -14126,6 +14150,7 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
           Hummingbird_Flight_Controller_B.mixer[0] = 0.0;
           Hummingbird_Flight_Controller_B.mixer[1] = 0.0;
           Hummingbird_Flight_Controller_B.mixer[2] = 0.0;
+          Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 = 0.0;
           Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1 = 0.0;
         }
       } else {
@@ -14134,13 +14159,15 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
           Hummingbird_Flight_Controller_B.mixer[0] = 1.0;
           Hummingbird_Flight_Controller_B.mixer[1] = 1.0;
           Hummingbird_Flight_Controller_B.mixer[2] = 1.0;
-          Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1 = 0.0;
+          Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 = 0.0;
+          Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1 = 1.0;
           break;
 
          case Hummingbird_Flight_Contro_IN_MR:
           Hummingbird_Flight_Controller_B.mixer[0] = 0.0;
           Hummingbird_Flight_Controller_B.mixer[1] = 0.0;
           Hummingbird_Flight_Controller_B.mixer[2] = 0.0;
+          Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 = 0.0;
           Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1 = 0.0;
           break;
 
@@ -14148,12 +14175,20 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
           // case IN_Mixed_MR_Assist:
           if ((Hummingbird_Flight_Controller_B.dM[0] < 0.0) &&
               (Hummingbird_Flight_Controller_B.In1_m.positions[0] <
-               -0.47123889803846897)) {
-            Hummingbird_Flight_Controller_B.mixer[0] = 0.0;
+               -0.31415926535897926)) {
+            Hummingbird_Flight_Controller_B.mixer[0] = 1.0F - (static_cast<
+              real32_T>(fabs(static_cast<real_T>
+                             (Hummingbird_Flight_Controller_B.In1_m.positions[0]
+                              / 0.52359879F))) - 0.6F) / 0.4F;
           } else if (Hummingbird_Flight_Controller_B.dM[0] > 0.0) {
-            Hummingbird_Flight_Controller_B.mixer[0] =
-              !(Hummingbird_Flight_Controller_B.In1_m.positions[0] >
-                0.47123889803846897);
+            if (Hummingbird_Flight_Controller_B.In1_m.positions[0] >
+                0.31415926535897926) {
+              Hummingbird_Flight_Controller_B.mixer[0] = 1.0F -
+                (Hummingbird_Flight_Controller_B.In1_m.positions[0] /
+                 0.52359879F - 0.6F) / 0.4F;
+            } else {
+              Hummingbird_Flight_Controller_B.mixer[0] = 1.0;
+            }
           } else {
             Hummingbird_Flight_Controller_B.mixer[0] = 1.0;
           }
@@ -14161,11 +14196,19 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
           if ((Hummingbird_Flight_Controller_B.dM[1] > 0.0) &&
               (Hummingbird_Flight_Controller_B.In1_m.positions[1] <
                -0.47123889803846897)) {
-            Hummingbird_Flight_Controller_B.mixer[1] = 0.0;
+            Hummingbird_Flight_Controller_B.mixer[1] = 1.0F -
+              (static_cast<real32_T>(fabs(static_cast<real_T>
+                 (Hummingbird_Flight_Controller_B.In1_m.positions[1] /
+                  0.52359879F))) - 0.6F) / 0.4F;
           } else if (Hummingbird_Flight_Controller_B.dM[1] < 0.0) {
-            Hummingbird_Flight_Controller_B.mixer[1] =
-              !(Hummingbird_Flight_Controller_B.In1_m.positions[1] >
-                0.47123889803846897);
+            if (Hummingbird_Flight_Controller_B.In1_m.positions[1] >
+                0.47123889803846897) {
+              Hummingbird_Flight_Controller_B.mixer[1] = 1.0F -
+                (Hummingbird_Flight_Controller_B.In1_m.positions[1] /
+                 0.52359879F - 0.6F) / 0.4F;
+            } else {
+              Hummingbird_Flight_Controller_B.mixer[1] = 1.0;
+            }
           } else {
             Hummingbird_Flight_Controller_B.mixer[1] = 1.0;
           }
@@ -14175,14 +14218,18 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
                -0.47123889803846897)) {
             Hummingbird_Flight_Controller_B.mixer[2] = 0.0;
           } else if (Hummingbird_Flight_Controller_B.dM[2] < 0.0) {
-            Hummingbird_Flight_Controller_B.mixer[2] =
-              !(Hummingbird_Flight_Controller_B.In1_m.positions[2] >
-                0.47123889803846897);
+            if (Hummingbird_Flight_Controller_B.In1_m.positions[2] >
+                0.47123889803846897) {
+              Hummingbird_Flight_Controller_B.mixer[2] = 0.0;
+            } else {
+              Hummingbird_Flight_Controller_B.mixer[2] = 1.0;
+            }
           } else {
             Hummingbird_Flight_Controller_B.mixer[2] = 1.0;
           }
 
-          Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1 = 1.0;
+          Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 = 1.0;
+          Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1 = 0.0;
           break;
         }
       }
@@ -14269,110 +14316,110 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
         6];
       Hummingbird_Flight_Controller_B.scale =
         Hummingbird_Flight_Controller_P.Constant2_Value_n[Hummingbird_Flight_Controller_B.i];
-      Hummingbird_Flight_Controller_B.CastToDouble9 =
+      Hummingbird_Flight_Controller_B.IntegralGain_e =
         Hummingbird_Flight_Controller_P.Constant2_Value_n[Hummingbird_Flight_Controller_B.r2_n]
         - Hummingbird_Flight_Controller_B.scale *
         Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r2_n];
-      Hummingbird_Flight_Controller_B.IntegralGain_e =
+      Hummingbird_Flight_Controller_B.Saturation4 =
         Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r3_i +
         3];
-      Hummingbird_Flight_Controller_B.Saturation1 =
+      Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0 =
         Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r3_i +
         6];
-      Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0 =
+      Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 =
         ((Hummingbird_Flight_Controller_P.Constant2_Value_n[Hummingbird_Flight_Controller_B.r3_i]
           - Hummingbird_Flight_Controller_B.scale *
           Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r3_i])
-         - Hummingbird_Flight_Controller_B.IntegralGain_e *
-         Hummingbird_Flight_Controller_B.CastToDouble9) /
-        Hummingbird_Flight_Controller_B.Saturation1;
-      Hummingbird_Flight_Controller_B.a[2] =
+         - Hummingbird_Flight_Controller_B.Saturation4 *
+         Hummingbird_Flight_Controller_B.IntegralGain_e) /
         Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0;
-      Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 =
-        Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r2_n +
-        6];
+      Hummingbird_Flight_Controller_B.a[2] =
+        Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1;
       Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 =
         Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r2_n +
-        3];
-      Hummingbird_Flight_Controller_B.CastToDouble9 =
-        (Hummingbird_Flight_Controller_B.CastToDouble9 -
-         Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 *
-         Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0) /
-        Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2;
-      Hummingbird_Flight_Controller_B.a[1] =
-        Hummingbird_Flight_Controller_B.CastToDouble9;
+        6];
       Hummingbird_Flight_Controller_B.CastToDouble25 =
-        Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.i + 6];
+        Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r2_n +
+        3];
+      Hummingbird_Flight_Controller_B.IntegralGain_e =
+        (Hummingbird_Flight_Controller_B.IntegralGain_e -
+         Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 *
+         Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1) /
+        Hummingbird_Flight_Controller_B.CastToDouble25;
+      Hummingbird_Flight_Controller_B.a[1] =
+        Hummingbird_Flight_Controller_B.IntegralGain_e;
       Hummingbird_Flight_Controller_B.V =
+        Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.i + 6];
+      Hummingbird_Flight_Controller_B.course =
         Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.i + 3];
       Hummingbird_Flight_Controller_B.a[0] =
         ((Hummingbird_Flight_Controller_B.scale -
-          Hummingbird_Flight_Controller_B.CastToDouble25 *
-          Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0) -
-         Hummingbird_Flight_Controller_B.V *
-         Hummingbird_Flight_Controller_B.CastToDouble9) /
+          Hummingbird_Flight_Controller_B.V *
+          Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1) -
+         Hummingbird_Flight_Controller_B.course *
+         Hummingbird_Flight_Controller_B.IntegralGain_e) /
         Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.i];
       Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_1 = 0.0;
       Hummingbird_Flight_Controller_B.scale =
         Hummingbird_Flight_Controller_P.Constant2_Value_n[Hummingbird_Flight_Controller_B.i
         + 3];
-      Hummingbird_Flight_Controller_B.CastToDouble9 =
+      Hummingbird_Flight_Controller_B.IntegralGain_e =
         Hummingbird_Flight_Controller_P.Constant2_Value_n[Hummingbird_Flight_Controller_B.r2_n
         + 3] - Hummingbird_Flight_Controller_B.scale *
         Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r2_n];
-      Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0 =
+      Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 =
         ((Hummingbird_Flight_Controller_P.Constant2_Value_n[Hummingbird_Flight_Controller_B.r3_i
           + 3] - Hummingbird_Flight_Controller_B.scale *
           Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r3_i])
-         - Hummingbird_Flight_Controller_B.IntegralGain_e *
-         Hummingbird_Flight_Controller_B.CastToDouble9) /
-        Hummingbird_Flight_Controller_B.Saturation1;
-      Hummingbird_Flight_Controller_B.a[5] =
+         - Hummingbird_Flight_Controller_B.Saturation4 *
+         Hummingbird_Flight_Controller_B.IntegralGain_e) /
         Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0;
-      Hummingbird_Flight_Controller_B.CastToDouble9 =
-        (Hummingbird_Flight_Controller_B.CastToDouble9 -
-         Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 *
-         Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0) /
-        Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2;
+      Hummingbird_Flight_Controller_B.a[5] =
+        Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1;
+      Hummingbird_Flight_Controller_B.IntegralGain_e =
+        (Hummingbird_Flight_Controller_B.IntegralGain_e -
+         Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 *
+         Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1) /
+        Hummingbird_Flight_Controller_B.CastToDouble25;
       Hummingbird_Flight_Controller_B.a[4] =
-        Hummingbird_Flight_Controller_B.CastToDouble9;
+        Hummingbird_Flight_Controller_B.IntegralGain_e;
       Hummingbird_Flight_Controller_B.a[3] =
         ((Hummingbird_Flight_Controller_B.scale -
-          Hummingbird_Flight_Controller_B.CastToDouble25 *
-          Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0) -
-         Hummingbird_Flight_Controller_B.V *
-         Hummingbird_Flight_Controller_B.CastToDouble9) /
+          Hummingbird_Flight_Controller_B.V *
+          Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1) -
+         Hummingbird_Flight_Controller_B.course *
+         Hummingbird_Flight_Controller_B.IntegralGain_e) /
         Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.i];
       Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_0 = 0.0;
       Hummingbird_Flight_Controller_B.scale =
         Hummingbird_Flight_Controller_P.Constant2_Value_n[Hummingbird_Flight_Controller_B.i
         + 6];
-      Hummingbird_Flight_Controller_B.CastToDouble9 =
+      Hummingbird_Flight_Controller_B.IntegralGain_e =
         Hummingbird_Flight_Controller_P.Constant2_Value_n[Hummingbird_Flight_Controller_B.r2_n
         + 6] - Hummingbird_Flight_Controller_B.scale *
         Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r2_n];
-      Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0 =
+      Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 =
         ((Hummingbird_Flight_Controller_P.Constant2_Value_n[Hummingbird_Flight_Controller_B.r3_i
           + 6] - Hummingbird_Flight_Controller_B.scale *
           Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r3_i])
-         - Hummingbird_Flight_Controller_B.IntegralGain_e *
-         Hummingbird_Flight_Controller_B.CastToDouble9) /
-        Hummingbird_Flight_Controller_B.Saturation1;
-      Hummingbird_Flight_Controller_B.a[8] =
+         - Hummingbird_Flight_Controller_B.Saturation4 *
+         Hummingbird_Flight_Controller_B.IntegralGain_e) /
         Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0;
-      Hummingbird_Flight_Controller_B.CastToDouble9 =
-        (Hummingbird_Flight_Controller_B.CastToDouble9 -
-         Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 *
-         Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0) /
-        Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2;
+      Hummingbird_Flight_Controller_B.a[8] =
+        Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1;
+      Hummingbird_Flight_Controller_B.IntegralGain_e =
+        (Hummingbird_Flight_Controller_B.IntegralGain_e -
+         Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 *
+         Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1) /
+        Hummingbird_Flight_Controller_B.CastToDouble25;
       Hummingbird_Flight_Controller_B.a[7] =
-        Hummingbird_Flight_Controller_B.CastToDouble9;
+        Hummingbird_Flight_Controller_B.IntegralGain_e;
       Hummingbird_Flight_Controller_B.a[6] =
         ((Hummingbird_Flight_Controller_B.scale -
-          Hummingbird_Flight_Controller_B.CastToDouble25 *
-          Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0) -
-         Hummingbird_Flight_Controller_B.V *
-         Hummingbird_Flight_Controller_B.CastToDouble9) /
+          Hummingbird_Flight_Controller_B.V *
+          Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1) -
+         Hummingbird_Flight_Controller_B.course *
+         Hummingbird_Flight_Controller_B.IntegralGain_e) /
         Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.i];
       Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_0 = 0.0;
       for (Hummingbird_Flight_Controller_B.i = 0;
@@ -14466,23 +14513,23 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
       if (((Hummingbird_Flight_Controller_B.mixer[0] == 0.0) &&
            (Hummingbird_Flight_Controller_B.mixer[1] == 0.0) &&
            (Hummingbird_Flight_Controller_B.mixer[2] == 0.0)) ||
-          (Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1 == 1.0)) {
-        Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 =
+          (Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 == 1.0)) {
+        Hummingbird_Flight_Controller_B.CastToDouble10 =
           Hummingbird_Flight_Controller_P.Constant1_Value_n;
       } else {
-        Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 =
+        Hummingbird_Flight_Controller_B.CastToDouble10 =
           Hummingbird_Flight_Controller_B.dtMR +
           Hummingbird_Flight_Controller_B.a_o;
       }
 
       // Saturate: '<S1404>/Saturation3'
-      if (Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 >
+      if (Hummingbird_Flight_Controller_B.CastToDouble10 >
           Hummingbird_Flight_Controller_P.Saturation3_UpperSat) {
-        Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 =
+        Hummingbird_Flight_Controller_B.CastToDouble10 =
           Hummingbird_Flight_Controller_P.Saturation3_UpperSat;
-      } else if (Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 <
+      } else if (Hummingbird_Flight_Controller_B.CastToDouble10 <
                  Hummingbird_Flight_Controller_P.Saturation3_LowerSat) {
-        Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 =
+        Hummingbird_Flight_Controller_B.CastToDouble10 =
           Hummingbird_Flight_Controller_P.Saturation3_LowerSat;
       }
 
@@ -14490,8 +14537,8 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
       //   Constant: '<S1415>/Constant'
       //   Product: '<S1415>/Divide'
 
-      Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1 =
-        Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 /
+      Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 =
+        Hummingbird_Flight_Controller_B.CastToDouble10 /
         Hummingbird_Flight_Controller_P.Constant_Value_li *
         Hummingbird_Flight_Controller_P.Gain_Gain_b;
 
@@ -14505,20 +14552,20 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
       Hummingbird_Flight_Controller_B.i = 0;
       Hummingbird_Flight_Controller_B.r2_n = 1;
       Hummingbird_Flight_Controller_B.r3_i = 2;
-      Hummingbird_Flight_Controller_B.CastToDouble10 = fabs
-        (Hummingbird_Flight_Controller_P.Constant12_Value[0]);
       Hummingbird_Flight_Controller_B.CastToDouble11 = fabs
+        (Hummingbird_Flight_Controller_P.Constant12_Value[0]);
+      Hummingbird_Flight_Controller_B.CastToDouble9 = fabs
         (Hummingbird_Flight_Controller_P.Constant12_Value[1]);
-      if (Hummingbird_Flight_Controller_B.CastToDouble11 >
-          Hummingbird_Flight_Controller_B.CastToDouble10) {
-        Hummingbird_Flight_Controller_B.CastToDouble10 =
-          Hummingbird_Flight_Controller_B.CastToDouble11;
+      if (Hummingbird_Flight_Controller_B.CastToDouble9 >
+          Hummingbird_Flight_Controller_B.CastToDouble11) {
+        Hummingbird_Flight_Controller_B.CastToDouble11 =
+          Hummingbird_Flight_Controller_B.CastToDouble9;
         Hummingbird_Flight_Controller_B.i = 1;
         Hummingbird_Flight_Controller_B.r2_n = 0;
       }
 
       if (fabs(Hummingbird_Flight_Controller_P.Constant12_Value[2]) >
-          Hummingbird_Flight_Controller_B.CastToDouble10) {
+          Hummingbird_Flight_Controller_B.CastToDouble11) {
         Hummingbird_Flight_Controller_B.i = 2;
         Hummingbird_Flight_Controller_B.r2_n = 1;
         Hummingbird_Flight_Controller_B.r3_i = 0;
@@ -14571,48 +14618,48 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
         6];
       Hummingbird_Flight_Controller_B.scale =
         Hummingbird_Flight_Controller_P.IB[Hummingbird_Flight_Controller_B.i];
-      Hummingbird_Flight_Controller_B.CastToDouble9 =
+      Hummingbird_Flight_Controller_B.IntegralGain_e =
         Hummingbird_Flight_Controller_P.IB[Hummingbird_Flight_Controller_B.r2_n]
         - Hummingbird_Flight_Controller_B.scale *
         Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r2_n];
-      Hummingbird_Flight_Controller_B.IntegralGain_e =
+      Hummingbird_Flight_Controller_B.Saturation4 =
         Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r3_i +
         3];
-      Hummingbird_Flight_Controller_B.Saturation1 =
+      Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0 =
         Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r3_i +
         6];
-      Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0 =
+      Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 =
         ((Hummingbird_Flight_Controller_P.IB[Hummingbird_Flight_Controller_B.r3_i]
           - Hummingbird_Flight_Controller_B.scale *
           Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r3_i])
-         - Hummingbird_Flight_Controller_B.IntegralGain_e *
-         Hummingbird_Flight_Controller_B.CastToDouble9) /
-        Hummingbird_Flight_Controller_B.Saturation1;
-      Hummingbird_Flight_Controller_B.a_m[2] =
+         - Hummingbird_Flight_Controller_B.Saturation4 *
+         Hummingbird_Flight_Controller_B.IntegralGain_e) /
         Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0;
-      Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 =
-        Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r2_n +
-        6];
+      Hummingbird_Flight_Controller_B.a_m[2] =
+        Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1;
       Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 =
         Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r2_n +
-        3];
-      Hummingbird_Flight_Controller_B.CastToDouble9 =
-        (Hummingbird_Flight_Controller_B.CastToDouble9 -
-         Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 *
-         Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0) /
-        Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2;
-      Hummingbird_Flight_Controller_B.a_m[1] =
-        Hummingbird_Flight_Controller_B.CastToDouble9;
+        6];
       Hummingbird_Flight_Controller_B.CastToDouble25 =
-        Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.i + 6];
+        Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r2_n +
+        3];
+      Hummingbird_Flight_Controller_B.IntegralGain_e =
+        (Hummingbird_Flight_Controller_B.IntegralGain_e -
+         Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 *
+         Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1) /
+        Hummingbird_Flight_Controller_B.CastToDouble25;
+      Hummingbird_Flight_Controller_B.a_m[1] =
+        Hummingbird_Flight_Controller_B.IntegralGain_e;
       Hummingbird_Flight_Controller_B.V =
+        Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.i + 6];
+      Hummingbird_Flight_Controller_B.course =
         Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.i + 3];
       Hummingbird_Flight_Controller_B.a_m[0] =
         ((Hummingbird_Flight_Controller_B.scale -
-          Hummingbird_Flight_Controller_B.CastToDouble25 *
-          Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0) -
-         Hummingbird_Flight_Controller_B.V *
-         Hummingbird_Flight_Controller_B.CastToDouble9) /
+          Hummingbird_Flight_Controller_B.V *
+          Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1) -
+         Hummingbird_Flight_Controller_B.course *
+         Hummingbird_Flight_Controller_B.IntegralGain_e) /
         Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.i];
 
       // Sum: '<S1402>/Sum8'
@@ -14623,35 +14670,35 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
       // MATLAB Function: '<S1402>/Control input Calculation1' incorporates:
       //   Constant: '<S1402>/Constant13'
 
-      Hummingbird_Flight_Controller_B.CastToDouble10 = 0.0;
+      Hummingbird_Flight_Controller_B.CastToDouble11 = 0.0;
       Hummingbird_Flight_Controller_B.scale =
         Hummingbird_Flight_Controller_P.IB[Hummingbird_Flight_Controller_B.i + 3];
-      Hummingbird_Flight_Controller_B.CastToDouble9 =
+      Hummingbird_Flight_Controller_B.IntegralGain_e =
         Hummingbird_Flight_Controller_P.IB[Hummingbird_Flight_Controller_B.r2_n
         + 3] - Hummingbird_Flight_Controller_B.scale *
         Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r2_n];
-      Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0 =
+      Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 =
         ((Hummingbird_Flight_Controller_P.IB[Hummingbird_Flight_Controller_B.r3_i
           + 3] - Hummingbird_Flight_Controller_B.scale *
           Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r3_i])
-         - Hummingbird_Flight_Controller_B.IntegralGain_e *
-         Hummingbird_Flight_Controller_B.CastToDouble9) /
-        Hummingbird_Flight_Controller_B.Saturation1;
-      Hummingbird_Flight_Controller_B.a_m[5] =
+         - Hummingbird_Flight_Controller_B.Saturation4 *
+         Hummingbird_Flight_Controller_B.IntegralGain_e) /
         Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0;
-      Hummingbird_Flight_Controller_B.CastToDouble9 =
-        (Hummingbird_Flight_Controller_B.CastToDouble9 -
-         Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 *
-         Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0) /
-        Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2;
+      Hummingbird_Flight_Controller_B.a_m[5] =
+        Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1;
+      Hummingbird_Flight_Controller_B.IntegralGain_e =
+        (Hummingbird_Flight_Controller_B.IntegralGain_e -
+         Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 *
+         Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1) /
+        Hummingbird_Flight_Controller_B.CastToDouble25;
       Hummingbird_Flight_Controller_B.a_m[4] =
-        Hummingbird_Flight_Controller_B.CastToDouble9;
+        Hummingbird_Flight_Controller_B.IntegralGain_e;
       Hummingbird_Flight_Controller_B.a_m[3] =
         ((Hummingbird_Flight_Controller_B.scale -
-          Hummingbird_Flight_Controller_B.CastToDouble25 *
-          Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0) -
-         Hummingbird_Flight_Controller_B.V *
-         Hummingbird_Flight_Controller_B.CastToDouble9) /
+          Hummingbird_Flight_Controller_B.V *
+          Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1) -
+         Hummingbird_Flight_Controller_B.course *
+         Hummingbird_Flight_Controller_B.IntegralGain_e) /
         Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.i];
 
       // Sum: '<S1402>/Sum8'
@@ -14662,35 +14709,35 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
       // MATLAB Function: '<S1402>/Control input Calculation1' incorporates:
       //   Constant: '<S1402>/Constant13'
 
-      Hummingbird_Flight_Controller_B.CastToDouble11 = 0.0;
+      Hummingbird_Flight_Controller_B.CastToDouble9 = 0.0;
       Hummingbird_Flight_Controller_B.scale =
         Hummingbird_Flight_Controller_P.IB[Hummingbird_Flight_Controller_B.i + 6];
-      Hummingbird_Flight_Controller_B.CastToDouble9 =
+      Hummingbird_Flight_Controller_B.IntegralGain_e =
         Hummingbird_Flight_Controller_P.IB[Hummingbird_Flight_Controller_B.r2_n
         + 6] - Hummingbird_Flight_Controller_B.scale *
         Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r2_n];
-      Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0 =
+      Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 =
         ((Hummingbird_Flight_Controller_P.IB[Hummingbird_Flight_Controller_B.r3_i
           + 6] - Hummingbird_Flight_Controller_B.scale *
           Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r3_i])
-         - Hummingbird_Flight_Controller_B.IntegralGain_e *
-         Hummingbird_Flight_Controller_B.CastToDouble9) /
-        Hummingbird_Flight_Controller_B.Saturation1;
-      Hummingbird_Flight_Controller_B.a_m[8] =
+         - Hummingbird_Flight_Controller_B.Saturation4 *
+         Hummingbird_Flight_Controller_B.IntegralGain_e) /
         Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0;
-      Hummingbird_Flight_Controller_B.CastToDouble9 =
-        (Hummingbird_Flight_Controller_B.CastToDouble9 -
-         Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 *
-         Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0) /
-        Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2;
+      Hummingbird_Flight_Controller_B.a_m[8] =
+        Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1;
+      Hummingbird_Flight_Controller_B.IntegralGain_e =
+        (Hummingbird_Flight_Controller_B.IntegralGain_e -
+         Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 *
+         Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1) /
+        Hummingbird_Flight_Controller_B.CastToDouble25;
       Hummingbird_Flight_Controller_B.a_m[7] =
-        Hummingbird_Flight_Controller_B.CastToDouble9;
+        Hummingbird_Flight_Controller_B.IntegralGain_e;
       Hummingbird_Flight_Controller_B.a_m[6] =
         ((Hummingbird_Flight_Controller_B.scale -
-          Hummingbird_Flight_Controller_B.CastToDouble25 *
-          Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0) -
-         Hummingbird_Flight_Controller_B.V *
-         Hummingbird_Flight_Controller_B.CastToDouble9) /
+          Hummingbird_Flight_Controller_B.V *
+          Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1) -
+         Hummingbird_Flight_Controller_B.course *
+         Hummingbird_Flight_Controller_B.IntegralGain_e) /
         Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.i];
 
       // Sum: '<S1402>/Sum8'
@@ -14699,21 +14746,21 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
         Hummingbird_Flight_Controller_B.Sum_e[2];
 
       // MATLAB Function: '<S1402>/Control input Calculation1'
-      Hummingbird_Flight_Controller_B.V = 0.0;
+      Hummingbird_Flight_Controller_B.course = 0.0;
       for (Hummingbird_Flight_Controller_B.i = 0;
            Hummingbird_Flight_Controller_B.i < 3;
            Hummingbird_Flight_Controller_B.i++) {
         Hummingbird_Flight_Controller_B.scale =
           Hummingbird_Flight_Controller_B.rtb_DProdOut_n_c[Hummingbird_Flight_Controller_B.i];
-        Hummingbird_Flight_Controller_B.CastToDouble10 +=
+        Hummingbird_Flight_Controller_B.CastToDouble11 +=
           Hummingbird_Flight_Controller_B.a_m[3 *
           Hummingbird_Flight_Controller_B.i] *
           Hummingbird_Flight_Controller_B.scale;
-        Hummingbird_Flight_Controller_B.CastToDouble11 +=
+        Hummingbird_Flight_Controller_B.CastToDouble9 +=
           Hummingbird_Flight_Controller_B.a_m[3 *
           Hummingbird_Flight_Controller_B.i + 1] *
           Hummingbird_Flight_Controller_B.scale;
-        Hummingbird_Flight_Controller_B.V +=
+        Hummingbird_Flight_Controller_B.course +=
           Hummingbird_Flight_Controller_B.a_m[3 *
           Hummingbird_Flight_Controller_B.i + 2] *
           Hummingbird_Flight_Controller_B.scale;
@@ -14756,13 +14803,13 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
 
         Hummingbird_Flight_Controller_B.Sum_e[0] =
           Hummingbird_Flight_Controller_B.Gain14_h +
-          Hummingbird_Flight_Controller_B.CastToDouble10;
+          Hummingbird_Flight_Controller_B.CastToDouble11;
         Hummingbird_Flight_Controller_B.Sum_e[1] =
           Hummingbird_Flight_Controller_B.rtb_CastToBoolean1_d_idx_0 +
-          Hummingbird_Flight_Controller_B.CastToDouble11;
+          Hummingbird_Flight_Controller_B.CastToDouble9;
         Hummingbird_Flight_Controller_B.Sum_e[2] =
           Hummingbird_Flight_Controller_B.rtb_CastToBoolean1_d_idx_1 +
-          Hummingbird_Flight_Controller_B.V;
+          Hummingbird_Flight_Controller_B.course;
 
         // End of Outputs for SubSystem: '<S1413>/If Action Subsystem1'
         // End of Outputs for SubSystem: '<S1413>/If Action Subsystem'
@@ -14786,8 +14833,7 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
       //   Constant: '<S1415>/Constant2'
       //   Saturate: '<S1415>/Saturation9'
 
-      Hummingbird_Flight_Controller_B.course =
-        Hummingbird_Flight_Controller_B.scale /
+      Hummingbird_Flight_Controller_B.t = Hummingbird_Flight_Controller_B.scale /
         Hummingbird_Flight_Controller_P.Constant2_Value_a;
 
       // Saturate: '<S1415>/Saturation8'
@@ -14808,8 +14854,7 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
       //   Constant: '<S1415>/Constant1'
       //   Saturate: '<S1415>/Saturation8'
 
-      Hummingbird_Flight_Controller_B.CastToDouble25 =
-        Hummingbird_Flight_Controller_B.scale /
+      Hummingbird_Flight_Controller_B.V = Hummingbird_Flight_Controller_B.scale /
         Hummingbird_Flight_Controller_P.Constant1_Value_p;
 
       // Saturate: '<S1415>/Saturation10'
@@ -14834,38 +14879,36 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
         Hummingbird_Flight_Controller_P.Constant3_Value_k;
 
       // Sum: '<S1415>/Add'
-      Hummingbird_Flight_Controller_B.CastToDouble9 =
+      Hummingbird_Flight_Controller_B.IntegralGain_e =
         ((Hummingbird_Flight_Controller_B.scale -
-          Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1) -
-         Hummingbird_Flight_Controller_B.course) -
-        Hummingbird_Flight_Controller_B.CastToDouble25;
+          Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2) -
+         Hummingbird_Flight_Controller_B.t) - Hummingbird_Flight_Controller_B.V;
 
       // Saturate: '<S1415>/Saturation'
-      if (Hummingbird_Flight_Controller_B.CastToDouble9 >
+      if (Hummingbird_Flight_Controller_B.IntegralGain_e >
           Hummingbird_Flight_Controller_P.Saturation_UpperSat_o) {
-        Hummingbird_Flight_Controller_B.CastToDouble9 =
+        Hummingbird_Flight_Controller_B.IntegralGain_e =
           Hummingbird_Flight_Controller_P.Saturation_UpperSat_o;
-      } else if (Hummingbird_Flight_Controller_B.CastToDouble9 <
+      } else if (Hummingbird_Flight_Controller_B.IntegralGain_e <
                  Hummingbird_Flight_Controller_P.Saturation_LowerSat_n) {
-        Hummingbird_Flight_Controller_B.CastToDouble9 =
+        Hummingbird_Flight_Controller_B.IntegralGain_e =
           Hummingbird_Flight_Controller_P.Saturation_LowerSat_n;
       }
 
       // Sum: '<S1415>/Add4'
-      Hummingbird_Flight_Controller_B.IntegralGain_e = (((0.0 -
-        Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1) -
-        Hummingbird_Flight_Controller_B.course) -
-        Hummingbird_Flight_Controller_B.CastToDouble25) -
-        Hummingbird_Flight_Controller_B.scale;
+      Hummingbird_Flight_Controller_B.Saturation4 = (((0.0 -
+        Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2) -
+        Hummingbird_Flight_Controller_B.t) - Hummingbird_Flight_Controller_B.V)
+        - Hummingbird_Flight_Controller_B.scale;
 
       // Saturate: '<S1415>/Saturation4'
-      if (Hummingbird_Flight_Controller_B.IntegralGain_e >
+      if (Hummingbird_Flight_Controller_B.Saturation4 >
           Hummingbird_Flight_Controller_P.Saturation4_UpperSat) {
-        Hummingbird_Flight_Controller_B.IntegralGain_e =
+        Hummingbird_Flight_Controller_B.Saturation4 =
           Hummingbird_Flight_Controller_P.Saturation4_UpperSat;
-      } else if (Hummingbird_Flight_Controller_B.IntegralGain_e <
+      } else if (Hummingbird_Flight_Controller_B.Saturation4 <
                  Hummingbird_Flight_Controller_P.Saturation4_LowerSat) {
-        Hummingbird_Flight_Controller_B.IntegralGain_e =
+        Hummingbird_Flight_Controller_B.Saturation4 =
           Hummingbird_Flight_Controller_P.Saturation4_LowerSat;
       }
 
@@ -14873,147 +14916,147 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
       //   Sum: '<S1415>/Add2'
       //   Sum: '<S1415>/Add5'
 
-      Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 =
-        Hummingbird_Flight_Controller_B.course -
-        Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1;
-      Hummingbird_Flight_Controller_B.t =
-        Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 -
-        Hummingbird_Flight_Controller_B.CastToDouble25;
-      Hummingbird_Flight_Controller_B.Saturation1 =
+      Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 =
         Hummingbird_Flight_Controller_B.t -
+        Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2;
+      Hummingbird_Flight_Controller_B.b_absxk =
+        Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 -
+        Hummingbird_Flight_Controller_B.V;
+      Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0 =
+        Hummingbird_Flight_Controller_B.b_absxk -
         Hummingbird_Flight_Controller_B.scale;
 
       // Saturate: '<S1415>/Saturation1'
-      if (Hummingbird_Flight_Controller_B.Saturation1 >
+      if (Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0 >
           Hummingbird_Flight_Controller_P.Saturation1_UpperSat_e) {
-        Hummingbird_Flight_Controller_B.Saturation1 =
+        Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0 =
           Hummingbird_Flight_Controller_P.Saturation1_UpperSat_e;
-      } else if (Hummingbird_Flight_Controller_B.Saturation1 <
+      } else if (Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0 <
                  Hummingbird_Flight_Controller_P.Saturation1_LowerSat_b) {
-        Hummingbird_Flight_Controller_B.Saturation1 =
+        Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0 =
           Hummingbird_Flight_Controller_P.Saturation1_LowerSat_b;
       }
 
       // Sum: '<S1415>/Add5'
-      Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0 =
-        Hummingbird_Flight_Controller_B.t +
+      Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 =
+        Hummingbird_Flight_Controller_B.b_absxk +
         Hummingbird_Flight_Controller_B.scale;
 
       // Saturate: '<S1415>/Saturation5'
-      if (Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0 >
+      if (Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 >
           Hummingbird_Flight_Controller_P.Saturation5_UpperSat) {
-        Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0 =
+        Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 =
           Hummingbird_Flight_Controller_P.Saturation5_UpperSat;
-      } else if (Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0 <
+      } else if (Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 <
                  Hummingbird_Flight_Controller_P.Saturation5_LowerSat) {
-        Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0 =
+        Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 =
           Hummingbird_Flight_Controller_P.Saturation5_LowerSat;
       }
 
       // Sum: '<S1415>/Add2' incorporates:
       //   Sum: '<S1415>/Add6'
 
-      Hummingbird_Flight_Controller_B.t =
-        Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 +
-        Hummingbird_Flight_Controller_B.CastToDouble25;
-      Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 =
-        Hummingbird_Flight_Controller_B.t +
+      Hummingbird_Flight_Controller_B.b_absxk =
+        Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 +
+        Hummingbird_Flight_Controller_B.V;
+      Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 =
+        Hummingbird_Flight_Controller_B.b_absxk +
         Hummingbird_Flight_Controller_B.scale;
 
       // Saturate: '<S1415>/Saturation2'
-      if (Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 >
+      if (Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 >
           Hummingbird_Flight_Controller_P.Saturation2_UpperSat) {
-        Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 =
+        Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 =
           Hummingbird_Flight_Controller_P.Saturation2_UpperSat;
-      } else if (Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 <
+      } else if (Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 <
                  Hummingbird_Flight_Controller_P.Saturation2_LowerSat) {
-        Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 =
+        Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 =
           Hummingbird_Flight_Controller_P.Saturation2_LowerSat;
       }
 
       // Sum: '<S1415>/Add6'
-      Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 =
-        Hummingbird_Flight_Controller_B.t -
+      Hummingbird_Flight_Controller_B.CastToDouble25 =
+        Hummingbird_Flight_Controller_B.b_absxk -
         Hummingbird_Flight_Controller_B.scale;
 
       // Saturate: '<S1415>/Saturation6'
-      if (Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 >
+      if (Hummingbird_Flight_Controller_B.CastToDouble25 >
           Hummingbird_Flight_Controller_P.Saturation6_UpperSat) {
-        Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 =
+        Hummingbird_Flight_Controller_B.CastToDouble25 =
           Hummingbird_Flight_Controller_P.Saturation6_UpperSat;
-      } else if (Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 <
+      } else if (Hummingbird_Flight_Controller_B.CastToDouble25 <
                  Hummingbird_Flight_Controller_P.Saturation6_LowerSat) {
-        Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 =
+        Hummingbird_Flight_Controller_B.CastToDouble25 =
           Hummingbird_Flight_Controller_P.Saturation6_LowerSat;
       }
 
       // Sum: '<S1415>/Add3' incorporates:
       //   Sum: '<S1415>/Add7'
 
-      Hummingbird_Flight_Controller_B.t =
-        (Hummingbird_Flight_Controller_B.CastToDouble25 -
-         Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1) -
-        Hummingbird_Flight_Controller_B.course;
-      Hummingbird_Flight_Controller_B.CastToDouble25 =
-        Hummingbird_Flight_Controller_B.t -
+      Hummingbird_Flight_Controller_B.b_absxk =
+        (Hummingbird_Flight_Controller_B.V -
+         Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2) -
+        Hummingbird_Flight_Controller_B.t;
+      Hummingbird_Flight_Controller_B.V =
+        Hummingbird_Flight_Controller_B.b_absxk -
         Hummingbird_Flight_Controller_B.scale;
 
       // Saturate: '<S1415>/Saturation3'
-      if (Hummingbird_Flight_Controller_B.CastToDouble25 >
+      if (Hummingbird_Flight_Controller_B.V >
           Hummingbird_Flight_Controller_P.Saturation3_UpperSat_a) {
-        Hummingbird_Flight_Controller_B.CastToDouble25 =
+        Hummingbird_Flight_Controller_B.V =
           Hummingbird_Flight_Controller_P.Saturation3_UpperSat_a;
-      } else if (Hummingbird_Flight_Controller_B.CastToDouble25 <
+      } else if (Hummingbird_Flight_Controller_B.V <
                  Hummingbird_Flight_Controller_P.Saturation3_LowerSat_o) {
-        Hummingbird_Flight_Controller_B.CastToDouble25 =
+        Hummingbird_Flight_Controller_B.V =
           Hummingbird_Flight_Controller_P.Saturation3_LowerSat_o;
       }
 
       // Sum: '<S1415>/Add7'
-      Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1 =
-        Hummingbird_Flight_Controller_B.t +
+      Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 =
+        Hummingbird_Flight_Controller_B.b_absxk +
         Hummingbird_Flight_Controller_B.scale;
 
       // Saturate: '<S1415>/Saturation7'
-      if (Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1 >
+      if (Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 >
           Hummingbird_Flight_Controller_P.Saturation7_UpperSat) {
-        Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1 =
+        Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 =
           Hummingbird_Flight_Controller_P.Saturation7_UpperSat;
-      } else if (Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1 <
+      } else if (Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 <
                  Hummingbird_Flight_Controller_P.Saturation7_LowerSat) {
-        Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1 =
+        Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 =
           Hummingbird_Flight_Controller_P.Saturation7_LowerSat;
       }
 
       // Gain: '<S1412>/Gain1'
-      Hummingbird_Flight_Controller_B.course =
-        Hummingbird_Flight_Controller_P.Gain1_Gain_hu *
-        Hummingbird_Flight_Controller_B.Saturation1;
-
-      // Gain: '<S1412>/Gain2'
       Hummingbird_Flight_Controller_B.t =
-        Hummingbird_Flight_Controller_P.Gain2_Gain_p *
+        Hummingbird_Flight_Controller_P.Gain1_Gain_hu *
         Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0;
 
-      // Gain: '<S1412>/Gain3'
+      // Gain: '<S1412>/Gain2'
       Hummingbird_Flight_Controller_B.b_absxk =
-        Hummingbird_Flight_Controller_P.Gain3_Gain_h *
+        Hummingbird_Flight_Controller_P.Gain2_Gain_p *
         Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1;
 
-      // Gain: '<S1412>/Gain9'
+      // Gain: '<S1412>/Gain3'
       Hummingbird_Flight_Controller_B.b_t =
-        Hummingbird_Flight_Controller_P.Gain9_Gain *
+        Hummingbird_Flight_Controller_P.Gain3_Gain_h *
         Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2;
 
-      // Gain: '<S1412>/Gain10'
+      // Gain: '<S1412>/Gain9'
       Hummingbird_Flight_Controller_B.r_c =
-        Hummingbird_Flight_Controller_P.Gain10_Gain_b *
+        Hummingbird_Flight_Controller_P.Gain9_Gain *
         Hummingbird_Flight_Controller_B.CastToDouble25;
 
-      // Gain: '<S1412>/Gain11'
+      // Gain: '<S1412>/Gain10'
       Hummingbird_Flight_Controller_B.absxk =
+        Hummingbird_Flight_Controller_P.Gain10_Gain_b *
+        Hummingbird_Flight_Controller_B.V;
+
+      // Gain: '<S1412>/Gain11'
+      Hummingbird_Flight_Controller_B.b_gamma =
         Hummingbird_Flight_Controller_P.Gain11_Gain *
-        Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1;
+        Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2;
 
       // BusAssignment: '<S1410>/Bus Assignment' incorporates:
       //   BusCreator: '<S5>/Bus Creator4'
@@ -15025,28 +15068,27 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
       Hummingbird_Flight_Controller_B.BusAssignment.timestamp =
         Hummingbird_Flight_Controller_B.PX4Timestamp_pm.PX4Timestamp;
       Hummingbird_Flight_Controller_B.BusAssignment.data[0] =
-        static_cast<real32_T>(Hummingbird_Flight_Controller_B.CastToDouble9);
-      Hummingbird_Flight_Controller_B.BusAssignment.data[1] =
         static_cast<real32_T>(Hummingbird_Flight_Controller_B.IntegralGain_e);
+      Hummingbird_Flight_Controller_B.BusAssignment.data[1] =
+        static_cast<real32_T>(Hummingbird_Flight_Controller_B.Saturation4);
       Hummingbird_Flight_Controller_B.BusAssignment.data[2] =
-        static_cast<real32_T>(Hummingbird_Flight_Controller_B.Saturation1);
-      Hummingbird_Flight_Controller_B.BusAssignment.data[3] =
         static_cast<real32_T>
         (Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0);
-      Hummingbird_Flight_Controller_B.BusAssignment.data[4] =
+      Hummingbird_Flight_Controller_B.BusAssignment.data[3] =
         static_cast<real32_T>
         (Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1);
-      Hummingbird_Flight_Controller_B.BusAssignment.data[5] =
+      Hummingbird_Flight_Controller_B.BusAssignment.data[4] =
         static_cast<real32_T>
         (Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2);
-      Hummingbird_Flight_Controller_B.BusAssignment.data[6] =
+      Hummingbird_Flight_Controller_B.BusAssignment.data[5] =
         static_cast<real32_T>(Hummingbird_Flight_Controller_B.CastToDouble25);
+      Hummingbird_Flight_Controller_B.BusAssignment.data[6] =
+        static_cast<real32_T>(Hummingbird_Flight_Controller_B.V);
       Hummingbird_Flight_Controller_B.BusAssignment.data[7] =
         static_cast<real32_T>
-        (Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1);
-      Hummingbird_Flight_Controller_B.BusAssignment.data[8] =
-        static_cast<real32_T>
         (Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2);
+      Hummingbird_Flight_Controller_B.BusAssignment.data[8] =
+        static_cast<real32_T>(Hummingbird_Flight_Controller_B.CastToDouble10);
       Hummingbird_Flight_Controller_B.BusAssignment.data[12] =
         static_cast<real32_T>(Hummingbird_Flight_Controller_B.dtMR);
       Hummingbird_Flight_Controller_B.BusAssignment.data[16] =
@@ -15071,13 +15113,13 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
 
       Hummingbird_Flight_Controller_B.scale =
         Hummingbird_Flight_Controller_P.Gain_Gain_l *
-        Hummingbird_Flight_Controller_B.CastToDouble9 +
+        Hummingbird_Flight_Controller_B.IntegralGain_e +
         Hummingbird_Flight_Controller_P.Gain8_Gain *
-        Hummingbird_Flight_Controller_B.IntegralGain_e;
+        Hummingbird_Flight_Controller_B.Saturation4;
       Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_2 =
         (Hummingbird_Flight_Controller_B.scale +
-         Hummingbird_Flight_Controller_B.course) +
-        Hummingbird_Flight_Controller_B.t;
+         Hummingbird_Flight_Controller_B.t) +
+        Hummingbird_Flight_Controller_B.b_absxk;
 
       // BusAssignment: '<S1410>/Bus Assignment' incorporates:
       //   Constant: '<S1402>/Constant1'
@@ -15106,60 +15148,60 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
       Hummingbird_Flight_Controller_B.BusAssignment.data[22] =
         static_cast<real32_T>
         ((((Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_2 +
-            Hummingbird_Flight_Controller_B.b_absxk) +
-           Hummingbird_Flight_Controller_B.b_t) +
-          Hummingbird_Flight_Controller_B.r_c) +
-         Hummingbird_Flight_Controller_B.absxk);
+            Hummingbird_Flight_Controller_B.b_t) +
+           Hummingbird_Flight_Controller_B.r_c) +
+          Hummingbird_Flight_Controller_B.absxk) +
+         Hummingbird_Flight_Controller_B.b_gamma);
       Hummingbird_Flight_Controller_B.BusAssignment.data[23] =
         static_cast<real32_T>(((((((Hummingbird_Flight_Controller_B.scale -
-        Hummingbird_Flight_Controller_B.course) -
         Hummingbird_Flight_Controller_B.t) -
         Hummingbird_Flight_Controller_B.b_absxk) -
-        Hummingbird_Flight_Controller_B.b_t) +
+        Hummingbird_Flight_Controller_B.b_t) -
         Hummingbird_Flight_Controller_B.r_c) +
-        Hummingbird_Flight_Controller_B.absxk) *
+        Hummingbird_Flight_Controller_B.absxk) +
+        Hummingbird_Flight_Controller_B.b_gamma) *
         Hummingbird_Flight_Controller_P.Constant2_Value_i);
       Hummingbird_Flight_Controller_B.BusAssignment.data[24] =
         static_cast<real32_T>
         (((((Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_2 -
-             Hummingbird_Flight_Controller_B.b_absxk) -
-            Hummingbird_Flight_Controller_B.b_t) -
-           Hummingbird_Flight_Controller_B.r_c) -
-          Hummingbird_Flight_Controller_B.absxk) *
+             Hummingbird_Flight_Controller_B.b_t) -
+            Hummingbird_Flight_Controller_B.r_c) -
+           Hummingbird_Flight_Controller_B.absxk) -
+          Hummingbird_Flight_Controller_B.b_gamma) *
          Hummingbird_Flight_Controller_P.Constant1_Value_nl);
       Hummingbird_Flight_Controller_B.BusAssignment.data[25] =
         static_cast<real32_T>(((((((Hummingbird_Flight_Controller_P.Gain4_Gain_k
-        * Hummingbird_Flight_Controller_B.CastToDouble9 -
+        * Hummingbird_Flight_Controller_B.IntegralGain_e -
         Hummingbird_Flight_Controller_P.Gain12_Gain *
-        Hummingbird_Flight_Controller_B.IntegralGain_e) -
+        Hummingbird_Flight_Controller_B.Saturation4) -
         Hummingbird_Flight_Controller_P.Gain5_Gain *
-        Hummingbird_Flight_Controller_B.Saturation1) +
-        Hummingbird_Flight_Controller_P.Gain13_Gain *
         Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0) +
+        Hummingbird_Flight_Controller_P.Gain13_Gain *
+        Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1) +
         Hummingbird_Flight_Controller_P.Gain6_Gain *
-        Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1) -
-        Hummingbird_Flight_Controller_P.Gain14_Gain *
         Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2) -
+        Hummingbird_Flight_Controller_P.Gain14_Gain *
+        Hummingbird_Flight_Controller_B.CastToDouble25) -
         Hummingbird_Flight_Controller_P.Gain7_Gain *
-        Hummingbird_Flight_Controller_B.CastToDouble25) +
+        Hummingbird_Flight_Controller_B.V) +
         Hummingbird_Flight_Controller_P.Gain15_Gain *
-        Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1);
+        Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2);
       Hummingbird_Flight_Controller_B.BusAssignment.data[9] =
         static_cast<real32_T>(Hummingbird_Flight_Controller_B.Sum_e[0]);
       Hummingbird_Flight_Controller_B.BusAssignment.data[13] =
-        static_cast<real32_T>(Hummingbird_Flight_Controller_B.CastToDouble10);
+        static_cast<real32_T>(Hummingbird_Flight_Controller_B.CastToDouble11);
       Hummingbird_Flight_Controller_B.BusAssignment.data[26] =
         static_cast<real32_T>(Hummingbird_Flight_Controller_B.mixer[0]);
       Hummingbird_Flight_Controller_B.BusAssignment.data[10] =
         static_cast<real32_T>(Hummingbird_Flight_Controller_B.Sum_e[1]);
       Hummingbird_Flight_Controller_B.BusAssignment.data[14] =
-        static_cast<real32_T>(Hummingbird_Flight_Controller_B.CastToDouble11);
+        static_cast<real32_T>(Hummingbird_Flight_Controller_B.CastToDouble9);
       Hummingbird_Flight_Controller_B.BusAssignment.data[27] =
         static_cast<real32_T>(Hummingbird_Flight_Controller_B.mixer[1]);
       Hummingbird_Flight_Controller_B.BusAssignment.data[11] =
         static_cast<real32_T>(Hummingbird_Flight_Controller_B.Sum_e[2]);
       Hummingbird_Flight_Controller_B.BusAssignment.data[15] =
-        static_cast<real32_T>(Hummingbird_Flight_Controller_B.V);
+        static_cast<real32_T>(Hummingbird_Flight_Controller_B.course);
       Hummingbird_Flight_Controller_B.BusAssignment.data[28] =
         static_cast<real32_T>(Hummingbird_Flight_Controller_B.mixer[2]);
       Hummingbird_Flight_Controller_B.BusAssignment.data[29] =
@@ -15303,28 +15345,28 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
 
       Hummingbird_Flight_Controller_B.Actuator_output.rotor_1 = static_cast<
         real32_T>(Hummingbird_Flight_Controller_P.Gain_Gain_mx * sqrt
-                  (Hummingbird_Flight_Controller_B.CastToDouble9));
+                  (Hummingbird_Flight_Controller_B.IntegralGain_e));
       Hummingbird_Flight_Controller_B.Actuator_output.rotor_2 =
         static_cast<real32_T>(Hummingbird_Flight_Controller_P.Gain_Gain_mx *
-        sqrt(Hummingbird_Flight_Controller_B.IntegralGain_e));
+        sqrt(Hummingbird_Flight_Controller_B.Saturation4));
       Hummingbird_Flight_Controller_B.Actuator_output.rotor_3 =
         static_cast<real32_T>(Hummingbird_Flight_Controller_P.Gain_Gain_mx *
-        sqrt(Hummingbird_Flight_Controller_B.Saturation1));
+        sqrt(Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0));
       Hummingbird_Flight_Controller_B.Actuator_output.rotor_4 =
         static_cast<real32_T>(Hummingbird_Flight_Controller_P.Gain_Gain_mx *
-        sqrt(Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0));
+        sqrt(Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1));
       Hummingbird_Flight_Controller_B.Actuator_output.rotor_5 =
         static_cast<real32_T>(Hummingbird_Flight_Controller_P.Gain_Gain_mx *
-        sqrt(Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1));
+        sqrt(Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2));
       Hummingbird_Flight_Controller_B.Actuator_output.rotor_6 =
         static_cast<real32_T>(Hummingbird_Flight_Controller_P.Gain_Gain_mx *
-        sqrt(Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2));
+        sqrt(Hummingbird_Flight_Controller_B.CastToDouble25));
       Hummingbird_Flight_Controller_B.Actuator_output.rotor_7 =
         static_cast<real32_T>(Hummingbird_Flight_Controller_P.Gain_Gain_mx *
-        sqrt(Hummingbird_Flight_Controller_B.CastToDouble25));
+        sqrt(Hummingbird_Flight_Controller_B.V));
       Hummingbird_Flight_Controller_B.Actuator_output.rotor_8 =
         static_cast<real32_T>(Hummingbird_Flight_Controller_P.Gain_Gain_mx *
-        sqrt(Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1));
+        sqrt(Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2));
 
       // Saturate: '<S1402>/Saturation'
       if (Hummingbird_Flight_Controller_B.CastToDouble8 >
@@ -15412,7 +15454,8 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
         Hummingbird_Flight_Controller_P.Gain4_Gain_ki * static_cast<real32_T>
         (Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_0);
       Hummingbird_Flight_Controller_B.Actuator_output.arm_1 =
-        static_cast<real32_T>(Hummingbird_Flight_Controller_P.Constant_Value_n5);
+        static_cast<real32_T>
+        (Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1);
       Hummingbird_Flight_Controller_B.Actuator_output.arm_2 =
         static_cast<real32_T>(Hummingbird_Flight_Controller_P.Constant_Value_n5);
       Hummingbird_Flight_Controller_B.Actuator_output.arm_3 =
@@ -15501,13 +15544,15 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
           Hummingbird_Flight_Controller_B.mixer[0] = 1.0;
           Hummingbird_Flight_Controller_B.mixer[1] = 1.0;
           Hummingbird_Flight_Controller_B.mixer[2] = 1.0;
-          Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1 = 0.0;
+          Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 = 0.0;
+          Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1 = 1.0;
         } else if (Hummingbird_Flight_Controller_B.BusCreator.VTOL_Mode < 1700)
         {
           Hummingbird_Flight_Controlle_DW.is_Mixer_Control =
             Hummingbird__IN_Mixed_MR_Assist;
           Hu_enter_atomic_Mixed_MR_Assist
-            (&Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1,
+            (&Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2,
+             &Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1,
              Hummingbird_Flight_Controller_B.TmpSignalConversionAtSFunct);
         } else {
           Hummingbird_Flight_Controlle_DW.is_Mixer_Control =
@@ -15515,6 +15560,7 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
           Hummingbird_Flight_Controller_B.mixer[0] = 0.0;
           Hummingbird_Flight_Controller_B.mixer[1] = 0.0;
           Hummingbird_Flight_Controller_B.mixer[2] = 0.0;
+          Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 = 0.0;
           Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1 = 0.0;
         }
       } else if ((Hummingbird_Flight_Controller_B.RC_Flight_Mode_prev_f !=
@@ -15527,13 +15573,15 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
           Hummingbird_Flight_Controller_B.mixer[0] = 1.0;
           Hummingbird_Flight_Controller_B.mixer[1] = 1.0;
           Hummingbird_Flight_Controller_B.mixer[2] = 1.0;
-          Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1 = 0.0;
+          Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 = 0.0;
+          Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1 = 1.0;
         } else if (Hummingbird_Flight_Controller_B.BusCreator.VTOL_Mode < 1700)
         {
           Hummingbird_Flight_Controlle_DW.is_Mixer_Control =
             Hummingbird__IN_Mixed_MR_Assist;
           Hu_enter_atomic_Mixed_MR_Assist
-            (&Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1,
+            (&Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2,
+             &Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1,
              Hummingbird_Flight_Controller_B.TmpSignalConversionAtSFunct);
         } else {
           Hummingbird_Flight_Controlle_DW.is_Mixer_Control =
@@ -15541,6 +15589,7 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
           Hummingbird_Flight_Controller_B.mixer[0] = 0.0;
           Hummingbird_Flight_Controller_B.mixer[1] = 0.0;
           Hummingbird_Flight_Controller_B.mixer[2] = 0.0;
+          Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 = 0.0;
           Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1 = 0.0;
         }
       } else {
@@ -15549,13 +15598,15 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
           Hummingbird_Flight_Controller_B.mixer[0] = 1.0;
           Hummingbird_Flight_Controller_B.mixer[1] = 1.0;
           Hummingbird_Flight_Controller_B.mixer[2] = 1.0;
-          Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1 = 0.0;
+          Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 = 0.0;
+          Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1 = 1.0;
           break;
 
          case Hummingbird_Flight_Contro_IN_MR:
           Hummingbird_Flight_Controller_B.mixer[0] = 0.0;
           Hummingbird_Flight_Controller_B.mixer[1] = 0.0;
           Hummingbird_Flight_Controller_B.mixer[2] = 0.0;
+          Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 = 0.0;
           Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1 = 0.0;
           break;
 
@@ -15563,12 +15614,20 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
           // case IN_Mixed_MR_Assist:
           if ((Hummingbird_Flight_Controller_B.dM[0] < 0.0) &&
               (Hummingbird_Flight_Controller_B.In1_m.positions[0] <
-               -0.47123889803846897)) {
-            Hummingbird_Flight_Controller_B.mixer[0] = 0.0;
+               -0.31415926535897926)) {
+            Hummingbird_Flight_Controller_B.mixer[0] = 1.0F - (static_cast<
+              real32_T>(fabs(static_cast<real_T>
+                             (Hummingbird_Flight_Controller_B.In1_m.positions[0]
+                              / 0.52359879F))) - 0.6F) / 0.4F;
           } else if (Hummingbird_Flight_Controller_B.dM[0] > 0.0) {
-            Hummingbird_Flight_Controller_B.mixer[0] =
-              !(Hummingbird_Flight_Controller_B.In1_m.positions[0] >
-                0.47123889803846897);
+            if (Hummingbird_Flight_Controller_B.In1_m.positions[0] >
+                0.31415926535897926) {
+              Hummingbird_Flight_Controller_B.mixer[0] = 1.0F -
+                (Hummingbird_Flight_Controller_B.In1_m.positions[0] /
+                 0.52359879F - 0.6F) / 0.4F;
+            } else {
+              Hummingbird_Flight_Controller_B.mixer[0] = 1.0;
+            }
           } else {
             Hummingbird_Flight_Controller_B.mixer[0] = 1.0;
           }
@@ -15576,11 +15635,19 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
           if ((Hummingbird_Flight_Controller_B.dM[1] > 0.0) &&
               (Hummingbird_Flight_Controller_B.In1_m.positions[1] <
                -0.47123889803846897)) {
-            Hummingbird_Flight_Controller_B.mixer[1] = 0.0;
+            Hummingbird_Flight_Controller_B.mixer[1] = 1.0F -
+              (static_cast<real32_T>(fabs(static_cast<real_T>
+                 (Hummingbird_Flight_Controller_B.In1_m.positions[1] /
+                  0.52359879F))) - 0.6F) / 0.4F;
           } else if (Hummingbird_Flight_Controller_B.dM[1] < 0.0) {
-            Hummingbird_Flight_Controller_B.mixer[1] =
-              !(Hummingbird_Flight_Controller_B.In1_m.positions[1] >
-                0.47123889803846897);
+            if (Hummingbird_Flight_Controller_B.In1_m.positions[1] >
+                0.47123889803846897) {
+              Hummingbird_Flight_Controller_B.mixer[1] = 1.0F -
+                (Hummingbird_Flight_Controller_B.In1_m.positions[1] /
+                 0.52359879F - 0.6F) / 0.4F;
+            } else {
+              Hummingbird_Flight_Controller_B.mixer[1] = 1.0;
+            }
           } else {
             Hummingbird_Flight_Controller_B.mixer[1] = 1.0;
           }
@@ -15590,14 +15657,18 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
                -0.47123889803846897)) {
             Hummingbird_Flight_Controller_B.mixer[2] = 0.0;
           } else if (Hummingbird_Flight_Controller_B.dM[2] < 0.0) {
-            Hummingbird_Flight_Controller_B.mixer[2] =
-              !(Hummingbird_Flight_Controller_B.In1_m.positions[2] >
-                0.47123889803846897);
+            if (Hummingbird_Flight_Controller_B.In1_m.positions[2] >
+                0.47123889803846897) {
+              Hummingbird_Flight_Controller_B.mixer[2] = 0.0;
+            } else {
+              Hummingbird_Flight_Controller_B.mixer[2] = 1.0;
+            }
           } else {
             Hummingbird_Flight_Controller_B.mixer[2] = 1.0;
           }
 
-          Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1 = 1.0;
+          Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 = 1.0;
+          Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1 = 0.0;
           break;
         }
       }
@@ -15684,110 +15755,110 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
         6];
       Hummingbird_Flight_Controller_B.scale =
         Hummingbird_Flight_Controller_P.Constant2_Value_n[Hummingbird_Flight_Controller_B.i];
-      Hummingbird_Flight_Controller_B.CastToDouble9 =
+      Hummingbird_Flight_Controller_B.IntegralGain_e =
         Hummingbird_Flight_Controller_P.Constant2_Value_n[Hummingbird_Flight_Controller_B.r2_n]
         - Hummingbird_Flight_Controller_B.scale *
         Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r2_n];
-      Hummingbird_Flight_Controller_B.IntegralGain_e =
+      Hummingbird_Flight_Controller_B.Saturation4 =
         Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r3_i +
         3];
-      Hummingbird_Flight_Controller_B.Saturation1 =
+      Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0 =
         Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r3_i +
         6];
-      Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0 =
+      Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 =
         ((Hummingbird_Flight_Controller_P.Constant2_Value_n[Hummingbird_Flight_Controller_B.r3_i]
           - Hummingbird_Flight_Controller_B.scale *
           Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r3_i])
-         - Hummingbird_Flight_Controller_B.IntegralGain_e *
-         Hummingbird_Flight_Controller_B.CastToDouble9) /
-        Hummingbird_Flight_Controller_B.Saturation1;
-      Hummingbird_Flight_Controller_B.a[2] =
+         - Hummingbird_Flight_Controller_B.Saturation4 *
+         Hummingbird_Flight_Controller_B.IntegralGain_e) /
         Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0;
-      Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 =
-        Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r2_n +
-        6];
+      Hummingbird_Flight_Controller_B.a[2] =
+        Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1;
       Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 =
         Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r2_n +
-        3];
-      Hummingbird_Flight_Controller_B.CastToDouble9 =
-        (Hummingbird_Flight_Controller_B.CastToDouble9 -
-         Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 *
-         Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0) /
-        Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2;
-      Hummingbird_Flight_Controller_B.a[1] =
-        Hummingbird_Flight_Controller_B.CastToDouble9;
+        6];
       Hummingbird_Flight_Controller_B.CastToDouble25 =
-        Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.i + 6];
+        Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r2_n +
+        3];
+      Hummingbird_Flight_Controller_B.IntegralGain_e =
+        (Hummingbird_Flight_Controller_B.IntegralGain_e -
+         Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 *
+         Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1) /
+        Hummingbird_Flight_Controller_B.CastToDouble25;
+      Hummingbird_Flight_Controller_B.a[1] =
+        Hummingbird_Flight_Controller_B.IntegralGain_e;
       Hummingbird_Flight_Controller_B.V =
+        Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.i + 6];
+      Hummingbird_Flight_Controller_B.course =
         Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.i + 3];
       Hummingbird_Flight_Controller_B.a[0] =
         ((Hummingbird_Flight_Controller_B.scale -
-          Hummingbird_Flight_Controller_B.CastToDouble25 *
-          Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0) -
-         Hummingbird_Flight_Controller_B.V *
-         Hummingbird_Flight_Controller_B.CastToDouble9) /
+          Hummingbird_Flight_Controller_B.V *
+          Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1) -
+         Hummingbird_Flight_Controller_B.course *
+         Hummingbird_Flight_Controller_B.IntegralGain_e) /
         Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.i];
       Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_1 = 0.0;
       Hummingbird_Flight_Controller_B.scale =
         Hummingbird_Flight_Controller_P.Constant2_Value_n[Hummingbird_Flight_Controller_B.i
         + 3];
-      Hummingbird_Flight_Controller_B.CastToDouble9 =
+      Hummingbird_Flight_Controller_B.IntegralGain_e =
         Hummingbird_Flight_Controller_P.Constant2_Value_n[Hummingbird_Flight_Controller_B.r2_n
         + 3] - Hummingbird_Flight_Controller_B.scale *
         Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r2_n];
-      Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0 =
+      Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 =
         ((Hummingbird_Flight_Controller_P.Constant2_Value_n[Hummingbird_Flight_Controller_B.r3_i
           + 3] - Hummingbird_Flight_Controller_B.scale *
           Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r3_i])
-         - Hummingbird_Flight_Controller_B.IntegralGain_e *
-         Hummingbird_Flight_Controller_B.CastToDouble9) /
-        Hummingbird_Flight_Controller_B.Saturation1;
-      Hummingbird_Flight_Controller_B.a[5] =
+         - Hummingbird_Flight_Controller_B.Saturation4 *
+         Hummingbird_Flight_Controller_B.IntegralGain_e) /
         Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0;
-      Hummingbird_Flight_Controller_B.CastToDouble9 =
-        (Hummingbird_Flight_Controller_B.CastToDouble9 -
-         Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 *
-         Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0) /
-        Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2;
+      Hummingbird_Flight_Controller_B.a[5] =
+        Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1;
+      Hummingbird_Flight_Controller_B.IntegralGain_e =
+        (Hummingbird_Flight_Controller_B.IntegralGain_e -
+         Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 *
+         Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1) /
+        Hummingbird_Flight_Controller_B.CastToDouble25;
       Hummingbird_Flight_Controller_B.a[4] =
-        Hummingbird_Flight_Controller_B.CastToDouble9;
+        Hummingbird_Flight_Controller_B.IntegralGain_e;
       Hummingbird_Flight_Controller_B.a[3] =
         ((Hummingbird_Flight_Controller_B.scale -
-          Hummingbird_Flight_Controller_B.CastToDouble25 *
-          Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0) -
-         Hummingbird_Flight_Controller_B.V *
-         Hummingbird_Flight_Controller_B.CastToDouble9) /
+          Hummingbird_Flight_Controller_B.V *
+          Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1) -
+         Hummingbird_Flight_Controller_B.course *
+         Hummingbird_Flight_Controller_B.IntegralGain_e) /
         Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.i];
       Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_0 = 0.0;
       Hummingbird_Flight_Controller_B.scale =
         Hummingbird_Flight_Controller_P.Constant2_Value_n[Hummingbird_Flight_Controller_B.i
         + 6];
-      Hummingbird_Flight_Controller_B.CastToDouble9 =
+      Hummingbird_Flight_Controller_B.IntegralGain_e =
         Hummingbird_Flight_Controller_P.Constant2_Value_n[Hummingbird_Flight_Controller_B.r2_n
         + 6] - Hummingbird_Flight_Controller_B.scale *
         Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r2_n];
-      Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0 =
+      Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 =
         ((Hummingbird_Flight_Controller_P.Constant2_Value_n[Hummingbird_Flight_Controller_B.r3_i
           + 6] - Hummingbird_Flight_Controller_B.scale *
           Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r3_i])
-         - Hummingbird_Flight_Controller_B.IntegralGain_e *
-         Hummingbird_Flight_Controller_B.CastToDouble9) /
-        Hummingbird_Flight_Controller_B.Saturation1;
-      Hummingbird_Flight_Controller_B.a[8] =
+         - Hummingbird_Flight_Controller_B.Saturation4 *
+         Hummingbird_Flight_Controller_B.IntegralGain_e) /
         Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0;
-      Hummingbird_Flight_Controller_B.CastToDouble9 =
-        (Hummingbird_Flight_Controller_B.CastToDouble9 -
-         Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 *
-         Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0) /
-        Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2;
+      Hummingbird_Flight_Controller_B.a[8] =
+        Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1;
+      Hummingbird_Flight_Controller_B.IntegralGain_e =
+        (Hummingbird_Flight_Controller_B.IntegralGain_e -
+         Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 *
+         Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1) /
+        Hummingbird_Flight_Controller_B.CastToDouble25;
       Hummingbird_Flight_Controller_B.a[7] =
-        Hummingbird_Flight_Controller_B.CastToDouble9;
+        Hummingbird_Flight_Controller_B.IntegralGain_e;
       Hummingbird_Flight_Controller_B.a[6] =
         ((Hummingbird_Flight_Controller_B.scale -
-          Hummingbird_Flight_Controller_B.CastToDouble25 *
-          Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0) -
-         Hummingbird_Flight_Controller_B.V *
-         Hummingbird_Flight_Controller_B.CastToDouble9) /
+          Hummingbird_Flight_Controller_B.V *
+          Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1) -
+         Hummingbird_Flight_Controller_B.course *
+         Hummingbird_Flight_Controller_B.IntegralGain_e) /
         Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.i];
       Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_0 = 0.0;
       for (Hummingbird_Flight_Controller_B.i = 0;
@@ -15881,23 +15952,23 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
       if (((Hummingbird_Flight_Controller_B.mixer[0] == 0.0) &&
            (Hummingbird_Flight_Controller_B.mixer[1] == 0.0) &&
            (Hummingbird_Flight_Controller_B.mixer[2] == 0.0)) ||
-          (Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1 == 1.0)) {
-        Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 =
+          (Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 == 1.0)) {
+        Hummingbird_Flight_Controller_B.CastToDouble10 =
           Hummingbird_Flight_Controller_P.Constant1_Value_n;
       } else {
-        Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 =
+        Hummingbird_Flight_Controller_B.CastToDouble10 =
           Hummingbird_Flight_Controller_B.dtMR +
           Hummingbird_Flight_Controller_B.a_o;
       }
 
       // Saturate: '<S1404>/Saturation3'
-      if (Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 >
+      if (Hummingbird_Flight_Controller_B.CastToDouble10 >
           Hummingbird_Flight_Controller_P.Saturation3_UpperSat) {
-        Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 =
+        Hummingbird_Flight_Controller_B.CastToDouble10 =
           Hummingbird_Flight_Controller_P.Saturation3_UpperSat;
-      } else if (Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 <
+      } else if (Hummingbird_Flight_Controller_B.CastToDouble10 <
                  Hummingbird_Flight_Controller_P.Saturation3_LowerSat) {
-        Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 =
+        Hummingbird_Flight_Controller_B.CastToDouble10 =
           Hummingbird_Flight_Controller_P.Saturation3_LowerSat;
       }
 
@@ -15905,8 +15976,8 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
       //   Constant: '<S1415>/Constant'
       //   Product: '<S1415>/Divide'
 
-      Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1 =
-        Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 /
+      Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 =
+        Hummingbird_Flight_Controller_B.CastToDouble10 /
         Hummingbird_Flight_Controller_P.Constant_Value_li *
         Hummingbird_Flight_Controller_P.Gain_Gain_b;
 
@@ -15920,20 +15991,20 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
       Hummingbird_Flight_Controller_B.i = 0;
       Hummingbird_Flight_Controller_B.r2_n = 1;
       Hummingbird_Flight_Controller_B.r3_i = 2;
-      Hummingbird_Flight_Controller_B.CastToDouble10 = fabs
-        (Hummingbird_Flight_Controller_P.Constant12_Value[0]);
       Hummingbird_Flight_Controller_B.CastToDouble11 = fabs
+        (Hummingbird_Flight_Controller_P.Constant12_Value[0]);
+      Hummingbird_Flight_Controller_B.CastToDouble9 = fabs
         (Hummingbird_Flight_Controller_P.Constant12_Value[1]);
-      if (Hummingbird_Flight_Controller_B.CastToDouble11 >
-          Hummingbird_Flight_Controller_B.CastToDouble10) {
-        Hummingbird_Flight_Controller_B.CastToDouble10 =
-          Hummingbird_Flight_Controller_B.CastToDouble11;
+      if (Hummingbird_Flight_Controller_B.CastToDouble9 >
+          Hummingbird_Flight_Controller_B.CastToDouble11) {
+        Hummingbird_Flight_Controller_B.CastToDouble11 =
+          Hummingbird_Flight_Controller_B.CastToDouble9;
         Hummingbird_Flight_Controller_B.i = 1;
         Hummingbird_Flight_Controller_B.r2_n = 0;
       }
 
       if (fabs(Hummingbird_Flight_Controller_P.Constant12_Value[2]) >
-          Hummingbird_Flight_Controller_B.CastToDouble10) {
+          Hummingbird_Flight_Controller_B.CastToDouble11) {
         Hummingbird_Flight_Controller_B.i = 2;
         Hummingbird_Flight_Controller_B.r2_n = 1;
         Hummingbird_Flight_Controller_B.r3_i = 0;
@@ -15986,48 +16057,48 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
         6];
       Hummingbird_Flight_Controller_B.scale =
         Hummingbird_Flight_Controller_P.IB[Hummingbird_Flight_Controller_B.i];
-      Hummingbird_Flight_Controller_B.CastToDouble9 =
+      Hummingbird_Flight_Controller_B.IntegralGain_e =
         Hummingbird_Flight_Controller_P.IB[Hummingbird_Flight_Controller_B.r2_n]
         - Hummingbird_Flight_Controller_B.scale *
         Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r2_n];
-      Hummingbird_Flight_Controller_B.IntegralGain_e =
+      Hummingbird_Flight_Controller_B.Saturation4 =
         Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r3_i +
         3];
-      Hummingbird_Flight_Controller_B.Saturation1 =
+      Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0 =
         Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r3_i +
         6];
-      Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0 =
+      Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 =
         ((Hummingbird_Flight_Controller_P.IB[Hummingbird_Flight_Controller_B.r3_i]
           - Hummingbird_Flight_Controller_B.scale *
           Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r3_i])
-         - Hummingbird_Flight_Controller_B.IntegralGain_e *
-         Hummingbird_Flight_Controller_B.CastToDouble9) /
-        Hummingbird_Flight_Controller_B.Saturation1;
-      Hummingbird_Flight_Controller_B.a_m[2] =
+         - Hummingbird_Flight_Controller_B.Saturation4 *
+         Hummingbird_Flight_Controller_B.IntegralGain_e) /
         Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0;
-      Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 =
-        Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r2_n +
-        6];
+      Hummingbird_Flight_Controller_B.a_m[2] =
+        Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1;
       Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 =
         Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r2_n +
-        3];
-      Hummingbird_Flight_Controller_B.CastToDouble9 =
-        (Hummingbird_Flight_Controller_B.CastToDouble9 -
-         Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 *
-         Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0) /
-        Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2;
-      Hummingbird_Flight_Controller_B.a_m[1] =
-        Hummingbird_Flight_Controller_B.CastToDouble9;
+        6];
       Hummingbird_Flight_Controller_B.CastToDouble25 =
-        Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.i + 6];
+        Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r2_n +
+        3];
+      Hummingbird_Flight_Controller_B.IntegralGain_e =
+        (Hummingbird_Flight_Controller_B.IntegralGain_e -
+         Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 *
+         Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1) /
+        Hummingbird_Flight_Controller_B.CastToDouble25;
+      Hummingbird_Flight_Controller_B.a_m[1] =
+        Hummingbird_Flight_Controller_B.IntegralGain_e;
       Hummingbird_Flight_Controller_B.V =
+        Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.i + 6];
+      Hummingbird_Flight_Controller_B.course =
         Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.i + 3];
       Hummingbird_Flight_Controller_B.a_m[0] =
         ((Hummingbird_Flight_Controller_B.scale -
-          Hummingbird_Flight_Controller_B.CastToDouble25 *
-          Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0) -
-         Hummingbird_Flight_Controller_B.V *
-         Hummingbird_Flight_Controller_B.CastToDouble9) /
+          Hummingbird_Flight_Controller_B.V *
+          Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1) -
+         Hummingbird_Flight_Controller_B.course *
+         Hummingbird_Flight_Controller_B.IntegralGain_e) /
         Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.i];
 
       // Sum: '<S1402>/Sum8'
@@ -16038,35 +16109,35 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
       // MATLAB Function: '<S1402>/Control input Calculation1' incorporates:
       //   Constant: '<S1402>/Constant13'
 
-      Hummingbird_Flight_Controller_B.CastToDouble10 = 0.0;
+      Hummingbird_Flight_Controller_B.CastToDouble11 = 0.0;
       Hummingbird_Flight_Controller_B.scale =
         Hummingbird_Flight_Controller_P.IB[Hummingbird_Flight_Controller_B.i + 3];
-      Hummingbird_Flight_Controller_B.CastToDouble9 =
+      Hummingbird_Flight_Controller_B.IntegralGain_e =
         Hummingbird_Flight_Controller_P.IB[Hummingbird_Flight_Controller_B.r2_n
         + 3] - Hummingbird_Flight_Controller_B.scale *
         Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r2_n];
-      Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0 =
+      Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 =
         ((Hummingbird_Flight_Controller_P.IB[Hummingbird_Flight_Controller_B.r3_i
           + 3] - Hummingbird_Flight_Controller_B.scale *
           Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r3_i])
-         - Hummingbird_Flight_Controller_B.IntegralGain_e *
-         Hummingbird_Flight_Controller_B.CastToDouble9) /
-        Hummingbird_Flight_Controller_B.Saturation1;
-      Hummingbird_Flight_Controller_B.a_m[5] =
+         - Hummingbird_Flight_Controller_B.Saturation4 *
+         Hummingbird_Flight_Controller_B.IntegralGain_e) /
         Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0;
-      Hummingbird_Flight_Controller_B.CastToDouble9 =
-        (Hummingbird_Flight_Controller_B.CastToDouble9 -
-         Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 *
-         Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0) /
-        Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2;
+      Hummingbird_Flight_Controller_B.a_m[5] =
+        Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1;
+      Hummingbird_Flight_Controller_B.IntegralGain_e =
+        (Hummingbird_Flight_Controller_B.IntegralGain_e -
+         Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 *
+         Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1) /
+        Hummingbird_Flight_Controller_B.CastToDouble25;
       Hummingbird_Flight_Controller_B.a_m[4] =
-        Hummingbird_Flight_Controller_B.CastToDouble9;
+        Hummingbird_Flight_Controller_B.IntegralGain_e;
       Hummingbird_Flight_Controller_B.a_m[3] =
         ((Hummingbird_Flight_Controller_B.scale -
-          Hummingbird_Flight_Controller_B.CastToDouble25 *
-          Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0) -
-         Hummingbird_Flight_Controller_B.V *
-         Hummingbird_Flight_Controller_B.CastToDouble9) /
+          Hummingbird_Flight_Controller_B.V *
+          Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1) -
+         Hummingbird_Flight_Controller_B.course *
+         Hummingbird_Flight_Controller_B.IntegralGain_e) /
         Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.i];
 
       // Sum: '<S1402>/Sum8'
@@ -16077,35 +16148,35 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
       // MATLAB Function: '<S1402>/Control input Calculation1' incorporates:
       //   Constant: '<S1402>/Constant13'
 
-      Hummingbird_Flight_Controller_B.CastToDouble11 = 0.0;
+      Hummingbird_Flight_Controller_B.CastToDouble9 = 0.0;
       Hummingbird_Flight_Controller_B.scale =
         Hummingbird_Flight_Controller_P.IB[Hummingbird_Flight_Controller_B.i + 6];
-      Hummingbird_Flight_Controller_B.CastToDouble9 =
+      Hummingbird_Flight_Controller_B.IntegralGain_e =
         Hummingbird_Flight_Controller_P.IB[Hummingbird_Flight_Controller_B.r2_n
         + 6] - Hummingbird_Flight_Controller_B.scale *
         Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r2_n];
-      Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0 =
+      Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 =
         ((Hummingbird_Flight_Controller_P.IB[Hummingbird_Flight_Controller_B.r3_i
           + 6] - Hummingbird_Flight_Controller_B.scale *
           Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r3_i])
-         - Hummingbird_Flight_Controller_B.IntegralGain_e *
-         Hummingbird_Flight_Controller_B.CastToDouble9) /
-        Hummingbird_Flight_Controller_B.Saturation1;
-      Hummingbird_Flight_Controller_B.a_m[8] =
+         - Hummingbird_Flight_Controller_B.Saturation4 *
+         Hummingbird_Flight_Controller_B.IntegralGain_e) /
         Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0;
-      Hummingbird_Flight_Controller_B.CastToDouble9 =
-        (Hummingbird_Flight_Controller_B.CastToDouble9 -
-         Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 *
-         Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0) /
-        Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2;
+      Hummingbird_Flight_Controller_B.a_m[8] =
+        Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1;
+      Hummingbird_Flight_Controller_B.IntegralGain_e =
+        (Hummingbird_Flight_Controller_B.IntegralGain_e -
+         Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 *
+         Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1) /
+        Hummingbird_Flight_Controller_B.CastToDouble25;
       Hummingbird_Flight_Controller_B.a_m[7] =
-        Hummingbird_Flight_Controller_B.CastToDouble9;
+        Hummingbird_Flight_Controller_B.IntegralGain_e;
       Hummingbird_Flight_Controller_B.a_m[6] =
         ((Hummingbird_Flight_Controller_B.scale -
-          Hummingbird_Flight_Controller_B.CastToDouble25 *
-          Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0) -
-         Hummingbird_Flight_Controller_B.V *
-         Hummingbird_Flight_Controller_B.CastToDouble9) /
+          Hummingbird_Flight_Controller_B.V *
+          Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1) -
+         Hummingbird_Flight_Controller_B.course *
+         Hummingbird_Flight_Controller_B.IntegralGain_e) /
         Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.i];
 
       // Sum: '<S1402>/Sum8'
@@ -16114,21 +16185,21 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
         Hummingbird_Flight_Controller_B.Sum_e[2];
 
       // MATLAB Function: '<S1402>/Control input Calculation1'
-      Hummingbird_Flight_Controller_B.V = 0.0;
+      Hummingbird_Flight_Controller_B.course = 0.0;
       for (Hummingbird_Flight_Controller_B.i = 0;
            Hummingbird_Flight_Controller_B.i < 3;
            Hummingbird_Flight_Controller_B.i++) {
         Hummingbird_Flight_Controller_B.scale =
           Hummingbird_Flight_Controller_B.rtb_DProdOut_n_c[Hummingbird_Flight_Controller_B.i];
-        Hummingbird_Flight_Controller_B.CastToDouble10 +=
+        Hummingbird_Flight_Controller_B.CastToDouble11 +=
           Hummingbird_Flight_Controller_B.a_m[3 *
           Hummingbird_Flight_Controller_B.i] *
           Hummingbird_Flight_Controller_B.scale;
-        Hummingbird_Flight_Controller_B.CastToDouble11 +=
+        Hummingbird_Flight_Controller_B.CastToDouble9 +=
           Hummingbird_Flight_Controller_B.a_m[3 *
           Hummingbird_Flight_Controller_B.i + 1] *
           Hummingbird_Flight_Controller_B.scale;
-        Hummingbird_Flight_Controller_B.V +=
+        Hummingbird_Flight_Controller_B.course +=
           Hummingbird_Flight_Controller_B.a_m[3 *
           Hummingbird_Flight_Controller_B.i + 2] *
           Hummingbird_Flight_Controller_B.scale;
@@ -16171,13 +16242,13 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
 
         Hummingbird_Flight_Controller_B.Sum_e[0] =
           Hummingbird_Flight_Controller_B.Gain14_h +
-          Hummingbird_Flight_Controller_B.CastToDouble10;
+          Hummingbird_Flight_Controller_B.CastToDouble11;
         Hummingbird_Flight_Controller_B.Sum_e[1] =
           Hummingbird_Flight_Controller_B.rtb_CastToBoolean1_d_idx_0 +
-          Hummingbird_Flight_Controller_B.CastToDouble11;
+          Hummingbird_Flight_Controller_B.CastToDouble9;
         Hummingbird_Flight_Controller_B.Sum_e[2] =
           Hummingbird_Flight_Controller_B.rtb_CastToBoolean1_d_idx_1 +
-          Hummingbird_Flight_Controller_B.V;
+          Hummingbird_Flight_Controller_B.course;
 
         // End of Outputs for SubSystem: '<S1413>/If Action Subsystem1'
         // End of Outputs for SubSystem: '<S1413>/If Action Subsystem'
@@ -16201,8 +16272,7 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
       //   Constant: '<S1415>/Constant2'
       //   Saturate: '<S1415>/Saturation9'
 
-      Hummingbird_Flight_Controller_B.course =
-        Hummingbird_Flight_Controller_B.scale /
+      Hummingbird_Flight_Controller_B.t = Hummingbird_Flight_Controller_B.scale /
         Hummingbird_Flight_Controller_P.Constant2_Value_a;
 
       // Saturate: '<S1415>/Saturation8'
@@ -16223,8 +16293,7 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
       //   Constant: '<S1415>/Constant1'
       //   Saturate: '<S1415>/Saturation8'
 
-      Hummingbird_Flight_Controller_B.CastToDouble25 =
-        Hummingbird_Flight_Controller_B.scale /
+      Hummingbird_Flight_Controller_B.V = Hummingbird_Flight_Controller_B.scale /
         Hummingbird_Flight_Controller_P.Constant1_Value_p;
 
       // Saturate: '<S1415>/Saturation10'
@@ -16249,38 +16318,36 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
         Hummingbird_Flight_Controller_P.Constant3_Value_k;
 
       // Sum: '<S1415>/Add'
-      Hummingbird_Flight_Controller_B.CastToDouble9 =
+      Hummingbird_Flight_Controller_B.IntegralGain_e =
         ((Hummingbird_Flight_Controller_B.scale -
-          Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1) -
-         Hummingbird_Flight_Controller_B.course) -
-        Hummingbird_Flight_Controller_B.CastToDouble25;
+          Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2) -
+         Hummingbird_Flight_Controller_B.t) - Hummingbird_Flight_Controller_B.V;
 
       // Saturate: '<S1415>/Saturation'
-      if (Hummingbird_Flight_Controller_B.CastToDouble9 >
+      if (Hummingbird_Flight_Controller_B.IntegralGain_e >
           Hummingbird_Flight_Controller_P.Saturation_UpperSat_o) {
-        Hummingbird_Flight_Controller_B.CastToDouble9 =
+        Hummingbird_Flight_Controller_B.IntegralGain_e =
           Hummingbird_Flight_Controller_P.Saturation_UpperSat_o;
-      } else if (Hummingbird_Flight_Controller_B.CastToDouble9 <
+      } else if (Hummingbird_Flight_Controller_B.IntegralGain_e <
                  Hummingbird_Flight_Controller_P.Saturation_LowerSat_n) {
-        Hummingbird_Flight_Controller_B.CastToDouble9 =
+        Hummingbird_Flight_Controller_B.IntegralGain_e =
           Hummingbird_Flight_Controller_P.Saturation_LowerSat_n;
       }
 
       // Sum: '<S1415>/Add4'
-      Hummingbird_Flight_Controller_B.IntegralGain_e = (((0.0 -
-        Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1) -
-        Hummingbird_Flight_Controller_B.course) -
-        Hummingbird_Flight_Controller_B.CastToDouble25) -
-        Hummingbird_Flight_Controller_B.scale;
+      Hummingbird_Flight_Controller_B.Saturation4 = (((0.0 -
+        Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2) -
+        Hummingbird_Flight_Controller_B.t) - Hummingbird_Flight_Controller_B.V)
+        - Hummingbird_Flight_Controller_B.scale;
 
       // Saturate: '<S1415>/Saturation4'
-      if (Hummingbird_Flight_Controller_B.IntegralGain_e >
+      if (Hummingbird_Flight_Controller_B.Saturation4 >
           Hummingbird_Flight_Controller_P.Saturation4_UpperSat) {
-        Hummingbird_Flight_Controller_B.IntegralGain_e =
+        Hummingbird_Flight_Controller_B.Saturation4 =
           Hummingbird_Flight_Controller_P.Saturation4_UpperSat;
-      } else if (Hummingbird_Flight_Controller_B.IntegralGain_e <
+      } else if (Hummingbird_Flight_Controller_B.Saturation4 <
                  Hummingbird_Flight_Controller_P.Saturation4_LowerSat) {
-        Hummingbird_Flight_Controller_B.IntegralGain_e =
+        Hummingbird_Flight_Controller_B.Saturation4 =
           Hummingbird_Flight_Controller_P.Saturation4_LowerSat;
       }
 
@@ -16288,147 +16355,147 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
       //   Sum: '<S1415>/Add2'
       //   Sum: '<S1415>/Add5'
 
-      Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 =
-        Hummingbird_Flight_Controller_B.course -
-        Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1;
-      Hummingbird_Flight_Controller_B.t =
-        Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 -
-        Hummingbird_Flight_Controller_B.CastToDouble25;
-      Hummingbird_Flight_Controller_B.Saturation1 =
+      Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 =
         Hummingbird_Flight_Controller_B.t -
+        Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2;
+      Hummingbird_Flight_Controller_B.b_absxk =
+        Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 -
+        Hummingbird_Flight_Controller_B.V;
+      Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0 =
+        Hummingbird_Flight_Controller_B.b_absxk -
         Hummingbird_Flight_Controller_B.scale;
 
       // Saturate: '<S1415>/Saturation1'
-      if (Hummingbird_Flight_Controller_B.Saturation1 >
+      if (Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0 >
           Hummingbird_Flight_Controller_P.Saturation1_UpperSat_e) {
-        Hummingbird_Flight_Controller_B.Saturation1 =
+        Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0 =
           Hummingbird_Flight_Controller_P.Saturation1_UpperSat_e;
-      } else if (Hummingbird_Flight_Controller_B.Saturation1 <
+      } else if (Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0 <
                  Hummingbird_Flight_Controller_P.Saturation1_LowerSat_b) {
-        Hummingbird_Flight_Controller_B.Saturation1 =
+        Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0 =
           Hummingbird_Flight_Controller_P.Saturation1_LowerSat_b;
       }
 
       // Sum: '<S1415>/Add5'
-      Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0 =
-        Hummingbird_Flight_Controller_B.t +
+      Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 =
+        Hummingbird_Flight_Controller_B.b_absxk +
         Hummingbird_Flight_Controller_B.scale;
 
       // Saturate: '<S1415>/Saturation5'
-      if (Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0 >
+      if (Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 >
           Hummingbird_Flight_Controller_P.Saturation5_UpperSat) {
-        Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0 =
+        Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 =
           Hummingbird_Flight_Controller_P.Saturation5_UpperSat;
-      } else if (Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0 <
+      } else if (Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 <
                  Hummingbird_Flight_Controller_P.Saturation5_LowerSat) {
-        Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0 =
+        Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 =
           Hummingbird_Flight_Controller_P.Saturation5_LowerSat;
       }
 
       // Sum: '<S1415>/Add2' incorporates:
       //   Sum: '<S1415>/Add6'
 
-      Hummingbird_Flight_Controller_B.t =
-        Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 +
-        Hummingbird_Flight_Controller_B.CastToDouble25;
-      Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 =
-        Hummingbird_Flight_Controller_B.t +
+      Hummingbird_Flight_Controller_B.b_absxk =
+        Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 +
+        Hummingbird_Flight_Controller_B.V;
+      Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 =
+        Hummingbird_Flight_Controller_B.b_absxk +
         Hummingbird_Flight_Controller_B.scale;
 
       // Saturate: '<S1415>/Saturation2'
-      if (Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 >
+      if (Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 >
           Hummingbird_Flight_Controller_P.Saturation2_UpperSat) {
-        Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 =
+        Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 =
           Hummingbird_Flight_Controller_P.Saturation2_UpperSat;
-      } else if (Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 <
+      } else if (Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 <
                  Hummingbird_Flight_Controller_P.Saturation2_LowerSat) {
-        Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 =
+        Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 =
           Hummingbird_Flight_Controller_P.Saturation2_LowerSat;
       }
 
       // Sum: '<S1415>/Add6'
-      Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 =
-        Hummingbird_Flight_Controller_B.t -
+      Hummingbird_Flight_Controller_B.CastToDouble25 =
+        Hummingbird_Flight_Controller_B.b_absxk -
         Hummingbird_Flight_Controller_B.scale;
 
       // Saturate: '<S1415>/Saturation6'
-      if (Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 >
+      if (Hummingbird_Flight_Controller_B.CastToDouble25 >
           Hummingbird_Flight_Controller_P.Saturation6_UpperSat) {
-        Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 =
+        Hummingbird_Flight_Controller_B.CastToDouble25 =
           Hummingbird_Flight_Controller_P.Saturation6_UpperSat;
-      } else if (Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 <
+      } else if (Hummingbird_Flight_Controller_B.CastToDouble25 <
                  Hummingbird_Flight_Controller_P.Saturation6_LowerSat) {
-        Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 =
+        Hummingbird_Flight_Controller_B.CastToDouble25 =
           Hummingbird_Flight_Controller_P.Saturation6_LowerSat;
       }
 
       // Sum: '<S1415>/Add3' incorporates:
       //   Sum: '<S1415>/Add7'
 
-      Hummingbird_Flight_Controller_B.t =
-        (Hummingbird_Flight_Controller_B.CastToDouble25 -
-         Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1) -
-        Hummingbird_Flight_Controller_B.course;
-      Hummingbird_Flight_Controller_B.CastToDouble25 =
-        Hummingbird_Flight_Controller_B.t -
+      Hummingbird_Flight_Controller_B.b_absxk =
+        (Hummingbird_Flight_Controller_B.V -
+         Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2) -
+        Hummingbird_Flight_Controller_B.t;
+      Hummingbird_Flight_Controller_B.V =
+        Hummingbird_Flight_Controller_B.b_absxk -
         Hummingbird_Flight_Controller_B.scale;
 
       // Saturate: '<S1415>/Saturation3'
-      if (Hummingbird_Flight_Controller_B.CastToDouble25 >
+      if (Hummingbird_Flight_Controller_B.V >
           Hummingbird_Flight_Controller_P.Saturation3_UpperSat_a) {
-        Hummingbird_Flight_Controller_B.CastToDouble25 =
+        Hummingbird_Flight_Controller_B.V =
           Hummingbird_Flight_Controller_P.Saturation3_UpperSat_a;
-      } else if (Hummingbird_Flight_Controller_B.CastToDouble25 <
+      } else if (Hummingbird_Flight_Controller_B.V <
                  Hummingbird_Flight_Controller_P.Saturation3_LowerSat_o) {
-        Hummingbird_Flight_Controller_B.CastToDouble25 =
+        Hummingbird_Flight_Controller_B.V =
           Hummingbird_Flight_Controller_P.Saturation3_LowerSat_o;
       }
 
       // Sum: '<S1415>/Add7'
-      Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1 =
-        Hummingbird_Flight_Controller_B.t +
+      Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 =
+        Hummingbird_Flight_Controller_B.b_absxk +
         Hummingbird_Flight_Controller_B.scale;
 
       // Saturate: '<S1415>/Saturation7'
-      if (Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1 >
+      if (Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 >
           Hummingbird_Flight_Controller_P.Saturation7_UpperSat) {
-        Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1 =
+        Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 =
           Hummingbird_Flight_Controller_P.Saturation7_UpperSat;
-      } else if (Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1 <
+      } else if (Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 <
                  Hummingbird_Flight_Controller_P.Saturation7_LowerSat) {
-        Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1 =
+        Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 =
           Hummingbird_Flight_Controller_P.Saturation7_LowerSat;
       }
 
       // Gain: '<S1412>/Gain1'
-      Hummingbird_Flight_Controller_B.course =
-        Hummingbird_Flight_Controller_P.Gain1_Gain_hu *
-        Hummingbird_Flight_Controller_B.Saturation1;
-
-      // Gain: '<S1412>/Gain2'
       Hummingbird_Flight_Controller_B.t =
-        Hummingbird_Flight_Controller_P.Gain2_Gain_p *
+        Hummingbird_Flight_Controller_P.Gain1_Gain_hu *
         Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0;
 
-      // Gain: '<S1412>/Gain3'
+      // Gain: '<S1412>/Gain2'
       Hummingbird_Flight_Controller_B.b_absxk =
-        Hummingbird_Flight_Controller_P.Gain3_Gain_h *
+        Hummingbird_Flight_Controller_P.Gain2_Gain_p *
         Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1;
 
-      // Gain: '<S1412>/Gain9'
+      // Gain: '<S1412>/Gain3'
       Hummingbird_Flight_Controller_B.b_t =
-        Hummingbird_Flight_Controller_P.Gain9_Gain *
+        Hummingbird_Flight_Controller_P.Gain3_Gain_h *
         Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2;
 
-      // Gain: '<S1412>/Gain10'
+      // Gain: '<S1412>/Gain9'
       Hummingbird_Flight_Controller_B.r_c =
-        Hummingbird_Flight_Controller_P.Gain10_Gain_b *
+        Hummingbird_Flight_Controller_P.Gain9_Gain *
         Hummingbird_Flight_Controller_B.CastToDouble25;
 
-      // Gain: '<S1412>/Gain11'
+      // Gain: '<S1412>/Gain10'
       Hummingbird_Flight_Controller_B.absxk =
+        Hummingbird_Flight_Controller_P.Gain10_Gain_b *
+        Hummingbird_Flight_Controller_B.V;
+
+      // Gain: '<S1412>/Gain11'
+      Hummingbird_Flight_Controller_B.b_gamma =
         Hummingbird_Flight_Controller_P.Gain11_Gain *
-        Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1;
+        Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2;
 
       // BusAssignment: '<S1410>/Bus Assignment' incorporates:
       //   BusCreator: '<S5>/Bus Creator4'
@@ -16440,28 +16507,27 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
       Hummingbird_Flight_Controller_B.BusAssignment.timestamp =
         Hummingbird_Flight_Controller_B.PX4Timestamp_pm.PX4Timestamp;
       Hummingbird_Flight_Controller_B.BusAssignment.data[0] =
-        static_cast<real32_T>(Hummingbird_Flight_Controller_B.CastToDouble9);
-      Hummingbird_Flight_Controller_B.BusAssignment.data[1] =
         static_cast<real32_T>(Hummingbird_Flight_Controller_B.IntegralGain_e);
+      Hummingbird_Flight_Controller_B.BusAssignment.data[1] =
+        static_cast<real32_T>(Hummingbird_Flight_Controller_B.Saturation4);
       Hummingbird_Flight_Controller_B.BusAssignment.data[2] =
-        static_cast<real32_T>(Hummingbird_Flight_Controller_B.Saturation1);
-      Hummingbird_Flight_Controller_B.BusAssignment.data[3] =
         static_cast<real32_T>
         (Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0);
-      Hummingbird_Flight_Controller_B.BusAssignment.data[4] =
+      Hummingbird_Flight_Controller_B.BusAssignment.data[3] =
         static_cast<real32_T>
         (Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1);
-      Hummingbird_Flight_Controller_B.BusAssignment.data[5] =
+      Hummingbird_Flight_Controller_B.BusAssignment.data[4] =
         static_cast<real32_T>
         (Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2);
-      Hummingbird_Flight_Controller_B.BusAssignment.data[6] =
+      Hummingbird_Flight_Controller_B.BusAssignment.data[5] =
         static_cast<real32_T>(Hummingbird_Flight_Controller_B.CastToDouble25);
+      Hummingbird_Flight_Controller_B.BusAssignment.data[6] =
+        static_cast<real32_T>(Hummingbird_Flight_Controller_B.V);
       Hummingbird_Flight_Controller_B.BusAssignment.data[7] =
         static_cast<real32_T>
-        (Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1);
-      Hummingbird_Flight_Controller_B.BusAssignment.data[8] =
-        static_cast<real32_T>
         (Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2);
+      Hummingbird_Flight_Controller_B.BusAssignment.data[8] =
+        static_cast<real32_T>(Hummingbird_Flight_Controller_B.CastToDouble10);
       Hummingbird_Flight_Controller_B.BusAssignment.data[12] =
         static_cast<real32_T>(Hummingbird_Flight_Controller_B.dtMR);
       Hummingbird_Flight_Controller_B.BusAssignment.data[16] =
@@ -16486,13 +16552,13 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
 
       Hummingbird_Flight_Controller_B.scale =
         Hummingbird_Flight_Controller_P.Gain_Gain_l *
-        Hummingbird_Flight_Controller_B.CastToDouble9 +
+        Hummingbird_Flight_Controller_B.IntegralGain_e +
         Hummingbird_Flight_Controller_P.Gain8_Gain *
-        Hummingbird_Flight_Controller_B.IntegralGain_e;
+        Hummingbird_Flight_Controller_B.Saturation4;
       Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_2 =
         (Hummingbird_Flight_Controller_B.scale +
-         Hummingbird_Flight_Controller_B.course) +
-        Hummingbird_Flight_Controller_B.t;
+         Hummingbird_Flight_Controller_B.t) +
+        Hummingbird_Flight_Controller_B.b_absxk;
 
       // BusAssignment: '<S1410>/Bus Assignment' incorporates:
       //   Constant: '<S1402>/Constant1'
@@ -16521,60 +16587,60 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
       Hummingbird_Flight_Controller_B.BusAssignment.data[22] =
         static_cast<real32_T>
         ((((Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_2 +
-            Hummingbird_Flight_Controller_B.b_absxk) +
-           Hummingbird_Flight_Controller_B.b_t) +
-          Hummingbird_Flight_Controller_B.r_c) +
-         Hummingbird_Flight_Controller_B.absxk);
+            Hummingbird_Flight_Controller_B.b_t) +
+           Hummingbird_Flight_Controller_B.r_c) +
+          Hummingbird_Flight_Controller_B.absxk) +
+         Hummingbird_Flight_Controller_B.b_gamma);
       Hummingbird_Flight_Controller_B.BusAssignment.data[23] =
         static_cast<real32_T>(((((((Hummingbird_Flight_Controller_B.scale -
-        Hummingbird_Flight_Controller_B.course) -
         Hummingbird_Flight_Controller_B.t) -
         Hummingbird_Flight_Controller_B.b_absxk) -
-        Hummingbird_Flight_Controller_B.b_t) +
+        Hummingbird_Flight_Controller_B.b_t) -
         Hummingbird_Flight_Controller_B.r_c) +
-        Hummingbird_Flight_Controller_B.absxk) *
+        Hummingbird_Flight_Controller_B.absxk) +
+        Hummingbird_Flight_Controller_B.b_gamma) *
         Hummingbird_Flight_Controller_P.Constant2_Value_i);
       Hummingbird_Flight_Controller_B.BusAssignment.data[24] =
         static_cast<real32_T>
         (((((Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_2 -
-             Hummingbird_Flight_Controller_B.b_absxk) -
-            Hummingbird_Flight_Controller_B.b_t) -
-           Hummingbird_Flight_Controller_B.r_c) -
-          Hummingbird_Flight_Controller_B.absxk) *
+             Hummingbird_Flight_Controller_B.b_t) -
+            Hummingbird_Flight_Controller_B.r_c) -
+           Hummingbird_Flight_Controller_B.absxk) -
+          Hummingbird_Flight_Controller_B.b_gamma) *
          Hummingbird_Flight_Controller_P.Constant1_Value_nl);
       Hummingbird_Flight_Controller_B.BusAssignment.data[25] =
         static_cast<real32_T>(((((((Hummingbird_Flight_Controller_P.Gain4_Gain_k
-        * Hummingbird_Flight_Controller_B.CastToDouble9 -
+        * Hummingbird_Flight_Controller_B.IntegralGain_e -
         Hummingbird_Flight_Controller_P.Gain12_Gain *
-        Hummingbird_Flight_Controller_B.IntegralGain_e) -
+        Hummingbird_Flight_Controller_B.Saturation4) -
         Hummingbird_Flight_Controller_P.Gain5_Gain *
-        Hummingbird_Flight_Controller_B.Saturation1) +
-        Hummingbird_Flight_Controller_P.Gain13_Gain *
         Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0) +
+        Hummingbird_Flight_Controller_P.Gain13_Gain *
+        Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1) +
         Hummingbird_Flight_Controller_P.Gain6_Gain *
-        Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1) -
-        Hummingbird_Flight_Controller_P.Gain14_Gain *
         Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2) -
+        Hummingbird_Flight_Controller_P.Gain14_Gain *
+        Hummingbird_Flight_Controller_B.CastToDouble25) -
         Hummingbird_Flight_Controller_P.Gain7_Gain *
-        Hummingbird_Flight_Controller_B.CastToDouble25) +
+        Hummingbird_Flight_Controller_B.V) +
         Hummingbird_Flight_Controller_P.Gain15_Gain *
-        Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1);
+        Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2);
       Hummingbird_Flight_Controller_B.BusAssignment.data[9] =
         static_cast<real32_T>(Hummingbird_Flight_Controller_B.Sum_e[0]);
       Hummingbird_Flight_Controller_B.BusAssignment.data[13] =
-        static_cast<real32_T>(Hummingbird_Flight_Controller_B.CastToDouble10);
+        static_cast<real32_T>(Hummingbird_Flight_Controller_B.CastToDouble11);
       Hummingbird_Flight_Controller_B.BusAssignment.data[26] =
         static_cast<real32_T>(Hummingbird_Flight_Controller_B.mixer[0]);
       Hummingbird_Flight_Controller_B.BusAssignment.data[10] =
         static_cast<real32_T>(Hummingbird_Flight_Controller_B.Sum_e[1]);
       Hummingbird_Flight_Controller_B.BusAssignment.data[14] =
-        static_cast<real32_T>(Hummingbird_Flight_Controller_B.CastToDouble11);
+        static_cast<real32_T>(Hummingbird_Flight_Controller_B.CastToDouble9);
       Hummingbird_Flight_Controller_B.BusAssignment.data[27] =
         static_cast<real32_T>(Hummingbird_Flight_Controller_B.mixer[1]);
       Hummingbird_Flight_Controller_B.BusAssignment.data[11] =
         static_cast<real32_T>(Hummingbird_Flight_Controller_B.Sum_e[2]);
       Hummingbird_Flight_Controller_B.BusAssignment.data[15] =
-        static_cast<real32_T>(Hummingbird_Flight_Controller_B.V);
+        static_cast<real32_T>(Hummingbird_Flight_Controller_B.course);
       Hummingbird_Flight_Controller_B.BusAssignment.data[28] =
         static_cast<real32_T>(Hummingbird_Flight_Controller_B.mixer[2]);
       Hummingbird_Flight_Controller_B.BusAssignment.data[29] =
@@ -16718,28 +16784,28 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
 
       Hummingbird_Flight_Controller_B.Actuator_output.rotor_1 = static_cast<
         real32_T>(Hummingbird_Flight_Controller_P.Gain_Gain_mx * sqrt
-                  (Hummingbird_Flight_Controller_B.CastToDouble9));
+                  (Hummingbird_Flight_Controller_B.IntegralGain_e));
       Hummingbird_Flight_Controller_B.Actuator_output.rotor_2 =
         static_cast<real32_T>(Hummingbird_Flight_Controller_P.Gain_Gain_mx *
-        sqrt(Hummingbird_Flight_Controller_B.IntegralGain_e));
+        sqrt(Hummingbird_Flight_Controller_B.Saturation4));
       Hummingbird_Flight_Controller_B.Actuator_output.rotor_3 =
         static_cast<real32_T>(Hummingbird_Flight_Controller_P.Gain_Gain_mx *
-        sqrt(Hummingbird_Flight_Controller_B.Saturation1));
+        sqrt(Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0));
       Hummingbird_Flight_Controller_B.Actuator_output.rotor_4 =
         static_cast<real32_T>(Hummingbird_Flight_Controller_P.Gain_Gain_mx *
-        sqrt(Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0));
+        sqrt(Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1));
       Hummingbird_Flight_Controller_B.Actuator_output.rotor_5 =
         static_cast<real32_T>(Hummingbird_Flight_Controller_P.Gain_Gain_mx *
-        sqrt(Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1));
+        sqrt(Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2));
       Hummingbird_Flight_Controller_B.Actuator_output.rotor_6 =
         static_cast<real32_T>(Hummingbird_Flight_Controller_P.Gain_Gain_mx *
-        sqrt(Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2));
+        sqrt(Hummingbird_Flight_Controller_B.CastToDouble25));
       Hummingbird_Flight_Controller_B.Actuator_output.rotor_7 =
         static_cast<real32_T>(Hummingbird_Flight_Controller_P.Gain_Gain_mx *
-        sqrt(Hummingbird_Flight_Controller_B.CastToDouble25));
+        sqrt(Hummingbird_Flight_Controller_B.V));
       Hummingbird_Flight_Controller_B.Actuator_output.rotor_8 =
         static_cast<real32_T>(Hummingbird_Flight_Controller_P.Gain_Gain_mx *
-        sqrt(Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1));
+        sqrt(Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2));
 
       // Saturate: '<S1402>/Saturation'
       if (Hummingbird_Flight_Controller_B.CastToDouble8 >
@@ -16827,7 +16893,8 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
         Hummingbird_Flight_Controller_P.Gain4_Gain_ki * static_cast<real32_T>
         (Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_0);
       Hummingbird_Flight_Controller_B.Actuator_output.arm_1 =
-        static_cast<real32_T>(Hummingbird_Flight_Controller_P.Constant_Value_n5);
+        static_cast<real32_T>
+        (Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1);
       Hummingbird_Flight_Controller_B.Actuator_output.arm_2 =
         static_cast<real32_T>(Hummingbird_Flight_Controller_P.Constant_Value_n5);
       Hummingbird_Flight_Controller_B.Actuator_output.arm_3 =
@@ -17320,13 +17387,15 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
             Hummingbird_Flight_Controller_B.mixer[0] = 1.0;
             Hummingbird_Flight_Controller_B.mixer[1] = 1.0;
             Hummingbird_Flight_Controller_B.mixer[2] = 1.0;
-            Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1 = 0.0;
+            Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 = 0.0;
+            Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1 = 1.0;
           } else if (Hummingbird_Flight_Controller_B.BusCreator.VTOL_Mode < 1700)
           {
             Hummingbird_Flight_Controlle_DW.is_Mixer_Control =
               Hummingbird__IN_Mixed_MR_Assist;
             Hu_enter_atomic_Mixed_MR_Assist
-              (&Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1,
+              (&Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2,
+               &Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1,
                Hummingbird_Flight_Controller_B.TmpSignalConversionAtSFunct);
           } else {
             Hummingbird_Flight_Controlle_DW.is_Mixer_Control =
@@ -17334,6 +17403,7 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
             Hummingbird_Flight_Controller_B.mixer[0] = 0.0;
             Hummingbird_Flight_Controller_B.mixer[1] = 0.0;
             Hummingbird_Flight_Controller_B.mixer[2] = 0.0;
+            Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 = 0.0;
             Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1 = 0.0;
           }
         } else if ((Hummingbird_Flight_Controller_B.RC_Flight_Mode_prev_f !=
@@ -17346,13 +17416,15 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
             Hummingbird_Flight_Controller_B.mixer[0] = 1.0;
             Hummingbird_Flight_Controller_B.mixer[1] = 1.0;
             Hummingbird_Flight_Controller_B.mixer[2] = 1.0;
-            Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1 = 0.0;
+            Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 = 0.0;
+            Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1 = 1.0;
           } else if (Hummingbird_Flight_Controller_B.BusCreator.VTOL_Mode < 1700)
           {
             Hummingbird_Flight_Controlle_DW.is_Mixer_Control =
               Hummingbird__IN_Mixed_MR_Assist;
             Hu_enter_atomic_Mixed_MR_Assist
-              (&Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1,
+              (&Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2,
+               &Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1,
                Hummingbird_Flight_Controller_B.TmpSignalConversionAtSFunct);
           } else {
             Hummingbird_Flight_Controlle_DW.is_Mixer_Control =
@@ -17360,6 +17432,7 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
             Hummingbird_Flight_Controller_B.mixer[0] = 0.0;
             Hummingbird_Flight_Controller_B.mixer[1] = 0.0;
             Hummingbird_Flight_Controller_B.mixer[2] = 0.0;
+            Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 = 0.0;
             Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1 = 0.0;
           }
         } else {
@@ -17368,13 +17441,15 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
             Hummingbird_Flight_Controller_B.mixer[0] = 1.0;
             Hummingbird_Flight_Controller_B.mixer[1] = 1.0;
             Hummingbird_Flight_Controller_B.mixer[2] = 1.0;
-            Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1 = 0.0;
+            Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 = 0.0;
+            Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1 = 1.0;
             break;
 
            case Hummingbird_Flight_Contro_IN_MR:
             Hummingbird_Flight_Controller_B.mixer[0] = 0.0;
             Hummingbird_Flight_Controller_B.mixer[1] = 0.0;
             Hummingbird_Flight_Controller_B.mixer[2] = 0.0;
+            Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 = 0.0;
             Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1 = 0.0;
             break;
 
@@ -17382,12 +17457,20 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
             // case IN_Mixed_MR_Assist:
             if ((Hummingbird_Flight_Controller_B.dM[0] < 0.0) &&
                 (Hummingbird_Flight_Controller_B.In1_m.positions[0] <
-                 -0.47123889803846897)) {
-              Hummingbird_Flight_Controller_B.mixer[0] = 0.0;
+                 -0.31415926535897926)) {
+              Hummingbird_Flight_Controller_B.mixer[0] = 1.0F - (static_cast<
+                real32_T>(fabs(static_cast<real_T>
+                               (Hummingbird_Flight_Controller_B.In1_m.positions
+                                [0] / 0.52359879F))) - 0.6F) / 0.4F;
             } else if (Hummingbird_Flight_Controller_B.dM[0] > 0.0) {
-              Hummingbird_Flight_Controller_B.mixer[0] =
-                !(Hummingbird_Flight_Controller_B.In1_m.positions[0] >
-                  0.47123889803846897);
+              if (Hummingbird_Flight_Controller_B.In1_m.positions[0] >
+                  0.31415926535897926) {
+                Hummingbird_Flight_Controller_B.mixer[0] = 1.0F -
+                  (Hummingbird_Flight_Controller_B.In1_m.positions[0] /
+                   0.52359879F - 0.6F) / 0.4F;
+              } else {
+                Hummingbird_Flight_Controller_B.mixer[0] = 1.0;
+              }
             } else {
               Hummingbird_Flight_Controller_B.mixer[0] = 1.0;
             }
@@ -17395,11 +17478,19 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
             if ((Hummingbird_Flight_Controller_B.dM[1] > 0.0) &&
                 (Hummingbird_Flight_Controller_B.In1_m.positions[1] <
                  -0.47123889803846897)) {
-              Hummingbird_Flight_Controller_B.mixer[1] = 0.0;
+              Hummingbird_Flight_Controller_B.mixer[1] = 1.0F -
+                (static_cast<real32_T>(fabs(static_cast<real_T>
+                   (Hummingbird_Flight_Controller_B.In1_m.positions[1] /
+                    0.52359879F))) - 0.6F) / 0.4F;
             } else if (Hummingbird_Flight_Controller_B.dM[1] < 0.0) {
-              Hummingbird_Flight_Controller_B.mixer[1] =
-                !(Hummingbird_Flight_Controller_B.In1_m.positions[1] >
-                  0.47123889803846897);
+              if (Hummingbird_Flight_Controller_B.In1_m.positions[1] >
+                  0.47123889803846897) {
+                Hummingbird_Flight_Controller_B.mixer[1] = 1.0F -
+                  (Hummingbird_Flight_Controller_B.In1_m.positions[1] /
+                   0.52359879F - 0.6F) / 0.4F;
+              } else {
+                Hummingbird_Flight_Controller_B.mixer[1] = 1.0;
+              }
             } else {
               Hummingbird_Flight_Controller_B.mixer[1] = 1.0;
             }
@@ -17409,14 +17500,18 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
                  -0.47123889803846897)) {
               Hummingbird_Flight_Controller_B.mixer[2] = 0.0;
             } else if (Hummingbird_Flight_Controller_B.dM[2] < 0.0) {
-              Hummingbird_Flight_Controller_B.mixer[2] =
-                !(Hummingbird_Flight_Controller_B.In1_m.positions[2] >
-                  0.47123889803846897);
+              if (Hummingbird_Flight_Controller_B.In1_m.positions[2] >
+                  0.47123889803846897) {
+                Hummingbird_Flight_Controller_B.mixer[2] = 0.0;
+              } else {
+                Hummingbird_Flight_Controller_B.mixer[2] = 1.0;
+              }
             } else {
               Hummingbird_Flight_Controller_B.mixer[2] = 1.0;
             }
 
-            Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1 = 1.0;
+            Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 = 1.0;
+            Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1 = 0.0;
             break;
           }
         }
@@ -17505,112 +17600,112 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
           + 6];
         Hummingbird_Flight_Controller_B.scale =
           Hummingbird_Flight_Controller_P.Constant2_Value_n[Hummingbird_Flight_Controller_B.i];
-        Hummingbird_Flight_Controller_B.CastToDouble9 =
+        Hummingbird_Flight_Controller_B.IntegralGain_e =
           Hummingbird_Flight_Controller_P.Constant2_Value_n[Hummingbird_Flight_Controller_B.r2_n]
           - Hummingbird_Flight_Controller_B.scale *
           Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r2_n];
-        Hummingbird_Flight_Controller_B.IntegralGain_e =
+        Hummingbird_Flight_Controller_B.Saturation4 =
           Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r3_i
           + 3];
-        Hummingbird_Flight_Controller_B.Saturation1 =
+        Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0 =
           Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r3_i
           + 6];
-        Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0 =
+        Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 =
           ((Hummingbird_Flight_Controller_P.Constant2_Value_n[Hummingbird_Flight_Controller_B.r3_i]
             - Hummingbird_Flight_Controller_B.scale *
             Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r3_i])
-           - Hummingbird_Flight_Controller_B.IntegralGain_e *
-           Hummingbird_Flight_Controller_B.CastToDouble9) /
-          Hummingbird_Flight_Controller_B.Saturation1;
-        Hummingbird_Flight_Controller_B.a[2] =
+           - Hummingbird_Flight_Controller_B.Saturation4 *
+           Hummingbird_Flight_Controller_B.IntegralGain_e) /
           Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0;
-        Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 =
-          Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r2_n
-          + 6];
+        Hummingbird_Flight_Controller_B.a[2] =
+          Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1;
         Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 =
           Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r2_n
-          + 3];
-        Hummingbird_Flight_Controller_B.CastToDouble9 =
-          (Hummingbird_Flight_Controller_B.CastToDouble9 -
-           Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 *
-           Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0) /
-          Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2;
-        Hummingbird_Flight_Controller_B.a[1] =
-          Hummingbird_Flight_Controller_B.CastToDouble9;
+          + 6];
         Hummingbird_Flight_Controller_B.CastToDouble25 =
+          Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r2_n
+          + 3];
+        Hummingbird_Flight_Controller_B.IntegralGain_e =
+          (Hummingbird_Flight_Controller_B.IntegralGain_e -
+           Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 *
+           Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1) /
+          Hummingbird_Flight_Controller_B.CastToDouble25;
+        Hummingbird_Flight_Controller_B.a[1] =
+          Hummingbird_Flight_Controller_B.IntegralGain_e;
+        Hummingbird_Flight_Controller_B.V =
           Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.i +
           6];
-        Hummingbird_Flight_Controller_B.V =
+        Hummingbird_Flight_Controller_B.course =
           Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.i +
           3];
         Hummingbird_Flight_Controller_B.a[0] =
           ((Hummingbird_Flight_Controller_B.scale -
-            Hummingbird_Flight_Controller_B.CastToDouble25 *
-            Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0) -
-           Hummingbird_Flight_Controller_B.V *
-           Hummingbird_Flight_Controller_B.CastToDouble9) /
+            Hummingbird_Flight_Controller_B.V *
+            Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1) -
+           Hummingbird_Flight_Controller_B.course *
+           Hummingbird_Flight_Controller_B.IntegralGain_e) /
           Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.i];
         Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_1 = 0.0;
         Hummingbird_Flight_Controller_B.scale =
           Hummingbird_Flight_Controller_P.Constant2_Value_n[Hummingbird_Flight_Controller_B.i
           + 3];
-        Hummingbird_Flight_Controller_B.CastToDouble9 =
+        Hummingbird_Flight_Controller_B.IntegralGain_e =
           Hummingbird_Flight_Controller_P.Constant2_Value_n[Hummingbird_Flight_Controller_B.r2_n
           + 3] - Hummingbird_Flight_Controller_B.scale *
           Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r2_n];
-        Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0 =
+        Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 =
           ((Hummingbird_Flight_Controller_P.Constant2_Value_n[Hummingbird_Flight_Controller_B.r3_i
             + 3] - Hummingbird_Flight_Controller_B.scale *
             Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r3_i])
-           - Hummingbird_Flight_Controller_B.IntegralGain_e *
-           Hummingbird_Flight_Controller_B.CastToDouble9) /
-          Hummingbird_Flight_Controller_B.Saturation1;
-        Hummingbird_Flight_Controller_B.a[5] =
+           - Hummingbird_Flight_Controller_B.Saturation4 *
+           Hummingbird_Flight_Controller_B.IntegralGain_e) /
           Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0;
-        Hummingbird_Flight_Controller_B.CastToDouble9 =
-          (Hummingbird_Flight_Controller_B.CastToDouble9 -
-           Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 *
-           Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0) /
-          Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2;
+        Hummingbird_Flight_Controller_B.a[5] =
+          Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1;
+        Hummingbird_Flight_Controller_B.IntegralGain_e =
+          (Hummingbird_Flight_Controller_B.IntegralGain_e -
+           Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 *
+           Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1) /
+          Hummingbird_Flight_Controller_B.CastToDouble25;
         Hummingbird_Flight_Controller_B.a[4] =
-          Hummingbird_Flight_Controller_B.CastToDouble9;
+          Hummingbird_Flight_Controller_B.IntegralGain_e;
         Hummingbird_Flight_Controller_B.a[3] =
           ((Hummingbird_Flight_Controller_B.scale -
-            Hummingbird_Flight_Controller_B.CastToDouble25 *
-            Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0) -
-           Hummingbird_Flight_Controller_B.V *
-           Hummingbird_Flight_Controller_B.CastToDouble9) /
+            Hummingbird_Flight_Controller_B.V *
+            Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1) -
+           Hummingbird_Flight_Controller_B.course *
+           Hummingbird_Flight_Controller_B.IntegralGain_e) /
           Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.i];
         Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_0 = 0.0;
         Hummingbird_Flight_Controller_B.scale =
           Hummingbird_Flight_Controller_P.Constant2_Value_n[Hummingbird_Flight_Controller_B.i
           + 6];
-        Hummingbird_Flight_Controller_B.CastToDouble9 =
+        Hummingbird_Flight_Controller_B.IntegralGain_e =
           Hummingbird_Flight_Controller_P.Constant2_Value_n[Hummingbird_Flight_Controller_B.r2_n
           + 6] - Hummingbird_Flight_Controller_B.scale *
           Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r2_n];
-        Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0 =
+        Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 =
           ((Hummingbird_Flight_Controller_P.Constant2_Value_n[Hummingbird_Flight_Controller_B.r3_i
             + 6] - Hummingbird_Flight_Controller_B.scale *
             Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r3_i])
-           - Hummingbird_Flight_Controller_B.IntegralGain_e *
-           Hummingbird_Flight_Controller_B.CastToDouble9) /
-          Hummingbird_Flight_Controller_B.Saturation1;
-        Hummingbird_Flight_Controller_B.a[8] =
+           - Hummingbird_Flight_Controller_B.Saturation4 *
+           Hummingbird_Flight_Controller_B.IntegralGain_e) /
           Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0;
-        Hummingbird_Flight_Controller_B.CastToDouble9 =
-          (Hummingbird_Flight_Controller_B.CastToDouble9 -
-           Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 *
-           Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0) /
-          Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2;
+        Hummingbird_Flight_Controller_B.a[8] =
+          Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1;
+        Hummingbird_Flight_Controller_B.IntegralGain_e =
+          (Hummingbird_Flight_Controller_B.IntegralGain_e -
+           Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 *
+           Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1) /
+          Hummingbird_Flight_Controller_B.CastToDouble25;
         Hummingbird_Flight_Controller_B.a[7] =
-          Hummingbird_Flight_Controller_B.CastToDouble9;
+          Hummingbird_Flight_Controller_B.IntegralGain_e;
         Hummingbird_Flight_Controller_B.a[6] =
           ((Hummingbird_Flight_Controller_B.scale -
-            Hummingbird_Flight_Controller_B.CastToDouble25 *
-            Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0) -
-           Hummingbird_Flight_Controller_B.V *
-           Hummingbird_Flight_Controller_B.CastToDouble9) /
+            Hummingbird_Flight_Controller_B.V *
+            Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1) -
+           Hummingbird_Flight_Controller_B.course *
+           Hummingbird_Flight_Controller_B.IntegralGain_e) /
           Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.i];
         Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_0 = 0.0;
         for (Hummingbird_Flight_Controller_B.i = 0;
@@ -17706,23 +17801,23 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
         if (((Hummingbird_Flight_Controller_B.mixer[0] == 0.0) &&
              (Hummingbird_Flight_Controller_B.mixer[1] == 0.0) &&
              (Hummingbird_Flight_Controller_B.mixer[2] == 0.0)) ||
-            (Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1 == 1.0)) {
-          Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 =
+            (Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 == 1.0)) {
+          Hummingbird_Flight_Controller_B.CastToDouble10 =
             Hummingbird_Flight_Controller_P.Constant1_Value_n;
         } else {
-          Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 =
+          Hummingbird_Flight_Controller_B.CastToDouble10 =
             Hummingbird_Flight_Controller_B.dtMR +
             Hummingbird_Flight_Controller_B.a_o;
         }
 
         // Saturate: '<S1404>/Saturation3'
-        if (Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 >
+        if (Hummingbird_Flight_Controller_B.CastToDouble10 >
             Hummingbird_Flight_Controller_P.Saturation3_UpperSat) {
-          Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 =
+          Hummingbird_Flight_Controller_B.CastToDouble10 =
             Hummingbird_Flight_Controller_P.Saturation3_UpperSat;
-        } else if (Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 <
+        } else if (Hummingbird_Flight_Controller_B.CastToDouble10 <
                    Hummingbird_Flight_Controller_P.Saturation3_LowerSat) {
-          Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 =
+          Hummingbird_Flight_Controller_B.CastToDouble10 =
             Hummingbird_Flight_Controller_P.Saturation3_LowerSat;
         }
 
@@ -17730,8 +17825,8 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
         //   Constant: '<S1415>/Constant'
         //   Product: '<S1415>/Divide'
 
-        Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1 =
-          Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 /
+        Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 =
+          Hummingbird_Flight_Controller_B.CastToDouble10 /
           Hummingbird_Flight_Controller_P.Constant_Value_li *
           Hummingbird_Flight_Controller_P.Gain_Gain_b;
 
@@ -17745,20 +17840,20 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
         Hummingbird_Flight_Controller_B.i = 0;
         Hummingbird_Flight_Controller_B.r2_n = 1;
         Hummingbird_Flight_Controller_B.r3_i = 2;
-        Hummingbird_Flight_Controller_B.CastToDouble10 = fabs
-          (Hummingbird_Flight_Controller_P.Constant12_Value[0]);
         Hummingbird_Flight_Controller_B.CastToDouble11 = fabs
+          (Hummingbird_Flight_Controller_P.Constant12_Value[0]);
+        Hummingbird_Flight_Controller_B.CastToDouble9 = fabs
           (Hummingbird_Flight_Controller_P.Constant12_Value[1]);
-        if (Hummingbird_Flight_Controller_B.CastToDouble11 >
-            Hummingbird_Flight_Controller_B.CastToDouble10) {
-          Hummingbird_Flight_Controller_B.CastToDouble10 =
-            Hummingbird_Flight_Controller_B.CastToDouble11;
+        if (Hummingbird_Flight_Controller_B.CastToDouble9 >
+            Hummingbird_Flight_Controller_B.CastToDouble11) {
+          Hummingbird_Flight_Controller_B.CastToDouble11 =
+            Hummingbird_Flight_Controller_B.CastToDouble9;
           Hummingbird_Flight_Controller_B.i = 1;
           Hummingbird_Flight_Controller_B.r2_n = 0;
         }
 
         if (fabs(Hummingbird_Flight_Controller_P.Constant12_Value[2]) >
-            Hummingbird_Flight_Controller_B.CastToDouble10) {
+            Hummingbird_Flight_Controller_B.CastToDouble11) {
           Hummingbird_Flight_Controller_B.i = 2;
           Hummingbird_Flight_Controller_B.r2_n = 1;
           Hummingbird_Flight_Controller_B.r3_i = 0;
@@ -17815,50 +17910,50 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
           + 6];
         Hummingbird_Flight_Controller_B.scale =
           Hummingbird_Flight_Controller_P.IB[Hummingbird_Flight_Controller_B.i];
-        Hummingbird_Flight_Controller_B.CastToDouble9 =
+        Hummingbird_Flight_Controller_B.IntegralGain_e =
           Hummingbird_Flight_Controller_P.IB[Hummingbird_Flight_Controller_B.r2_n]
           - Hummingbird_Flight_Controller_B.scale *
           Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r2_n];
-        Hummingbird_Flight_Controller_B.IntegralGain_e =
+        Hummingbird_Flight_Controller_B.Saturation4 =
           Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r3_i
           + 3];
-        Hummingbird_Flight_Controller_B.Saturation1 =
+        Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0 =
           Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r3_i
           + 6];
-        Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0 =
+        Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 =
           ((Hummingbird_Flight_Controller_P.IB[Hummingbird_Flight_Controller_B.r3_i]
             - Hummingbird_Flight_Controller_B.scale *
             Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r3_i])
-           - Hummingbird_Flight_Controller_B.IntegralGain_e *
-           Hummingbird_Flight_Controller_B.CastToDouble9) /
-          Hummingbird_Flight_Controller_B.Saturation1;
-        Hummingbird_Flight_Controller_B.a_m[2] =
+           - Hummingbird_Flight_Controller_B.Saturation4 *
+           Hummingbird_Flight_Controller_B.IntegralGain_e) /
           Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0;
-        Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 =
-          Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r2_n
-          + 6];
+        Hummingbird_Flight_Controller_B.a_m[2] =
+          Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1;
         Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 =
           Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r2_n
-          + 3];
-        Hummingbird_Flight_Controller_B.CastToDouble9 =
-          (Hummingbird_Flight_Controller_B.CastToDouble9 -
-           Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 *
-           Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0) /
-          Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2;
-        Hummingbird_Flight_Controller_B.a_m[1] =
-          Hummingbird_Flight_Controller_B.CastToDouble9;
+          + 6];
         Hummingbird_Flight_Controller_B.CastToDouble25 =
+          Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r2_n
+          + 3];
+        Hummingbird_Flight_Controller_B.IntegralGain_e =
+          (Hummingbird_Flight_Controller_B.IntegralGain_e -
+           Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 *
+           Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1) /
+          Hummingbird_Flight_Controller_B.CastToDouble25;
+        Hummingbird_Flight_Controller_B.a_m[1] =
+          Hummingbird_Flight_Controller_B.IntegralGain_e;
+        Hummingbird_Flight_Controller_B.V =
           Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.i +
           6];
-        Hummingbird_Flight_Controller_B.V =
+        Hummingbird_Flight_Controller_B.course =
           Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.i +
           3];
         Hummingbird_Flight_Controller_B.a_m[0] =
           ((Hummingbird_Flight_Controller_B.scale -
-            Hummingbird_Flight_Controller_B.CastToDouble25 *
-            Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0) -
-           Hummingbird_Flight_Controller_B.V *
-           Hummingbird_Flight_Controller_B.CastToDouble9) /
+            Hummingbird_Flight_Controller_B.V *
+            Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1) -
+           Hummingbird_Flight_Controller_B.course *
+           Hummingbird_Flight_Controller_B.IntegralGain_e) /
           Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.i];
 
         // Sum: '<S1402>/Sum8'
@@ -17869,36 +17964,36 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
         // MATLAB Function: '<S1402>/Control input Calculation1' incorporates:
         //   Constant: '<S1402>/Constant13'
 
-        Hummingbird_Flight_Controller_B.CastToDouble10 = 0.0;
+        Hummingbird_Flight_Controller_B.CastToDouble11 = 0.0;
         Hummingbird_Flight_Controller_B.scale =
           Hummingbird_Flight_Controller_P.IB[Hummingbird_Flight_Controller_B.i +
           3];
-        Hummingbird_Flight_Controller_B.CastToDouble9 =
+        Hummingbird_Flight_Controller_B.IntegralGain_e =
           Hummingbird_Flight_Controller_P.IB[Hummingbird_Flight_Controller_B.r2_n
           + 3] - Hummingbird_Flight_Controller_B.scale *
           Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r2_n];
-        Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0 =
+        Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 =
           ((Hummingbird_Flight_Controller_P.IB[Hummingbird_Flight_Controller_B.r3_i
             + 3] - Hummingbird_Flight_Controller_B.scale *
             Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r3_i])
-           - Hummingbird_Flight_Controller_B.IntegralGain_e *
-           Hummingbird_Flight_Controller_B.CastToDouble9) /
-          Hummingbird_Flight_Controller_B.Saturation1;
-        Hummingbird_Flight_Controller_B.a_m[5] =
+           - Hummingbird_Flight_Controller_B.Saturation4 *
+           Hummingbird_Flight_Controller_B.IntegralGain_e) /
           Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0;
-        Hummingbird_Flight_Controller_B.CastToDouble9 =
-          (Hummingbird_Flight_Controller_B.CastToDouble9 -
-           Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 *
-           Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0) /
-          Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2;
+        Hummingbird_Flight_Controller_B.a_m[5] =
+          Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1;
+        Hummingbird_Flight_Controller_B.IntegralGain_e =
+          (Hummingbird_Flight_Controller_B.IntegralGain_e -
+           Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 *
+           Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1) /
+          Hummingbird_Flight_Controller_B.CastToDouble25;
         Hummingbird_Flight_Controller_B.a_m[4] =
-          Hummingbird_Flight_Controller_B.CastToDouble9;
+          Hummingbird_Flight_Controller_B.IntegralGain_e;
         Hummingbird_Flight_Controller_B.a_m[3] =
           ((Hummingbird_Flight_Controller_B.scale -
-            Hummingbird_Flight_Controller_B.CastToDouble25 *
-            Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0) -
-           Hummingbird_Flight_Controller_B.V *
-           Hummingbird_Flight_Controller_B.CastToDouble9) /
+            Hummingbird_Flight_Controller_B.V *
+            Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1) -
+           Hummingbird_Flight_Controller_B.course *
+           Hummingbird_Flight_Controller_B.IntegralGain_e) /
           Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.i];
 
         // Sum: '<S1402>/Sum8'
@@ -17909,36 +18004,36 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
         // MATLAB Function: '<S1402>/Control input Calculation1' incorporates:
         //   Constant: '<S1402>/Constant13'
 
-        Hummingbird_Flight_Controller_B.CastToDouble11 = 0.0;
+        Hummingbird_Flight_Controller_B.CastToDouble9 = 0.0;
         Hummingbird_Flight_Controller_B.scale =
           Hummingbird_Flight_Controller_P.IB[Hummingbird_Flight_Controller_B.i +
           6];
-        Hummingbird_Flight_Controller_B.CastToDouble9 =
+        Hummingbird_Flight_Controller_B.IntegralGain_e =
           Hummingbird_Flight_Controller_P.IB[Hummingbird_Flight_Controller_B.r2_n
           + 6] - Hummingbird_Flight_Controller_B.scale *
           Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r2_n];
-        Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0 =
+        Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 =
           ((Hummingbird_Flight_Controller_P.IB[Hummingbird_Flight_Controller_B.r3_i
             + 6] - Hummingbird_Flight_Controller_B.scale *
             Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.r3_i])
-           - Hummingbird_Flight_Controller_B.IntegralGain_e *
-           Hummingbird_Flight_Controller_B.CastToDouble9) /
-          Hummingbird_Flight_Controller_B.Saturation1;
-        Hummingbird_Flight_Controller_B.a_m[8] =
+           - Hummingbird_Flight_Controller_B.Saturation4 *
+           Hummingbird_Flight_Controller_B.IntegralGain_e) /
           Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0;
-        Hummingbird_Flight_Controller_B.CastToDouble9 =
-          (Hummingbird_Flight_Controller_B.CastToDouble9 -
-           Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 *
-           Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0) /
-          Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2;
+        Hummingbird_Flight_Controller_B.a_m[8] =
+          Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1;
+        Hummingbird_Flight_Controller_B.IntegralGain_e =
+          (Hummingbird_Flight_Controller_B.IntegralGain_e -
+           Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 *
+           Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1) /
+          Hummingbird_Flight_Controller_B.CastToDouble25;
         Hummingbird_Flight_Controller_B.a_m[7] =
-          Hummingbird_Flight_Controller_B.CastToDouble9;
+          Hummingbird_Flight_Controller_B.IntegralGain_e;
         Hummingbird_Flight_Controller_B.a_m[6] =
           ((Hummingbird_Flight_Controller_B.scale -
-            Hummingbird_Flight_Controller_B.CastToDouble25 *
-            Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0) -
-           Hummingbird_Flight_Controller_B.V *
-           Hummingbird_Flight_Controller_B.CastToDouble9) /
+            Hummingbird_Flight_Controller_B.V *
+            Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1) -
+           Hummingbird_Flight_Controller_B.course *
+           Hummingbird_Flight_Controller_B.IntegralGain_e) /
           Hummingbird_Flight_Controller_B.x[Hummingbird_Flight_Controller_B.i];
 
         // Sum: '<S1402>/Sum8'
@@ -17947,21 +18042,21 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
           Hummingbird_Flight_Controller_B.Sum_e[2];
 
         // MATLAB Function: '<S1402>/Control input Calculation1'
-        Hummingbird_Flight_Controller_B.V = 0.0;
+        Hummingbird_Flight_Controller_B.course = 0.0;
         for (Hummingbird_Flight_Controller_B.i = 0;
              Hummingbird_Flight_Controller_B.i < 3;
              Hummingbird_Flight_Controller_B.i++) {
           Hummingbird_Flight_Controller_B.scale =
             Hummingbird_Flight_Controller_B.rtb_DProdOut_n_c[Hummingbird_Flight_Controller_B.i];
-          Hummingbird_Flight_Controller_B.CastToDouble10 +=
+          Hummingbird_Flight_Controller_B.CastToDouble11 +=
             Hummingbird_Flight_Controller_B.a_m[3 *
             Hummingbird_Flight_Controller_B.i] *
             Hummingbird_Flight_Controller_B.scale;
-          Hummingbird_Flight_Controller_B.CastToDouble11 +=
+          Hummingbird_Flight_Controller_B.CastToDouble9 +=
             Hummingbird_Flight_Controller_B.a_m[3 *
             Hummingbird_Flight_Controller_B.i + 1] *
             Hummingbird_Flight_Controller_B.scale;
-          Hummingbird_Flight_Controller_B.V +=
+          Hummingbird_Flight_Controller_B.course +=
             Hummingbird_Flight_Controller_B.a_m[3 *
             Hummingbird_Flight_Controller_B.i + 2] *
             Hummingbird_Flight_Controller_B.scale;
@@ -18004,13 +18099,13 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
 
           Hummingbird_Flight_Controller_B.Sum_e[0] =
             Hummingbird_Flight_Controller_B.Gain14_h +
-            Hummingbird_Flight_Controller_B.CastToDouble10;
+            Hummingbird_Flight_Controller_B.CastToDouble11;
           Hummingbird_Flight_Controller_B.Sum_e[1] =
             Hummingbird_Flight_Controller_B.rtb_CastToBoolean1_d_idx_0 +
-            Hummingbird_Flight_Controller_B.CastToDouble11;
+            Hummingbird_Flight_Controller_B.CastToDouble9;
           Hummingbird_Flight_Controller_B.Sum_e[2] =
             Hummingbird_Flight_Controller_B.rtb_CastToBoolean1_d_idx_1 +
-            Hummingbird_Flight_Controller_B.V;
+            Hummingbird_Flight_Controller_B.course;
 
           // End of Outputs for SubSystem: '<S1413>/If Action Subsystem1'
           // End of Outputs for SubSystem: '<S1413>/If Action Subsystem'
@@ -18034,7 +18129,7 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
         //   Constant: '<S1415>/Constant2'
         //   Saturate: '<S1415>/Saturation9'
 
-        Hummingbird_Flight_Controller_B.course =
+        Hummingbird_Flight_Controller_B.t =
           Hummingbird_Flight_Controller_B.scale /
           Hummingbird_Flight_Controller_P.Constant2_Value_a;
 
@@ -18056,7 +18151,7 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
         //   Constant: '<S1415>/Constant1'
         //   Saturate: '<S1415>/Saturation8'
 
-        Hummingbird_Flight_Controller_B.CastToDouble25 =
+        Hummingbird_Flight_Controller_B.V =
           Hummingbird_Flight_Controller_B.scale /
           Hummingbird_Flight_Controller_P.Constant1_Value_p;
 
@@ -18082,38 +18177,37 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
           Hummingbird_Flight_Controller_P.Constant3_Value_k;
 
         // Sum: '<S1415>/Add'
-        Hummingbird_Flight_Controller_B.CastToDouble9 =
+        Hummingbird_Flight_Controller_B.IntegralGain_e =
           ((Hummingbird_Flight_Controller_B.scale -
-            Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1) -
-           Hummingbird_Flight_Controller_B.course) -
-          Hummingbird_Flight_Controller_B.CastToDouble25;
+            Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2) -
+           Hummingbird_Flight_Controller_B.t) -
+          Hummingbird_Flight_Controller_B.V;
 
         // Saturate: '<S1415>/Saturation'
-        if (Hummingbird_Flight_Controller_B.CastToDouble9 >
+        if (Hummingbird_Flight_Controller_B.IntegralGain_e >
             Hummingbird_Flight_Controller_P.Saturation_UpperSat_o) {
-          Hummingbird_Flight_Controller_B.CastToDouble9 =
+          Hummingbird_Flight_Controller_B.IntegralGain_e =
             Hummingbird_Flight_Controller_P.Saturation_UpperSat_o;
-        } else if (Hummingbird_Flight_Controller_B.CastToDouble9 <
+        } else if (Hummingbird_Flight_Controller_B.IntegralGain_e <
                    Hummingbird_Flight_Controller_P.Saturation_LowerSat_n) {
-          Hummingbird_Flight_Controller_B.CastToDouble9 =
+          Hummingbird_Flight_Controller_B.IntegralGain_e =
             Hummingbird_Flight_Controller_P.Saturation_LowerSat_n;
         }
 
         // Sum: '<S1415>/Add4'
-        Hummingbird_Flight_Controller_B.IntegralGain_e = (((0.0 -
-          Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1) -
-          Hummingbird_Flight_Controller_B.course) -
-          Hummingbird_Flight_Controller_B.CastToDouble25) -
-          Hummingbird_Flight_Controller_B.scale;
+        Hummingbird_Flight_Controller_B.Saturation4 = (((0.0 -
+          Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2) -
+          Hummingbird_Flight_Controller_B.t) - Hummingbird_Flight_Controller_B.V)
+          - Hummingbird_Flight_Controller_B.scale;
 
         // Saturate: '<S1415>/Saturation4'
-        if (Hummingbird_Flight_Controller_B.IntegralGain_e >
+        if (Hummingbird_Flight_Controller_B.Saturation4 >
             Hummingbird_Flight_Controller_P.Saturation4_UpperSat) {
-          Hummingbird_Flight_Controller_B.IntegralGain_e =
+          Hummingbird_Flight_Controller_B.Saturation4 =
             Hummingbird_Flight_Controller_P.Saturation4_UpperSat;
-        } else if (Hummingbird_Flight_Controller_B.IntegralGain_e <
+        } else if (Hummingbird_Flight_Controller_B.Saturation4 <
                    Hummingbird_Flight_Controller_P.Saturation4_LowerSat) {
-          Hummingbird_Flight_Controller_B.IntegralGain_e =
+          Hummingbird_Flight_Controller_B.Saturation4 =
             Hummingbird_Flight_Controller_P.Saturation4_LowerSat;
         }
 
@@ -18121,147 +18215,147 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
         //   Sum: '<S1415>/Add2'
         //   Sum: '<S1415>/Add5'
 
-        Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 =
-          Hummingbird_Flight_Controller_B.course -
-          Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1;
-        Hummingbird_Flight_Controller_B.t =
-          Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 -
-          Hummingbird_Flight_Controller_B.CastToDouble25;
-        Hummingbird_Flight_Controller_B.Saturation1 =
+        Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 =
           Hummingbird_Flight_Controller_B.t -
+          Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2;
+        Hummingbird_Flight_Controller_B.b_absxk =
+          Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 -
+          Hummingbird_Flight_Controller_B.V;
+        Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0 =
+          Hummingbird_Flight_Controller_B.b_absxk -
           Hummingbird_Flight_Controller_B.scale;
 
         // Saturate: '<S1415>/Saturation1'
-        if (Hummingbird_Flight_Controller_B.Saturation1 >
+        if (Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0 >
             Hummingbird_Flight_Controller_P.Saturation1_UpperSat_e) {
-          Hummingbird_Flight_Controller_B.Saturation1 =
+          Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0 =
             Hummingbird_Flight_Controller_P.Saturation1_UpperSat_e;
-        } else if (Hummingbird_Flight_Controller_B.Saturation1 <
+        } else if (Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0 <
                    Hummingbird_Flight_Controller_P.Saturation1_LowerSat_b) {
-          Hummingbird_Flight_Controller_B.Saturation1 =
+          Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0 =
             Hummingbird_Flight_Controller_P.Saturation1_LowerSat_b;
         }
 
         // Sum: '<S1415>/Add5'
-        Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0 =
-          Hummingbird_Flight_Controller_B.t +
+        Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 =
+          Hummingbird_Flight_Controller_B.b_absxk +
           Hummingbird_Flight_Controller_B.scale;
 
         // Saturate: '<S1415>/Saturation5'
-        if (Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0 >
+        if (Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 >
             Hummingbird_Flight_Controller_P.Saturation5_UpperSat) {
-          Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0 =
+          Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 =
             Hummingbird_Flight_Controller_P.Saturation5_UpperSat;
-        } else if (Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0 <
+        } else if (Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 <
                    Hummingbird_Flight_Controller_P.Saturation5_LowerSat) {
-          Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0 =
+          Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 =
             Hummingbird_Flight_Controller_P.Saturation5_LowerSat;
         }
 
         // Sum: '<S1415>/Add2' incorporates:
         //   Sum: '<S1415>/Add6'
 
-        Hummingbird_Flight_Controller_B.t =
-          Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 +
-          Hummingbird_Flight_Controller_B.CastToDouble25;
-        Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 =
-          Hummingbird_Flight_Controller_B.t +
+        Hummingbird_Flight_Controller_B.b_absxk =
+          Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 +
+          Hummingbird_Flight_Controller_B.V;
+        Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 =
+          Hummingbird_Flight_Controller_B.b_absxk +
           Hummingbird_Flight_Controller_B.scale;
 
         // Saturate: '<S1415>/Saturation2'
-        if (Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 >
+        if (Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 >
             Hummingbird_Flight_Controller_P.Saturation2_UpperSat) {
-          Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 =
+          Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 =
             Hummingbird_Flight_Controller_P.Saturation2_UpperSat;
-        } else if (Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 <
+        } else if (Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 <
                    Hummingbird_Flight_Controller_P.Saturation2_LowerSat) {
-          Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1 =
+          Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 =
             Hummingbird_Flight_Controller_P.Saturation2_LowerSat;
         }
 
         // Sum: '<S1415>/Add6'
-        Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 =
-          Hummingbird_Flight_Controller_B.t -
+        Hummingbird_Flight_Controller_B.CastToDouble25 =
+          Hummingbird_Flight_Controller_B.b_absxk -
           Hummingbird_Flight_Controller_B.scale;
 
         // Saturate: '<S1415>/Saturation6'
-        if (Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 >
+        if (Hummingbird_Flight_Controller_B.CastToDouble25 >
             Hummingbird_Flight_Controller_P.Saturation6_UpperSat) {
-          Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 =
+          Hummingbird_Flight_Controller_B.CastToDouble25 =
             Hummingbird_Flight_Controller_P.Saturation6_UpperSat;
-        } else if (Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 <
+        } else if (Hummingbird_Flight_Controller_B.CastToDouble25 <
                    Hummingbird_Flight_Controller_P.Saturation6_LowerSat) {
-          Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2 =
+          Hummingbird_Flight_Controller_B.CastToDouble25 =
             Hummingbird_Flight_Controller_P.Saturation6_LowerSat;
         }
 
         // Sum: '<S1415>/Add3' incorporates:
         //   Sum: '<S1415>/Add7'
 
-        Hummingbird_Flight_Controller_B.t =
-          (Hummingbird_Flight_Controller_B.CastToDouble25 -
-           Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1) -
-          Hummingbird_Flight_Controller_B.course;
-        Hummingbird_Flight_Controller_B.CastToDouble25 =
-          Hummingbird_Flight_Controller_B.t -
+        Hummingbird_Flight_Controller_B.b_absxk =
+          (Hummingbird_Flight_Controller_B.V -
+           Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2) -
+          Hummingbird_Flight_Controller_B.t;
+        Hummingbird_Flight_Controller_B.V =
+          Hummingbird_Flight_Controller_B.b_absxk -
           Hummingbird_Flight_Controller_B.scale;
 
         // Saturate: '<S1415>/Saturation3'
-        if (Hummingbird_Flight_Controller_B.CastToDouble25 >
+        if (Hummingbird_Flight_Controller_B.V >
             Hummingbird_Flight_Controller_P.Saturation3_UpperSat_a) {
-          Hummingbird_Flight_Controller_B.CastToDouble25 =
+          Hummingbird_Flight_Controller_B.V =
             Hummingbird_Flight_Controller_P.Saturation3_UpperSat_a;
-        } else if (Hummingbird_Flight_Controller_B.CastToDouble25 <
+        } else if (Hummingbird_Flight_Controller_B.V <
                    Hummingbird_Flight_Controller_P.Saturation3_LowerSat_o) {
-          Hummingbird_Flight_Controller_B.CastToDouble25 =
+          Hummingbird_Flight_Controller_B.V =
             Hummingbird_Flight_Controller_P.Saturation3_LowerSat_o;
         }
 
         // Sum: '<S1415>/Add7'
-        Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1 =
-          Hummingbird_Flight_Controller_B.t +
+        Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 =
+          Hummingbird_Flight_Controller_B.b_absxk +
           Hummingbird_Flight_Controller_B.scale;
 
         // Saturate: '<S1415>/Saturation7'
-        if (Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1 >
+        if (Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 >
             Hummingbird_Flight_Controller_P.Saturation7_UpperSat) {
-          Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1 =
+          Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 =
             Hummingbird_Flight_Controller_P.Saturation7_UpperSat;
-        } else if (Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1 <
+        } else if (Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 <
                    Hummingbird_Flight_Controller_P.Saturation7_LowerSat) {
-          Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1 =
+          Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2 =
             Hummingbird_Flight_Controller_P.Saturation7_LowerSat;
         }
 
         // Gain: '<S1412>/Gain1'
-        Hummingbird_Flight_Controller_B.course =
-          Hummingbird_Flight_Controller_P.Gain1_Gain_hu *
-          Hummingbird_Flight_Controller_B.Saturation1;
-
-        // Gain: '<S1412>/Gain2'
         Hummingbird_Flight_Controller_B.t =
-          Hummingbird_Flight_Controller_P.Gain2_Gain_p *
+          Hummingbird_Flight_Controller_P.Gain1_Gain_hu *
           Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0;
 
-        // Gain: '<S1412>/Gain3'
+        // Gain: '<S1412>/Gain2'
         Hummingbird_Flight_Controller_B.b_absxk =
-          Hummingbird_Flight_Controller_P.Gain3_Gain_h *
+          Hummingbird_Flight_Controller_P.Gain2_Gain_p *
           Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1;
 
-        // Gain: '<S1412>/Gain9'
+        // Gain: '<S1412>/Gain3'
         Hummingbird_Flight_Controller_B.b_t =
-          Hummingbird_Flight_Controller_P.Gain9_Gain *
+          Hummingbird_Flight_Controller_P.Gain3_Gain_h *
           Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2;
 
-        // Gain: '<S1412>/Gain10'
+        // Gain: '<S1412>/Gain9'
         Hummingbird_Flight_Controller_B.r_c =
-          Hummingbird_Flight_Controller_P.Gain10_Gain_b *
+          Hummingbird_Flight_Controller_P.Gain9_Gain *
           Hummingbird_Flight_Controller_B.CastToDouble25;
 
-        // Gain: '<S1412>/Gain11'
+        // Gain: '<S1412>/Gain10'
         Hummingbird_Flight_Controller_B.absxk =
+          Hummingbird_Flight_Controller_P.Gain10_Gain_b *
+          Hummingbird_Flight_Controller_B.V;
+
+        // Gain: '<S1412>/Gain11'
+        Hummingbird_Flight_Controller_B.b_gamma =
           Hummingbird_Flight_Controller_P.Gain11_Gain *
-          Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1;
+          Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2;
 
         // BusAssignment: '<S1410>/Bus Assignment' incorporates:
         //   BusCreator: '<S5>/Bus Creator4'
@@ -18273,28 +18367,27 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
         Hummingbird_Flight_Controller_B.BusAssignment.timestamp =
           Hummingbird_Flight_Controller_B.PX4Timestamp_pm.PX4Timestamp;
         Hummingbird_Flight_Controller_B.BusAssignment.data[0] =
-          static_cast<real32_T>(Hummingbird_Flight_Controller_B.CastToDouble9);
-        Hummingbird_Flight_Controller_B.BusAssignment.data[1] =
           static_cast<real32_T>(Hummingbird_Flight_Controller_B.IntegralGain_e);
+        Hummingbird_Flight_Controller_B.BusAssignment.data[1] =
+          static_cast<real32_T>(Hummingbird_Flight_Controller_B.Saturation4);
         Hummingbird_Flight_Controller_B.BusAssignment.data[2] =
-          static_cast<real32_T>(Hummingbird_Flight_Controller_B.Saturation1);
-        Hummingbird_Flight_Controller_B.BusAssignment.data[3] =
           static_cast<real32_T>
           (Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0);
-        Hummingbird_Flight_Controller_B.BusAssignment.data[4] =
+        Hummingbird_Flight_Controller_B.BusAssignment.data[3] =
           static_cast<real32_T>
           (Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1);
-        Hummingbird_Flight_Controller_B.BusAssignment.data[5] =
+        Hummingbird_Flight_Controller_B.BusAssignment.data[4] =
           static_cast<real32_T>
           (Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2);
-        Hummingbird_Flight_Controller_B.BusAssignment.data[6] =
+        Hummingbird_Flight_Controller_B.BusAssignment.data[5] =
           static_cast<real32_T>(Hummingbird_Flight_Controller_B.CastToDouble25);
+        Hummingbird_Flight_Controller_B.BusAssignment.data[6] =
+          static_cast<real32_T>(Hummingbird_Flight_Controller_B.V);
         Hummingbird_Flight_Controller_B.BusAssignment.data[7] =
           static_cast<real32_T>
-          (Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1);
-        Hummingbird_Flight_Controller_B.BusAssignment.data[8] =
-          static_cast<real32_T>
           (Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2);
+        Hummingbird_Flight_Controller_B.BusAssignment.data[8] =
+          static_cast<real32_T>(Hummingbird_Flight_Controller_B.CastToDouble10);
         Hummingbird_Flight_Controller_B.BusAssignment.data[12] =
           static_cast<real32_T>(Hummingbird_Flight_Controller_B.dtMR);
         Hummingbird_Flight_Controller_B.BusAssignment.data[16] =
@@ -18320,13 +18413,13 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
 
         Hummingbird_Flight_Controller_B.scale =
           Hummingbird_Flight_Controller_P.Gain_Gain_l *
-          Hummingbird_Flight_Controller_B.CastToDouble9 +
+          Hummingbird_Flight_Controller_B.IntegralGain_e +
           Hummingbird_Flight_Controller_P.Gain8_Gain *
-          Hummingbird_Flight_Controller_B.IntegralGain_e;
+          Hummingbird_Flight_Controller_B.Saturation4;
         Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_2 =
           (Hummingbird_Flight_Controller_B.scale +
-           Hummingbird_Flight_Controller_B.course) +
-          Hummingbird_Flight_Controller_B.t;
+           Hummingbird_Flight_Controller_B.t) +
+          Hummingbird_Flight_Controller_B.b_absxk;
 
         // BusAssignment: '<S1410>/Bus Assignment' incorporates:
         //   Constant: '<S1402>/Constant1'
@@ -18355,61 +18448,61 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
         Hummingbird_Flight_Controller_B.BusAssignment.data[22] =
           static_cast<real32_T>
           ((((Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_2 +
-              Hummingbird_Flight_Controller_B.b_absxk) +
-             Hummingbird_Flight_Controller_B.b_t) +
-            Hummingbird_Flight_Controller_B.r_c) +
-           Hummingbird_Flight_Controller_B.absxk);
+              Hummingbird_Flight_Controller_B.b_t) +
+             Hummingbird_Flight_Controller_B.r_c) +
+            Hummingbird_Flight_Controller_B.absxk) +
+           Hummingbird_Flight_Controller_B.b_gamma);
         Hummingbird_Flight_Controller_B.BusAssignment.data[23] =
           static_cast<real32_T>(((((((Hummingbird_Flight_Controller_B.scale -
-          Hummingbird_Flight_Controller_B.course) -
           Hummingbird_Flight_Controller_B.t) -
           Hummingbird_Flight_Controller_B.b_absxk) -
-          Hummingbird_Flight_Controller_B.b_t) +
+          Hummingbird_Flight_Controller_B.b_t) -
           Hummingbird_Flight_Controller_B.r_c) +
-          Hummingbird_Flight_Controller_B.absxk) *
+          Hummingbird_Flight_Controller_B.absxk) +
+          Hummingbird_Flight_Controller_B.b_gamma) *
           Hummingbird_Flight_Controller_P.Constant2_Value_i);
         Hummingbird_Flight_Controller_B.BusAssignment.data[24] =
           static_cast<real32_T>
           (((((Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_2 -
-               Hummingbird_Flight_Controller_B.b_absxk) -
-              Hummingbird_Flight_Controller_B.b_t) -
-             Hummingbird_Flight_Controller_B.r_c) -
-            Hummingbird_Flight_Controller_B.absxk) *
+               Hummingbird_Flight_Controller_B.b_t) -
+              Hummingbird_Flight_Controller_B.r_c) -
+             Hummingbird_Flight_Controller_B.absxk) -
+            Hummingbird_Flight_Controller_B.b_gamma) *
            Hummingbird_Flight_Controller_P.Constant1_Value_nl);
         Hummingbird_Flight_Controller_B.BusAssignment.data[25] =
           static_cast<real32_T>
           (((((((Hummingbird_Flight_Controller_P.Gain4_Gain_k *
-                 Hummingbird_Flight_Controller_B.CastToDouble9 -
+                 Hummingbird_Flight_Controller_B.IntegralGain_e -
                  Hummingbird_Flight_Controller_P.Gain12_Gain *
-                 Hummingbird_Flight_Controller_B.IntegralGain_e) -
+                 Hummingbird_Flight_Controller_B.Saturation4) -
                 Hummingbird_Flight_Controller_P.Gain5_Gain *
-                Hummingbird_Flight_Controller_B.Saturation1) +
+                Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0) +
                Hummingbird_Flight_Controller_P.Gain13_Gain *
-               Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0) +
+               Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1) +
               Hummingbird_Flight_Controller_P.Gain6_Gain *
-              Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1) -
+              Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2) -
              Hummingbird_Flight_Controller_P.Gain14_Gain *
-             Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2) -
+             Hummingbird_Flight_Controller_B.CastToDouble25) -
             Hummingbird_Flight_Controller_P.Gain7_Gain *
-            Hummingbird_Flight_Controller_B.CastToDouble25) +
+            Hummingbird_Flight_Controller_B.V) +
            Hummingbird_Flight_Controller_P.Gain15_Gain *
-           Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1);
+           Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2);
         Hummingbird_Flight_Controller_B.BusAssignment.data[9] =
           static_cast<real32_T>(Hummingbird_Flight_Controller_B.Sum_e[0]);
-        Hummingbird_Flight_Controller_B.BusAssignment.data[13] = static_cast<
-          real32_T>(Hummingbird_Flight_Controller_B.CastToDouble10);
+        Hummingbird_Flight_Controller_B.BusAssignment.data[13] =
+          static_cast<real32_T>(Hummingbird_Flight_Controller_B.CastToDouble11);
         Hummingbird_Flight_Controller_B.BusAssignment.data[26] =
           static_cast<real32_T>(Hummingbird_Flight_Controller_B.mixer[0]);
         Hummingbird_Flight_Controller_B.BusAssignment.data[10] =
           static_cast<real32_T>(Hummingbird_Flight_Controller_B.Sum_e[1]);
         Hummingbird_Flight_Controller_B.BusAssignment.data[14] =
-          static_cast<real32_T>(Hummingbird_Flight_Controller_B.CastToDouble11);
+          static_cast<real32_T>(Hummingbird_Flight_Controller_B.CastToDouble9);
         Hummingbird_Flight_Controller_B.BusAssignment.data[27] =
           static_cast<real32_T>(Hummingbird_Flight_Controller_B.mixer[1]);
         Hummingbird_Flight_Controller_B.BusAssignment.data[11] =
           static_cast<real32_T>(Hummingbird_Flight_Controller_B.Sum_e[2]);
         Hummingbird_Flight_Controller_B.BusAssignment.data[15] =
-          static_cast<real32_T>(Hummingbird_Flight_Controller_B.V);
+          static_cast<real32_T>(Hummingbird_Flight_Controller_B.course);
         Hummingbird_Flight_Controller_B.BusAssignment.data[28] =
           static_cast<real32_T>(Hummingbird_Flight_Controller_B.mixer[2]);
         Hummingbird_Flight_Controller_B.BusAssignment.data[29] =
@@ -18582,28 +18675,28 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
 
         Hummingbird_Flight_Controller_B.Actuator_output.rotor_1 = static_cast<
           real32_T>(Hummingbird_Flight_Controller_P.Gain_Gain_mx * sqrt
-                    (Hummingbird_Flight_Controller_B.CastToDouble9));
+                    (Hummingbird_Flight_Controller_B.IntegralGain_e));
         Hummingbird_Flight_Controller_B.Actuator_output.rotor_2 =
           static_cast<real32_T>(Hummingbird_Flight_Controller_P.Gain_Gain_mx *
-          sqrt(Hummingbird_Flight_Controller_B.IntegralGain_e));
+          sqrt(Hummingbird_Flight_Controller_B.Saturation4));
         Hummingbird_Flight_Controller_B.Actuator_output.rotor_3 =
           static_cast<real32_T>(Hummingbird_Flight_Controller_P.Gain_Gain_mx *
-          sqrt(Hummingbird_Flight_Controller_B.Saturation1));
+          sqrt(Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0));
         Hummingbird_Flight_Controller_B.Actuator_output.rotor_4 =
           static_cast<real32_T>(Hummingbird_Flight_Controller_P.Gain_Gain_mx *
-          sqrt(Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_0));
+          sqrt(Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1));
         Hummingbird_Flight_Controller_B.Actuator_output.rotor_5 =
           static_cast<real32_T>(Hummingbird_Flight_Controller_P.Gain_Gain_mx *
-          sqrt(Hummingbird_Flight_Controller_B.rtb_ConvertTofts_idx_1));
+          sqrt(Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2));
         Hummingbird_Flight_Controller_B.Actuator_output.rotor_6 =
           static_cast<real32_T>(Hummingbird_Flight_Controller_P.Gain_Gain_mx *
-          sqrt(Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_2));
+          sqrt(Hummingbird_Flight_Controller_B.CastToDouble25));
         Hummingbird_Flight_Controller_B.Actuator_output.rotor_7 =
           static_cast<real32_T>(Hummingbird_Flight_Controller_P.Gain_Gain_mx *
-          sqrt(Hummingbird_Flight_Controller_B.CastToDouble25));
+          sqrt(Hummingbird_Flight_Controller_B.V));
         Hummingbird_Flight_Controller_B.Actuator_output.rotor_8 =
           static_cast<real32_T>(Hummingbird_Flight_Controller_P.Gain_Gain_mx *
-          sqrt(Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1));
+          sqrt(Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_2));
 
         // Saturate: '<S1402>/Saturation'
         if (Hummingbird_Flight_Controller_B.CastToDouble8 >
@@ -18692,7 +18785,7 @@ void Hummingbird_Flight_Controller_Lower_Memory_step0(void) // Sample time: [0.0
           (Hummingbird_Flight_Controller_B.rtb_current_waypoint_b_idx_0);
         Hummingbird_Flight_Controller_B.Actuator_output.arm_1 =
           static_cast<real32_T>
-          (Hummingbird_Flight_Controller_P.Constant_Value_n5);
+          (Hummingbird_Flight_Controller_B.rtb_next_waypoint_idx_1);
         Hummingbird_Flight_Controller_B.Actuator_output.arm_2 =
           static_cast<real32_T>
           (Hummingbird_Flight_Controller_P.Constant_Value_n5);

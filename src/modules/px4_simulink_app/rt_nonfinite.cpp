@@ -7,9 +7,9 @@
 //
 // Code generated for Simulink model 'Hummingbird_Flight_Controller_Lower_Memory'.
 //
-// Model version                  : 2.238
+// Model version                  : 2.240
 // Simulink Coder version         : 25.1 (R2025a) 21-Nov-2024
-// C/C++ source code generated on : Wed Oct  1 21:21:18 2025
+// C/C++ source code generated on : Fri Oct  3 14:35:14 2025
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: ARM Compatible->ARM Cortex
