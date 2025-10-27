@@ -5,11 +5,11 @@
 //
 // File: ert_main.cpp
 //
-// Code generated for Simulink model 'Hummingbird_Flight_Controller_Lower_Memory'.
+// Code generated for Simulink model 'Hummingbird_Failure_Detection'.
 //
-// Model version                  : 2.240
+// Model version                  : 2.252
 // Simulink Coder version         : 25.1 (R2025a) 21-Nov-2024
-// C/C++ source code generated on : Fri Oct  3 14:35:14 2025
+// C/C++ source code generated on : Tue Oct 21 11:48:01 2025
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -18,8 +18,8 @@
 //
 #include <stdio.h>
 #include <stdlib.h>
-#include "Hummingbird_Flight_Controller_Lower_Memory.h"
-#include "Hummingbird_Flight_Controller_Lower_Memory_private.h"
+#include "Hummingbird_Failure_Detection.h"
+#include "Hummingbird_Failure_Detection_private.h"
 #include "rtwtypes.h"
 #include "limits.h"
 #include "rt_nonfinite.h"
@@ -61,7 +61,7 @@ void *subrateTask(void *arg)
 
 #endif
 
-    Hummingbird_Flight_Controller_Lower_Memory_step(subRateId);
+    Hummingbird_Failure_Detection_step(subRateId);
 
     // Get model outputs here
   }
@@ -72,7 +72,7 @@ void *subrateTask(void *arg)
 
 void *baseRateTask(void *arg)
 {
-  runModel = (Hummingbird_Flight_Controlle_M->getErrorStatus() == (NULL));
+  runModel = (Hummingbird_Failure_Detectio_M->getErrorStatus() == (NULL));
   while (runModel) {
     px4_sem_wait(&baserateTaskSem);
 
@@ -83,15 +83,15 @@ void *baseRateTask(void *arg)
 
 #endif
 
-    if (Hummingbird_Flight_Controlle_M->StepTask(1)
+    if (Hummingbird_Failure_Detectio_M->StepTask(1)
         ) {
       px4_sem_post(&subrateTaskSem[0]);
     }
 
-    Hummingbird_Flight_Controller_Lower_Memory_step(0);
+    Hummingbird_Failure_Detection_step(0);
 
     // Get model outputs here
-    stopRequested = !((Hummingbird_Flight_Controlle_M->getErrorStatus() == (NULL)));
+    stopRequested = !((Hummingbird_Failure_Detectio_M->getErrorStatus() == (NULL)));
   }
 
   terminateTask(arg);
@@ -102,7 +102,7 @@ void *baseRateTask(void *arg)
 void exitFcn(int sig)
 {
   UNUSED(sig);
-  Hummingbird_Flight_Controlle_M->setErrorStatus("stopping the model");
+  Hummingbird_Failure_Detectio_M->setErrorStatus("stopping the model");
   runModel = 0;
 }
 
@@ -132,7 +132,7 @@ void *terminateTask(void *arg)
   MW_PX4_Terminate();
 
   // Terminate model
-  Hummingbird_Flight_Controller_Lower_Memory_terminate();
+  Hummingbird_Failure_Detection_terminate();
   px4_sem_post(&stopSem);
   return NULL;
 }
@@ -141,10 +141,10 @@ int px4_simulink_app_task_main (int argc, char *argv[])
 {
   subratePriority[0] = 249;
   px4_simulink_app_control_MAVLink();
-  Hummingbird_Flight_Controlle_M->setErrorStatus(0);
+  Hummingbird_Failure_Detectio_M->setErrorStatus(0);
 
   // Initialize model
-  Hummingbird_Flight_Controller_Lower_Memory_initialize();
+  Hummingbird_Failure_Detection_initialize();
 
   // Call RTOS Initialization function
   nuttxRTOSInit(0.001, 1);

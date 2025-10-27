@@ -52,7 +52,7 @@ protected:
         if (_actuator_position_sub.update(&actuator_position)) {
             mavlink_actuator_position_t msg{};
 
-	        msg.da   = actuator_position.positions[0];
+	    msg.da   = actuator_position.positions[0];
             msg.de   = actuator_position.positions[1];
             msg.dr   = actuator_position.positions[2];
             msg.dt   = actuator_position.positions[3];

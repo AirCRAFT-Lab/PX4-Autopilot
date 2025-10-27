@@ -221,6 +221,7 @@ set(msg_files
 	VtolVehicleStatus.msg
 	Wind.msg
 	YawEstimatorStatus.msg
+	FailureDetectionId.msg
 	SimulinkCustomMessage.msg
 	YawDamperInfo.msg
 	WaypointNavDebug.msg

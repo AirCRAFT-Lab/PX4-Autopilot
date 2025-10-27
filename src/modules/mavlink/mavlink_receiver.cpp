@@ -276,6 +276,9 @@ MavlinkReceiver::handle_message(mavlink_message_t *msg)
 	case MAVLINK_MSG_ID_ACTUATOR_POSITION:
 		handle_message_actuator_position(msg);
 		break;
+	case MAVLINK_MSG_ID_FAILURE_DETECTION_ID:
+		handle_message_failure_detection_id(msg);
+		break;
 
 #if !defined(CONSTRAINED_FLASH)
 
@@ -2413,6 +2416,17 @@ MavlinkReceiver::handle_message_actuator_position(mavlink_message_t *msg)
     _actuator_position_pub.publish(actuator_position);
 }
 
+void MavlinkReceiver::handle_message_failure_detection_id(mavlink_message_t *msg)
+{
+	mavlink_failure_detection_id_t failure_id_msg;
+	mavlink_msg_failure_detection_id_decode(msg, &failure_id_msg);
+
+	failure_detection_id_s failure_detection_id{};
+	failure_detection_id.timestamp = hrt_absolute_time();
+	failure_detection_id.failure_id = failure_id_msg.failure_id;
+
+	_failure_detection_id_pub.publish(failure_detection_id);
+}
 void
 MavlinkReceiver::handle_message_follow_target(mavlink_message_t *msg)
 {
