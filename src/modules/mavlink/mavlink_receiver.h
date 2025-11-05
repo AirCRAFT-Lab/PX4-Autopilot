@@ -112,6 +112,8 @@
 #include <uORB/topics/vehicle_trajectory_waypoint.h>
 #include <uORB/topics/actuator_position.h>
 #include <uORB/topics/failure_detection_id.h>
+#include <uORB/topics/wind_angles.h>
+#include <uORB/topics/virtual_imu.h>
 
 #if !defined(CONSTRAINED_FLASH)
 # include <uORB/topics/debug_array.h>
@@ -205,6 +207,8 @@ private:
 	void handle_message_gimbal_device_attitude_status(mavlink_message_t *msg);
 	void handle_message_actuator_position(mavlink_message_t *msg);
 	void handle_message_failure_detection_id(mavlink_message_t *msg);
+	void handle_message_wind_angles(mavlink_message_t *msg);
+	void handle_message_virtual_imu(mavlink_message_t *msg);
 
 #if !defined(CONSTRAINED_FLASH)
 	void handle_message_debug(mavlink_message_t *msg);
@@ -347,6 +351,8 @@ private:
 	uORB::Publication<vehicle_command_ack_s> _cmd_ack_pub{ORB_ID(vehicle_command_ack)};
 	uORB::Publication<actuator_position_s> 	 _actuator_position_pub{ORB_ID(actuator_position)};
 	uORB::Publication<failure_detection_id_s> 	 _failure_detection_id_pub{ORB_ID(failure_detection_id)};
+	uORB::Publication<wind_angles_s> 	 _wind_angles_pub{ORB_ID(wind_angles)};
+	uORB::Publication<virtual_imu_s> 	 _virtual_imu_pub{ORB_ID(virtual_imu)};
 
 	// ORB subscriptions
 	uORB::Subscription	_actuator_armed_sub{ORB_ID(actuator_armed)};

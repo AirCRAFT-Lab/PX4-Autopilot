@@ -279,6 +279,12 @@ MavlinkReceiver::handle_message(mavlink_message_t *msg)
 	case MAVLINK_MSG_ID_FAILURE_DETECTION_ID:
 		handle_message_failure_detection_id(msg);
 		break;
+	case MAVLINK_MSG_ID_WIND_ANGLES:
+		handle_message_wind_angles(msg);
+		break;
+	case MAVLINK_MSG_ID_VIRTUAL_IMU:
+		handle_message_virtual_imu(msg);
+		break;
 
 #if !defined(CONSTRAINED_FLASH)
 
@@ -2427,6 +2433,36 @@ void MavlinkReceiver::handle_message_failure_detection_id(mavlink_message_t *msg
 
 	_failure_detection_id_pub.publish(failure_detection_id);
 }
+
+void MavlinkReceiver::handle_message_wind_angles(mavlink_message_t *msg)
+{
+	mavlink_wind_angles_t wind_angles_msg;
+	mavlink_msg_wind_angles_decode(msg, &wind_angles_msg);
+
+	wind_angles_s wind_angles{};
+	wind_angles.timestamp = hrt_absolute_time();
+	wind_angles.aoa = wind_angles_msg.aoa;
+	wind_angles.aos = wind_angles_msg.aos;
+
+	_wind_angles_pub.publish(wind_angles);
+}
+
+void
+MavlinkReceiver::handle_message_virtual_imu(mavlink_message_t *msg)
+{
+	mavlink_virtual_imu_t virtual_imu_msg;
+	mavlink_msg_virtual_imu_decode(msg, &virtual_imu_msg);
+
+	virtual_imu_s virtual_imu{};
+
+	virtual_imu.timestamp = hrt_absolute_time();
+	virtual_imu.p = virtual_imu_msg.p;
+	virtual_imu.q = virtual_imu_msg.q;
+	virtual_imu.r = virtual_imu_msg.r;
+
+	_virtual_imu_pub.publish(virtual_imu);
+}
+
 void
 MavlinkReceiver::handle_message_follow_target(mavlink_message_t *msg)
 {

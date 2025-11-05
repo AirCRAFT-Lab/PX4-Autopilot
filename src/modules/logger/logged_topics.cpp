@@ -141,6 +141,8 @@ void LoggedTopics::add_default_topics()
 	add_optional_topic("yaw_damper_info",20);
 	add_optional_topic("actuator_position", 10);
 	add_optional_topic("failure_detection_id", 10);
+	add_optional_topic("wind_angles");
+	add_optional_topic("virtual_imu");
 
 	// multi topics
 	add_optional_topic_multi("actuator_outputs", 100, 3);

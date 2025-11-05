@@ -120,6 +120,10 @@
 #include "streams/VFR_HUD.hpp"
 #include "streams/VIBRATION.hpp"
 #include "streams/WIND_COV.hpp"
+# include "streams/ACTUATOR_POSITION.hpp"
+# include "streams/WIND_ANGLES.hpp"
+# include "streams/FAILURE_DETECTION_ID.hpp"
+# include "streams/VIRTUAL_IMU.hpp"
 
 #if !defined(CONSTRAINED_FLASH)
 # include "streams/ADSB_VEHICLE.hpp"
@@ -142,7 +146,6 @@
 # include "streams/UAVIONIX_ADSB_OUT_CFG.hpp"
 # include "streams/UAVIONIX_ADSB_OUT_DYNAMIC.hpp"
 # include "streams/UTM_GLOBAL_POSITION.hpp"
-# include "streams/ACTUATOR_POSITION.hpp"
 #endif // !CONSTRAINED_FLASH
 
 // ensure PX4 rotation enum and MAV_SENSOR_ROTATION align
@@ -482,11 +485,20 @@ static const StreamListItem streams_list[] = {
 	create_stream_list_item<MavlinkStreamUavionixADSBOutCfg>(),
 #endif // UAVIONIX_ADSB_OUT_CFG_HPP
 #if defined(UAVIONIX_ADSB_OUT_DYNAMIC_HPP)
-	create_stream_list_item<MavlinkStreamUavionixADSBOutDynamic>()
+	create_stream_list_item<MavlinkStreamUavionixADSBOutDynamic>(),
 #endif // UAVIONIX_ADSB_OUT_DYNAMIC_HPP
 #if defined(ACTUATOR_POSITION_HPP)
 	create_stream_list_item<MavlinkStreamActuatorPosition>(),
 #endif
+#if defined(FAILURE_DETECTION_ID_HPP)
+	create_stream_list_item<MavlinkStreamFailureDetectionId>(),
+#endif // FAILURE_DETECTION_ID_HPP
+#if defined(WIND_ANGLES_HPP)
+	create_stream_list_item<MavlinkStreamWindAngles>(),
+#endif // WIND_ANGLES_HPP
+#if defined(VIRTUAL_IMU_HPP)
+	create_stream_list_item<MavlinkStreamVirtualImu>(),
+#endif // VIRTUAL_IMU_HPP
 };
 
 const char *get_stream_name(const uint16_t msg_id)

@@ -1,5 +1,6 @@
 #include <uORB/topics/actuator_position.h>
-
+#ifndef ACTUATOR_POSITION_HPP
+#define ACTUATOR_POSITION_HPP
 class MavlinkStreamActuatorPosition : public MavlinkStream
 {
 public:
@@ -74,3 +75,5 @@ protected:
         return updated;
     }
 };
+
+#endif

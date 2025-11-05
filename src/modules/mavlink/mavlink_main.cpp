@@ -1392,6 +1392,8 @@ Mavlink::configure_streams_to_default(const char *configure_single_stream)
 		configure_stream_local("ALTITUDE", 1.0f);
 		configure_stream_local("ATTITUDE", 15.0f);
 		configure_stream_local("ATTITUDE_QUATERNION", 10.0f);
+		configure_stream_local("WIND_ANGLES", 3.0f);
+		configure_stream_local("ACTUATOR_POSITION", 5.0f);
 		configure_stream_local("ATTITUDE_TARGET", 2.0f);
 		configure_stream_local("BATTERY_STATUS", 0.5f);
 		configure_stream_local("CAMERA_IMAGE_CAPTURED", unlimited_rate);
@@ -1444,9 +1446,13 @@ Mavlink::configure_streams_to_default(const char *configure_single_stream)
 
 	case MAVLINK_MODE_ONBOARD:
 		// Note: streams requiring low latency come first
+		configure_stream_local("WIND_ANGLES", 50.0f);
+		// configure_stream_local("AIRSPEED", 50.0f);
+		configure_stream_local("VFR_HUD", 50.0f);
+		configure_stream_local("ACTUATOR_POSITION", 50.0f);
+		configure_stream_local("HIGHRES_IMU", 50.0f);
 		configure_stream_local("TIMESYNC", 10.0f);
 		configure_stream_local("CAMERA_TRIGGER", unlimited_rate);
-		configure_stream_local("HIGHRES_IMU", 50.0f);
 		configure_stream_local("LOCAL_POSITION_NED", 30.0f);
 		configure_stream_local("ATTITUDE", 100.0f);
 		configure_stream_local("ALTITUDE", 10.0f);
@@ -1598,6 +1604,11 @@ Mavlink::configure_streams_to_default(const char *configure_single_stream)
 
 	case MAVLINK_MODE_CONFIG: // USB
 		// Note: streams requiring low latency come first
+		configure_stream_local("WIND_ANGLES", 50.0f);
+		// configure_stream_local("AIRSPEED", 50.0f);
+		configure_stream_local("VFR_HUD", 50.0f);
+		configure_stream_local("ACTUATOR_POSITION", 50.0f);
+		configure_stream_local("HIGHRES_IMU", 50.0f);
 		configure_stream_local("TIMESYNC", 10.0f);
 		configure_stream_local("CAMERA_TRIGGER", unlimited_rate);
 		configure_stream_local("LOCAL_POSITION_NED", 30.0f);
@@ -1623,7 +1634,6 @@ Mavlink::configure_streams_to_default(const char *configure_single_stream)
 		configure_stream_local("GPS_GLOBAL_ORIGIN", 1.0f);
 		configure_stream_local("GPS_RAW_INT", unlimited_rate);
 		configure_stream_local("GPS_STATUS", 1.0f);
-		configure_stream_local("HIGHRES_IMU", 50.0f);
 		configure_stream_local("HOME_POSITION", 0.5f);
 		configure_stream_local("HYGROMETER_SENSOR", 1.0f);
 		configure_stream_local("MAG_CAL_REPORT", 1.0f);
