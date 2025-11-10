@@ -547,3 +547,15 @@ PARAM_DEFINE_FLOAT(FW_DM_P_GAIN, 1);
  * @category Developer
  */
 PARAM_DEFINE_FLOAT(FW_DN_P_GAIN, 1);
+
+/**
+ * Put the virtual IMU into the loop
+ * 
+ * Switch parameter to 1 to put the virtual IMU into the loop, switch to 0 to put the physical IMU in the loop
+ * 
+ * @min 0
+ * @max 1
+ * @group Virtual IMU Control
+ * @category Developer
+ */
+PARAM_DEFINE_INT32(V_IMU_ON, 0);

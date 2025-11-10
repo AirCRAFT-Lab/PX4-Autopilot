@@ -58,6 +58,7 @@ private:
 
 
 	DEFINE_PARAMETERS(
+		(ParamInt<px4::params::V_IMU_ON>) _param_v_imu_on,
 		(ParamFloat<px4::params::FW_DN_P_GAIN>) _param_fw_dn_p_gain,
 		(ParamFloat<px4::params::FW_DM_P_GAIN>) _param_fw_dm_p_gain,
 		(ParamFloat<px4::params::FW_DL_P_GAIN>) _param_fw_dl_p_gain,

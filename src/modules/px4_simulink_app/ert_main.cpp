@@ -7,9 +7,9 @@
 //
 // Code generated for Simulink model 'Hummingbird_Failure_Detection'.
 //
-// Model version                  : 2.262
+// Model version                  : 2.268
 // Simulink Coder version         : 25.1 (R2025a) 21-Nov-2024
-// C/C++ source code generated on : Wed Nov  5 13:57:12 2025
+// C/C++ source code generated on : Mon Nov 10 12:31:00 2025
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: ARM Compatible->ARM Cortex

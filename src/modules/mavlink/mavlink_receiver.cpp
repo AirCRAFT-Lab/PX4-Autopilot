@@ -285,6 +285,9 @@ MavlinkReceiver::handle_message(mavlink_message_t *msg)
 	case MAVLINK_MSG_ID_VIRTUAL_IMU:
 		handle_message_virtual_imu(msg);
 		break;
+	case MAVLINK_MSG_ID_FAILURE_PROBABILITY:
+		handle_message_failure_probability(msg);
+		break;
 
 #if !defined(CONSTRAINED_FLASH)
 
@@ -2461,6 +2464,23 @@ MavlinkReceiver::handle_message_virtual_imu(mavlink_message_t *msg)
 	virtual_imu.r = virtual_imu_msg.r;
 
 	_virtual_imu_pub.publish(virtual_imu);
+}
+
+void
+MavlinkReceiver::handle_message_failure_probability(mavlink_message_t *msg)
+{
+	mavlink_failure_probability_t failure_probability_msg;
+	mavlink_msg_failure_probability_decode(msg, &failure_probability_msg);
+
+	failure_probability_s failure_probability{};
+
+	failure_probability.timestamp = hrt_absolute_time();
+	failure_probability.normal = failure_probability_msg.normal;
+	failure_probability.roll_failure = failure_probability_msg.roll_failure;
+	failure_probability.pitch_failure = failure_probability_msg.pitch_failure;
+	failure_probability.yaw_failure = failure_probability_msg.yaw_failure;
+
+	_failure_probability_pub.publish(failure_probability);
 }
 
 void

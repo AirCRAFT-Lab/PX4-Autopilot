@@ -124,6 +124,7 @@
 # include "streams/WIND_ANGLES.hpp"
 # include "streams/FAILURE_DETECTION_ID.hpp"
 # include "streams/VIRTUAL_IMU.hpp"
+# include "streams/FAILURE_PROBABILITY.hpp"
 
 #if !defined(CONSTRAINED_FLASH)
 # include "streams/ADSB_VEHICLE.hpp"
@@ -499,6 +500,9 @@ static const StreamListItem streams_list[] = {
 #if defined(VIRTUAL_IMU_HPP)
 	create_stream_list_item<MavlinkStreamVirtualImu>(),
 #endif // VIRTUAL_IMU_HPP
+#if defined(FAILURE_PROBABILITY_HPP)
+	create_stream_list_item<MavlinkStreamFailureProbability>(),
+#endif // FAILURE_PROBABILITY_HPP
 };
 
 const char *get_stream_name(const uint16_t msg_id)

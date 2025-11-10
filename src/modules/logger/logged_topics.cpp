@@ -143,6 +143,8 @@ void LoggedTopics::add_default_topics()
 	add_optional_topic("failure_detection_id", 10);
 	add_optional_topic("wind_angles");
 	add_optional_topic("virtual_imu");
+	add_optional_topic("pid_rate_input", 20);
+	add_optional_topic("failure_probability", 100);
 
 	// multi topics
 	add_optional_topic_multi("actuator_outputs", 100, 3);

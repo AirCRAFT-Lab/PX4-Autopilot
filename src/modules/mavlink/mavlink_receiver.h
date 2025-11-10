@@ -114,6 +114,7 @@
 #include <uORB/topics/failure_detection_id.h>
 #include <uORB/topics/wind_angles.h>
 #include <uORB/topics/virtual_imu.h>
+#include <uORB/topics/failure_probability.h>
 
 #if !defined(CONSTRAINED_FLASH)
 # include <uORB/topics/debug_array.h>
@@ -209,6 +210,7 @@ private:
 	void handle_message_failure_detection_id(mavlink_message_t *msg);
 	void handle_message_wind_angles(mavlink_message_t *msg);
 	void handle_message_virtual_imu(mavlink_message_t *msg);
+	void handle_message_failure_probability(mavlink_message_t *msg);
 
 #if !defined(CONSTRAINED_FLASH)
 	void handle_message_debug(mavlink_message_t *msg);
@@ -353,6 +355,7 @@ private:
 	uORB::Publication<failure_detection_id_s> 	 _failure_detection_id_pub{ORB_ID(failure_detection_id)};
 	uORB::Publication<wind_angles_s> 	 _wind_angles_pub{ORB_ID(wind_angles)};
 	uORB::Publication<virtual_imu_s> 	 _virtual_imu_pub{ORB_ID(virtual_imu)};
+	uORB::Publication<failure_probability_s> _failure_probability_pub{ORB_ID(failure_probability)};
 
 	// ORB subscriptions
 	uORB::Subscription	_actuator_armed_sub{ORB_ID(actuator_armed)};
