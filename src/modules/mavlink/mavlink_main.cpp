@@ -1446,6 +1446,7 @@ Mavlink::configure_streams_to_default(const char *configure_single_stream)
 
 	case MAVLINK_MODE_ONBOARD:
 		// Note: streams requiring low latency come first
+		configure_stream_local("HIL_ACTUATOR_CONTROLS",200.0f);
 		configure_stream_local("ACTUATOR_POSITION", 50.0f);
 		configure_stream_local("WIND_ANGLES", 50.0f);
 		configure_stream_local("HIGHRES_IMU", 50.0f);
@@ -1604,6 +1605,7 @@ Mavlink::configure_streams_to_default(const char *configure_single_stream)
 
 	case MAVLINK_MODE_CONFIG: // USB
 		// Note: streams requiring low latency come first
+		configure_stream_local("HIL_ACTUATOR_CONTROLS",200.0f);
 		configure_stream_local("ACTUATOR_POSITION", 50.0f);
 		configure_stream_local("WIND_ANGLES", 50.0f);
 		configure_stream_local("HIGHRES_IMU", 50.0f);
