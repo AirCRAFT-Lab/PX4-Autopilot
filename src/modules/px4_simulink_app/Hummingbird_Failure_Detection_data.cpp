@@ -7,9 +7,9 @@
 //
 // Code generated for Simulink model 'Hummingbird_Failure_Detection'.
 //
-// Model version                  : 2.268
+// Model version                  : 2.287
 // Simulink Coder version         : 25.1 (R2025a) 21-Nov-2024
-// C/C++ source code generated on : Mon Nov 10 12:31:00 2025
+// C/C++ source code generated on : Tue Dec  2 21:57:40 2025
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -65,7 +65,7 @@ P_Hummingbird_Failure_Detecti_T Hummingbird_Failure_Detection_P = {
   { 0.015, 0.015, 0.0 },
 
   // Mask Parameter: PIDController_D
-  //  Referenced by: '<S1508>/Derivative Gain'
+  //  Referenced by: '<S1517>/Derivative Gain'
 
   1.0,
 
@@ -175,7 +175,7 @@ P_Hummingbird_Failure_Detecti_T Hummingbird_Failure_Detection_P = {
   0.0,
 
   // Mask Parameter: PIDController_InitialConditi_gy
-  //  Referenced by: '<S1510>/Filter'
+  //  Referenced by: '<S1519>/Filter'
 
   0.0,
 
@@ -217,7 +217,7 @@ P_Hummingbird_Failure_Detecti_T Hummingbird_Failure_Detection_P = {
   // Mask Parameter: PIDController_LowerIntegratorSa
   //  Referenced by: '<S71>/Integrator'
 
-  -2.0,
+  -0.5,
 
   // Mask Parameter: PIDController1_LowerIntegratorS
   //  Referenced by: '<S123>/Integrator'
@@ -290,7 +290,7 @@ P_Hummingbird_Failure_Detecti_T Hummingbird_Failure_Detection_P = {
   100.0,
 
   // Mask Parameter: PIDController_N
-  //  Referenced by: '<S1518>/Filter Coefficient'
+  //  Referenced by: '<S1527>/Filter Coefficient'
 
   100.0,
 
@@ -320,7 +320,7 @@ P_Hummingbird_Failure_Detecti_T Hummingbird_Failure_Detection_P = {
   { 0.60000000000000009, 0.60000000000000009, 0.1 },
 
   // Mask Parameter: PIDController_P
-  //  Referenced by: '<S1520>/Proportional Gain'
+  //  Referenced by: '<S1529>/Proportional Gain'
 
   0.0,
 
@@ -399,7 +399,7 @@ P_Hummingbird_Failure_Detecti_T Hummingbird_Failure_Detection_P = {
   },
 
   // Computed Parameter: Out1_Y0
-  //  Referenced by: '<S1538>/Out1'
+  //  Referenced by: '<S1549>/Out1'
 
   {
     (0ULL),                            // timestamp
@@ -478,7 +478,7 @@ P_Hummingbird_Failure_Detecti_T Hummingbird_Failure_Detection_P = {
   },
 
   // Computed Parameter: Constant_Value_b
-  //  Referenced by: '<S1462>/Constant'
+  //  Referenced by: '<S1468>/Constant'
 
   {
     (0ULL),                            // timestamp
@@ -557,7 +557,7 @@ P_Hummingbird_Failure_Detecti_T Hummingbird_Failure_Detection_P = {
   },
 
   // Computed Parameter: Out1_Y0_n
-  //  Referenced by: '<S1544>/Out1'
+  //  Referenced by: '<S1557>/Out1'
 
   {
     (0ULL),                            // timestamp
@@ -616,7 +616,7 @@ P_Hummingbird_Failure_Detecti_T Hummingbird_Failure_Detection_P = {
   },
 
   // Computed Parameter: Constant_Value_a
-  //  Referenced by: '<S1477>/Constant'
+  //  Referenced by: '<S1485>/Constant'
 
   {
     (0ULL),                            // timestamp
@@ -675,7 +675,7 @@ P_Hummingbird_Failure_Detecti_T Hummingbird_Failure_Detection_P = {
   },
 
   // Computed Parameter: Out1_Y0_ns
-  //  Referenced by: '<S1536>/Out1'
+  //  Referenced by: '<S1547>/Out1'
 
   {
     (0ULL),                            // timestamp
@@ -698,7 +698,7 @@ P_Hummingbird_Failure_Detecti_T Hummingbird_Failure_Detection_P = {
   },
 
   // Computed Parameter: Constant_Value_i
-  //  Referenced by: '<S1460>/Constant'
+  //  Referenced by: '<S1466>/Constant'
 
   {
     (0ULL),                            // timestamp
@@ -721,7 +721,7 @@ P_Hummingbird_Failure_Detecti_T Hummingbird_Failure_Detection_P = {
   },
 
   // Computed Parameter: Out1_Y0_g
-  //  Referenced by: '<S1545>/Out1'
+  //  Referenced by: '<S1556>/Out1'
 
   {
     (0ULL),                            // timestamp
@@ -745,7 +745,7 @@ P_Hummingbird_Failure_Detecti_T Hummingbird_Failure_Detection_P = {
   },
 
   // Computed Parameter: Constant_Value_k
-  //  Referenced by: '<S1478>/Constant'
+  //  Referenced by: '<S1484>/Constant'
 
   {
     (0ULL),                            // timestamp
@@ -793,7 +793,7 @@ P_Hummingbird_Failure_Detecti_T Hummingbird_Failure_Detection_P = {
   },
 
   // Computed Parameter: Out1_Y0_l
-  //  Referenced by: '<S1540>/Out1'
+  //  Referenced by: '<S1551>/Out1'
 
   {
     (0ULL),                            // timestamp
@@ -804,7 +804,7 @@ P_Hummingbird_Failure_Detecti_T Hummingbird_Failure_Detection_P = {
   },
 
   // Computed Parameter: Constant_Value_o
-  //  Referenced by: '<S1464>/Constant'
+  //  Referenced by: '<S1470>/Constant'
 
   {
     (0ULL),                            // timestamp
@@ -826,7 +826,7 @@ P_Hummingbird_Failure_Detecti_T Hummingbird_Failure_Detection_P = {
   },
 
   // Computed Parameter: Out1_Y0_k
-  //  Referenced by: '<S1542>/Out1'
+  //  Referenced by: '<S1554>/Out1'
 
   {
     (0ULL),                            // timestamp
@@ -847,7 +847,7 @@ P_Hummingbird_Failure_Detecti_T Hummingbird_Failure_Detection_P = {
   },
 
   // Computed Parameter: Constant_Value_e
-  //  Referenced by: '<S1475>/Constant'
+  //  Referenced by: '<S1482>/Constant'
 
   {
     (0ULL),                            // timestamp
@@ -868,7 +868,7 @@ P_Hummingbird_Failure_Detecti_T Hummingbird_Failure_Detection_P = {
   },
 
   // Computed Parameter: Out1_Y0_d
-  //  Referenced by: '<S1539>/Out1'
+  //  Referenced by: '<S1550>/Out1'
 
   {
     (0ULL),                            // timestamp
@@ -886,7 +886,7 @@ P_Hummingbird_Failure_Detecti_T Hummingbird_Failure_Detection_P = {
   },
 
   // Computed Parameter: Constant_Value_p
-  //  Referenced by: '<S1463>/Constant'
+  //  Referenced by: '<S1469>/Constant'
 
   {
     (0ULL),                            // timestamp
@@ -904,7 +904,7 @@ P_Hummingbird_Failure_Detecti_T Hummingbird_Failure_Detection_P = {
   },
 
   // Computed Parameter: Out1_Y0_c
-  //  Referenced by: '<S1480>/Out1'
+  //  Referenced by: '<S1487>/Out1'
 
   {
     (0ULL),                            // timestamp
@@ -927,7 +927,7 @@ P_Hummingbird_Failure_Detecti_T Hummingbird_Failure_Detection_P = {
   },
 
   // Computed Parameter: Constant_Value_bd
-  //  Referenced by: '<S1479>/Constant'
+  //  Referenced by: '<S1486>/Constant'
 
   {
     (0ULL),                            // timestamp
@@ -950,7 +950,7 @@ P_Hummingbird_Failure_Detecti_T Hummingbird_Failure_Detection_P = {
   },
 
   // Computed Parameter: Out1_Y0_ds
-  //  Referenced by: '<S1543>/Out1'
+  //  Referenced by: '<S1555>/Out1'
 
   {
     (0ULL),                            // timestamp
@@ -972,7 +972,7 @@ P_Hummingbird_Failure_Detecti_T Hummingbird_Failure_Detection_P = {
   },
 
   // Computed Parameter: Constant_Value_os
-  //  Referenced by: '<S1476>/Constant'
+  //  Referenced by: '<S1483>/Constant'
 
   {
     (0ULL),                            // timestamp
@@ -991,6 +991,52 @@ P_Hummingbird_Failure_Detecti_T Hummingbird_Failure_Detection_P = {
     0U,                                // gyro_clipping
     0U,                                // accel_calibration_count
     0U                                 // gyro_calibration_count
+  },
+
+  // Computed Parameter: Out1_Y0_o
+  //  Referenced by: '<S1553>/Out1'
+
+  {
+    (0ULL),                            // timestamp
+    (0ULL),                            // timestamp_sample
+    0U,                                // device_id
+    0.0F,                              // x
+    0.0F,                              // y
+    0.0F,                              // z
+    0.0F,                              // temperature
+    0U,                                // error_count
+
+    {
+      0U, 0U, 0U }
+    ,                                  // clip_counter
+    0U,                                // samples
+
+    {
+      0U, 0U, 0U, 0U }
+    // _padding0
+  },
+
+  // Computed Parameter: Constant_Value_ht
+  //  Referenced by: '<S1472>/Constant'
+
+  {
+    (0ULL),                            // timestamp
+    (0ULL),                            // timestamp_sample
+    0U,                                // device_id
+    0.0F,                              // x
+    0.0F,                              // y
+    0.0F,                              // z
+    0.0F,                              // temperature
+    0U,                                // error_count
+
+    {
+      0U, 0U, 0U }
+    ,                                  // clip_counter
+    0U,                                // samples
+
+    {
+      0U, 0U, 0U, 0U }
+    // _padding0
   },
 
   // Computed Parameter: Constant_Value_bo
@@ -1032,7 +1078,7 @@ P_Hummingbird_Failure_Detecti_T Hummingbird_Failure_Detection_P = {
   },
 
   // Computed Parameter: Out1_Y0_f
-  //  Referenced by: '<S1537>/Out1'
+  //  Referenced by: '<S1548>/Out1'
 
   {
     (0ULL),                            // timestamp
@@ -1044,7 +1090,7 @@ P_Hummingbird_Failure_Detecti_T Hummingbird_Failure_Detection_P = {
   },
 
   // Computed Parameter: Constant_Value_e2
-  //  Referenced by: '<S1461>/Constant'
+  //  Referenced by: '<S1467>/Constant'
 
   {
     (0ULL),                            // timestamp
@@ -1071,6 +1117,17 @@ P_Hummingbird_Failure_Detecti_T Hummingbird_Failure_Detection_P = {
     {
       0U, 0U }
     // _padding0
+  },
+
+  // Computed Parameter: Constant_Value_m
+  //  Referenced by: '<S1544>/Constant'
+
+  {
+    (0ULL),                            // timestamp
+    0.0,                               // double_a
+    0.0,                               // double_b
+    0.0F,                              // single_a
+    0.0F                               // single_b
   },
 
   // Computed Parameter: Constant_Value_ay
@@ -1202,7 +1259,7 @@ P_Hummingbird_Failure_Detecti_T Hummingbird_Failure_Detection_P = {
   },
 
   // Computed Parameter: Constant_Value_c5
-  //  Referenced by: '<S1533>/Constant'
+  //  Referenced by: '<S1542>/Constant'
 
   {
     (0ULL),                            // timestamp
@@ -1215,7 +1272,7 @@ P_Hummingbird_Failure_Detecti_T Hummingbird_Failure_Detection_P = {
     // _padding0
   },
 
-  // Computed Parameter: Constant_Value_m
+  // Computed Parameter: Constant_Value_mw
   //  Referenced by: '<S315>/Constant'
 
   {
@@ -1370,7 +1427,7 @@ P_Hummingbird_Failure_Detecti_T Hummingbird_Failure_Detection_P = {
   },
 
   // Computed Parameter: Out1_Y0_k2
-  //  Referenced by: '<S1541>/Out1'
+  //  Referenced by: '<S1552>/Out1'
 
   {
     (0ULL),                            // timestamp
@@ -1384,7 +1441,7 @@ P_Hummingbird_Failure_Detecti_T Hummingbird_Failure_Detection_P = {
   },
 
   // Computed Parameter: Constant_Value_cc
-  //  Referenced by: '<S1465>/Constant'
+  //  Referenced by: '<S1471>/Constant'
 
   {
     (0ULL),                            // timestamp
@@ -1426,7 +1483,7 @@ P_Hummingbird_Failure_Detecti_T Hummingbird_Failure_Detection_P = {
   },
 
   // Computed Parameter: Out1_Y0_n3
-  //  Referenced by: '<S1535>/Out1'
+  //  Referenced by: '<S1546>/Out1'
 
   {
     (0ULL),                            // timestamp
@@ -1441,7 +1498,7 @@ P_Hummingbird_Failure_Detecti_T Hummingbird_Failure_Detection_P = {
   },
 
   // Computed Parameter: Constant_Value_pi
-  //  Referenced by: '<S1459>/Constant'
+  //  Referenced by: '<S1465>/Constant'
 
   {
     (0ULL),                            // timestamp
@@ -1455,7 +1512,7 @@ P_Hummingbird_Failure_Detecti_T Hummingbird_Failure_Detection_P = {
     0U                                 // _padding0
   },
 
-  // Computed Parameter: Out1_Y0_o
+  // Computed Parameter: Out1_Y0_oz
   //  Referenced by: '<S1451>/Out1'
 
   {
@@ -1548,10 +1605,10 @@ P_Hummingbird_Failure_Detecti_T Hummingbird_Failure_Detection_P = {
 
   0.001,
 
-  // Expression: 100
+  // Expression: 1
   //  Referenced by: '<S35>/Constant2'
 
-  100.0,
+  1.0,
 
   // Computed Parameter: Filter_gainval_c
   //  Referenced by: '<S118>/Filter'
@@ -1563,10 +1620,10 @@ P_Hummingbird_Failure_Detecti_T Hummingbird_Failure_Detection_P = {
 
   0.001,
 
-  // Expression: 100
+  // Expression: 1
   //  Referenced by: '<S36>/Constant2'
 
-  100.0,
+  1.0,
 
   // Expression: 15*pi/180
   //  Referenced by: '<S23>/Saturation1'
@@ -1673,6 +1730,11 @@ P_Hummingbird_Failure_Detecti_T Hummingbird_Failure_Detection_P = {
 
   0.3490658503988659,
 
+  // Expression: 32.174
+  //  Referenced by: '<S319>/Gain4'
+
+  32.174,
+
   // Expression: 1500
   //  Referenced by: '<S330>/Constant7'
 
@@ -1697,11 +1759,6 @@ P_Hummingbird_Failure_Detecti_T Hummingbird_Failure_Detection_P = {
   //  Referenced by: '<S319>/Gain3'
 
   0.2,
-
-  // Expression: 32.174
-  //  Referenced by: '<S319>/Gain4'
-
-  32.174,
 
   // Computed Parameter: Filter_gainval_l
   //  Referenced by: '<S416>/Filter'
@@ -2023,6 +2080,11 @@ P_Hummingbird_Failure_Detecti_T Hummingbird_Failure_Detection_P = {
 
   { 0.0, 0.0, 0.0 },
 
+  // Expression: 1
+  //  Referenced by: '<S1424>/Constant'
+
+  1.0,
+
   // Expression: 0
   //  Referenced by: '<S1410>/Constant8'
 
@@ -2135,45 +2197,15 @@ P_Hummingbird_Failure_Detecti_T Hummingbird_Failure_Detection_P = {
 
   { 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0 },
 
-  // Expression: 44.41
-  //  Referenced by: '<S1423>/Saturation9'
-
-  44.41,
-
-  // Expression: -44.41
-  //  Referenced by: '<S1423>/Saturation9'
-
-  -44.41,
-
   // Expression: -8*ly*0.000017484269645
   //  Referenced by: '<S1423>/Constant2'
 
   -0.00015153033692333332,
 
-  // Expression: 78.5
-  //  Referenced by: '<S1423>/Saturation8'
-
-  78.5,
-
-  // Expression: -78.5
-  //  Referenced by: '<S1423>/Saturation8'
-
-  -78.5,
-
   // Expression: -8*0.000017484269645*lx
   //  Referenced by: '<S1423>/Constant1'
 
   -0.00026809213455666669,
-
-  // Expression: 3.805821
-  //  Referenced by: '<S1423>/Saturation10'
-
-  3.805821,
-
-  // Expression: -3.805821
-  //  Referenced by: '<S1423>/Saturation10'
-
-  -3.805821,
 
   // Expression: 8*0.000001178991825
   //  Referenced by: '<S1423>/Constant3'
@@ -2259,6 +2291,11 @@ P_Hummingbird_Failure_Detecti_T Hummingbird_Failure_Detection_P = {
   //  Referenced by: '<S1423>/Saturation7'
 
   0.0,
+
+  // Expression: 1
+  //  Referenced by: '<S1412>/Constant'
+
+  1.0,
 
   // Expression: 0
   //  Referenced by: '<S1410>/Constant14'
@@ -2460,6 +2497,21 @@ P_Hummingbird_Failure_Detecti_T Hummingbird_Failure_Detection_P = {
 
   -1.0,
 
+  // Expression: 0
+  //  Referenced by: '<S1460>/Constant1'
+
+  0.0,
+
+  // Expression: 1
+  //  Referenced by: '<S1456>/Constant'
+
+  1.0,
+
+  // Expression: 0
+  //  Referenced by: '<S1457>/Constant'
+
+  0.0,
+
   // Expression: 1
   //  Referenced by: '<Root>/Constant7'
 
@@ -2471,7 +2523,7 @@ P_Hummingbird_Failure_Detecti_T Hummingbird_Failure_Detection_P = {
   3.28084,
 
   // Computed Parameter: Filter_gainval_a
-  //  Referenced by: '<S1510>/Filter'
+  //  Referenced by: '<S1519>/Filter'
 
   0.001,
 
@@ -2481,37 +2533,7 @@ P_Hummingbird_Failure_Detecti_T Hummingbird_Failure_Detection_P = {
   3.28084,
 
   // Expression: 1000
-  //  Referenced by: '<S1468>/Constant'
-
-  1000.0,
-
-  // Expression: 1000
-  //  Referenced by: '<S1466>/Constant'
-
-  1000.0,
-
-  // Expression: 1000
-  //  Referenced by: '<S1467>/Constant'
-
-  1000.0,
-
-  // Expression: 1000
-  //  Referenced by: '<S1469>/Constant'
-
-  1000.0,
-
-  // Expression: 1000
-  //  Referenced by: '<S1470>/Constant'
-
-  1000.0,
-
-  // Expression: 1000
-  //  Referenced by: '<S1471>/Constant'
-
-  1000.0,
-
-  // Expression: 1000
-  //  Referenced by: '<S1472>/Constant'
+  //  Referenced by: '<S1475>/Constant'
 
   1000.0,
 
@@ -2522,6 +2544,36 @@ P_Hummingbird_Failure_Detecti_T Hummingbird_Failure_Detection_P = {
 
   // Expression: 1000
   //  Referenced by: '<S1474>/Constant'
+
+  1000.0,
+
+  // Expression: 1000
+  //  Referenced by: '<S1476>/Constant'
+
+  1000.0,
+
+  // Expression: 1000
+  //  Referenced by: '<S1477>/Constant'
+
+  1000.0,
+
+  // Expression: 1000
+  //  Referenced by: '<S1478>/Constant'
+
+  1000.0,
+
+  // Expression: 1000
+  //  Referenced by: '<S1479>/Constant'
+
+  1000.0,
+
+  // Expression: 1000
+  //  Referenced by: '<S1480>/Constant'
+
+  1000.0,
+
+  // Expression: 1000
+  //  Referenced by: '<S1481>/Constant'
 
   1000.0,
 
@@ -2590,10 +2642,40 @@ P_Hummingbird_Failure_Detecti_T Hummingbird_Failure_Detection_P = {
 
   3.28084,
 
+  // Computed Parameter: DiscreteTimeIntegrator_gainval
+  //  Referenced by: '<S13>/Discrete-Time Integrator'
+
+  0.001,
+
+  // Expression: 0
+  //  Referenced by: '<S13>/Discrete-Time Integrator'
+
+  0.0,
+
+  // Expression: 0
+  //  Referenced by: '<S13>/Delay'
+
+  0.0,
+
+  // Expression: 1
+  //  Referenced by: '<S13>/Constant2'
+
+  1.0,
+
   // Expression: 0
   //  Referenced by: '<Root>/Data Store Memory'
 
   0.0,
+
+  // Computed Parameter: Constant_Value_he
+  //  Referenced by: '<S1460>/Constant'
+
+  0,
+
+  // Computed Parameter: Constant_Value_ho0
+  //  Referenced by: '<S1458>/Constant'
+
+  1,
 
   // Computed Parameter: Gain_Gain_h
   //  Referenced by: '<S23>/Gain'
@@ -2711,7 +2793,7 @@ P_Hummingbird_Failure_Detecti_T Hummingbird_Failure_Detection_P = {
   0.0F,
 
   // Computed Parameter: Gain_Gain_gt
-  //  Referenced by: '<S1468>/Gain'
+  //  Referenced by: '<S1475>/Gain'
 
   1000.0F,
 
@@ -2726,7 +2808,7 @@ P_Hummingbird_Failure_Detecti_T Hummingbird_Failure_Detection_P = {
   0.0F,
 
   // Computed Parameter: Gain_Gain_f
-  //  Referenced by: '<S1466>/Gain'
+  //  Referenced by: '<S1473>/Gain'
 
   1000.0F,
 
@@ -2741,7 +2823,7 @@ P_Hummingbird_Failure_Detecti_T Hummingbird_Failure_Detection_P = {
   0.0F,
 
   // Computed Parameter: Gain_Gain_gl
-  //  Referenced by: '<S1467>/Gain'
+  //  Referenced by: '<S1474>/Gain'
 
   1000.0F,
 
@@ -2756,7 +2838,7 @@ P_Hummingbird_Failure_Detecti_T Hummingbird_Failure_Detection_P = {
   0.0F,
 
   // Computed Parameter: Gain_Gain_nm
-  //  Referenced by: '<S1469>/Gain'
+  //  Referenced by: '<S1476>/Gain'
 
   1000.0F,
 
@@ -2771,7 +2853,7 @@ P_Hummingbird_Failure_Detecti_T Hummingbird_Failure_Detection_P = {
   0.0F,
 
   // Computed Parameter: Gain_Gain_dx
-  //  Referenced by: '<S1470>/Gain'
+  //  Referenced by: '<S1477>/Gain'
 
   1000.0F,
 
@@ -2786,7 +2868,7 @@ P_Hummingbird_Failure_Detecti_T Hummingbird_Failure_Detection_P = {
   0.0F,
 
   // Computed Parameter: Gain_Gain_f1
-  //  Referenced by: '<S1471>/Gain'
+  //  Referenced by: '<S1478>/Gain'
 
   1000.0F,
 
@@ -2801,7 +2883,7 @@ P_Hummingbird_Failure_Detecti_T Hummingbird_Failure_Detection_P = {
   0.0F,
 
   // Computed Parameter: Gain_Gain_a
-  //  Referenced by: '<S1472>/Gain'
+  //  Referenced by: '<S1479>/Gain'
 
   1000.0F,
 
@@ -2816,7 +2898,7 @@ P_Hummingbird_Failure_Detecti_T Hummingbird_Failure_Detection_P = {
   0.0F,
 
   // Computed Parameter: Gain_Gain_n2
-  //  Referenced by: '<S1473>/Gain'
+  //  Referenced by: '<S1480>/Gain'
 
   1000.0F,
 
@@ -2831,7 +2913,7 @@ P_Hummingbird_Failure_Detecti_T Hummingbird_Failure_Detection_P = {
   0.0F,
 
   // Computed Parameter: Gain_Gain_gn
-  //  Referenced by: '<S1474>/Gain'
+  //  Referenced by: '<S1481>/Gain'
 
   1000.0F,
 
@@ -2930,6 +3012,11 @@ P_Hummingbird_Failure_Detecti_T Hummingbird_Failure_Detection_P = {
 
   { 0.0F, 0.0F, 0.0F, 0.0F },
 
+  // Computed Parameter: UnitDelay_InitialCondition
+  //  Referenced by: '<S13>/Unit Delay'
+
+  0.0F,
+
   // Computed Parameter: Switch5_Threshold
   //  Referenced by: '<S1410>/Switch5'
 
@@ -2980,7 +3067,7 @@ P_Hummingbird_Failure_Detecti_T Hummingbird_Failure_Detection_P = {
 
   { 0U, 0U, 0U, 0U },
 
-  // Computed Parameter: Constant_Value_c4
+  // Computed Parameter: Constant_Value_c4q
   //  Referenced by: '<S319>/Constant'
 
   { 0U, 0U, 0U, 0U },

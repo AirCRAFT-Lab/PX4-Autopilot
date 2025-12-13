@@ -145,6 +145,7 @@ void LoggedTopics::add_default_topics()
 	add_optional_topic("virtual_imu");
 	add_optional_topic("pid_rate_input", 20);
 	add_optional_topic("failure_probability", 100);
+	add_optional_topic("simulink_custom_message", 10);
 
 	// multi topics
 	add_optional_topic_multi("actuator_outputs", 100, 3);

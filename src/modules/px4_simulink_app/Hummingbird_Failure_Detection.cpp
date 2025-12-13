@@ -7,9 +7,9 @@
 //
 // Code generated for Simulink model 'Hummingbird_Failure_Detection'.
 //
-// Model version                  : 2.268
+// Model version                  : 2.287
 // Simulink Coder version         : 25.1 (R2025a) 21-Nov-2024
-// C/C++ source code generated on : Mon Nov 10 12:31:00 2025
+// C/C++ source code generated on : Tue Dec  2 21:57:40 2025
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -47,9 +47,10 @@ const uint8_T Hummingbird_Failure__IN_MR_Vel1 = 5U;
 const uint8_T Hummingbird__IN_NO_ACTIVE_CHILD = 0U;
 
 // Named constants for Chart: '<S1410>/Chart'
+const uint8_T Hummingbird_Failure_Det_IN_Init = 2U;
 const uint8_T Hummingbird_Failure_Detec_IN_FW = 1U;
-const uint8_T Hummingbird_Failure_Detec_IN_MR = 2U;
-const uint8_T Hummingbird__IN_Mixed_MR_Assist = 3U;
+const uint8_T Hummingbird_Failure_Detec_IN_MR = 3U;
+const uint8_T Hummingbird__IN_Mixed_MR_Assist = 4U;
 
 // Named constants for Chart: '<Root>/Chart1'
 const uint8_T Hummingbird_Failu_IN_Controlled = 1U;
@@ -106,10 +107,10 @@ static void Hummingbird_Failure_D_lla2ned_f(const real_T lla[3], const real_T
   lla0[3], real_T xyzNED[3]);
 static real_T Hummingbird_Failure_Dete_norm_j(const real_T x[2]);
 static void exit_internal_Flight_controller(void);
-static void Hu_enter_atomic_Mixed_MR_Assist(real_T *assist, real_T *arms_pos,
-  const real32_T TmpSignalConversionAtSFunctio_i[8]);
-static void Hummingbird_Fai_enter_atomic_FW(const real_T Memory1[3], real_T
-  *assist, real_T *arms_pos);
+static void Hu_enter_atomic_Mixed_MR_Assist(const real32_T
+  TmpSignalConversionAtSFunctio_i[8]);
+static void Hummingbird_Fai_enter_atomic_FW(const real_T Memory1[3], const
+  real_T TmpSignalConversionAtSFunctionI[3]);
 static void Hummingb_PX4Actuators_setupImpl(px4_internal_block_PX4Actuato_T *obj);
 static void rate_monotonic_scheduler(void);
 
@@ -1616,6 +1617,39 @@ void Hummingbir_SourceBlock_Term(DW_SourceBlock_Hummingbird_Fa_T *localDW)
   // End of Terminate for MATLABSystem: '<S10>/SourceBlock'
 }
 
+// System initialize for atomic system:
+void PX4WriteParameterBlock_Init(DW_PX4WriteParameterBlock_Hum_T *localDW)
+{
+  static const char_T ParameterNameStr[9] = "V_IMU_ON";
+
+  // Start for MATLABSystem: '<S1489>/PX4 Write Parameter Block'
+  localDW->obj.matlabCodegenIsDeleted = false;
+  localDW->objisempty = true;
+  localDW->obj.isInitialized = 1;
+  localDW->obj.MW_PARAMHANDLE = MW_Init_Param(&ParameterNameStr[0], true,
+    -1000.0);
+  localDW->obj.isSetupComplete = true;
+}
+
+// Output and update for atomic system:
+void Humm_PX4WriteParameterBlock(int32_T rtu_0, DW_PX4WriteParameterBlock_Hum_T *
+  localDW)
+{
+  // MATLABSystem: '<S1489>/PX4 Write Parameter Block'
+  MW_ParamWrite_Step(localDW->obj.MW_PARAMHANDLE, MW_INT32, &rtu_0);
+}
+
+// Termination for atomic system:
+void PX4WriteParameterBlock_Term(DW_PX4WriteParameterBlock_Hum_T *localDW)
+{
+  // Terminate for MATLABSystem: '<S1489>/PX4 Write Parameter Block'
+  if (!localDW->obj.matlabCodegenIsDeleted) {
+    localDW->obj.matlabCodegenIsDeleted = true;
+  }
+
+  // End of Terminate for MATLABSystem: '<S1489>/PX4 Write Parameter Block'
+}
+
 static real_T Hummingbird_Failu_rt_atan2d_snf(real_T u0, real_T u1)
 {
   real_T y;
@@ -1726,59 +1760,59 @@ static void Hummingbird_Failure_Detect_cosd(real_T *x)
   if (rtIsInf(*x) || rtIsNaN(*x)) {
     *x = (rtNaN);
   } else {
-    Hummingbird_Failure_Detection_B.b_x_j = Hummingbird_Failure_rt_remd_snf(*x,
+    Hummingbird_Failure_Detection_B.b_x_f = Hummingbird_Failure_rt_remd_snf(*x,
       360.0);
-    Hummingbird_Failure_Detection_B.absx_o = fabs
-      (Hummingbird_Failure_Detection_B.b_x_j);
-    if (Hummingbird_Failure_Detection_B.absx_o > 180.0) {
-      if (Hummingbird_Failure_Detection_B.b_x_j > 0.0) {
-        Hummingbird_Failure_Detection_B.b_x_j -= 360.0;
+    Hummingbird_Failure_Detection_B.absx_a = fabs
+      (Hummingbird_Failure_Detection_B.b_x_f);
+    if (Hummingbird_Failure_Detection_B.absx_a > 180.0) {
+      if (Hummingbird_Failure_Detection_B.b_x_f > 0.0) {
+        Hummingbird_Failure_Detection_B.b_x_f -= 360.0;
       } else {
-        Hummingbird_Failure_Detection_B.b_x_j += 360.0;
+        Hummingbird_Failure_Detection_B.b_x_f += 360.0;
       }
 
-      Hummingbird_Failure_Detection_B.absx_o = fabs
-        (Hummingbird_Failure_Detection_B.b_x_j);
+      Hummingbird_Failure_Detection_B.absx_a = fabs
+        (Hummingbird_Failure_Detection_B.b_x_f);
     }
 
-    if (Hummingbird_Failure_Detection_B.absx_o <= 45.0) {
-      Hummingbird_Failure_Detection_B.b_x_j *= 0.017453292519943295;
+    if (Hummingbird_Failure_Detection_B.absx_a <= 45.0) {
+      Hummingbird_Failure_Detection_B.b_x_f *= 0.017453292519943295;
       n = 0;
-    } else if (Hummingbird_Failure_Detection_B.absx_o <= 135.0) {
-      if (Hummingbird_Failure_Detection_B.b_x_j > 0.0) {
-        Hummingbird_Failure_Detection_B.b_x_j =
-          (Hummingbird_Failure_Detection_B.b_x_j - 90.0) * 0.017453292519943295;
+    } else if (Hummingbird_Failure_Detection_B.absx_a <= 135.0) {
+      if (Hummingbird_Failure_Detection_B.b_x_f > 0.0) {
+        Hummingbird_Failure_Detection_B.b_x_f =
+          (Hummingbird_Failure_Detection_B.b_x_f - 90.0) * 0.017453292519943295;
         n = 1;
       } else {
-        Hummingbird_Failure_Detection_B.b_x_j =
-          (Hummingbird_Failure_Detection_B.b_x_j + 90.0) * 0.017453292519943295;
+        Hummingbird_Failure_Detection_B.b_x_f =
+          (Hummingbird_Failure_Detection_B.b_x_f + 90.0) * 0.017453292519943295;
         n = -1;
       }
-    } else if (Hummingbird_Failure_Detection_B.b_x_j > 0.0) {
-      Hummingbird_Failure_Detection_B.b_x_j =
-        (Hummingbird_Failure_Detection_B.b_x_j - 180.0) * 0.017453292519943295;
+    } else if (Hummingbird_Failure_Detection_B.b_x_f > 0.0) {
+      Hummingbird_Failure_Detection_B.b_x_f =
+        (Hummingbird_Failure_Detection_B.b_x_f - 180.0) * 0.017453292519943295;
       n = 2;
     } else {
-      Hummingbird_Failure_Detection_B.b_x_j =
-        (Hummingbird_Failure_Detection_B.b_x_j + 180.0) * 0.017453292519943295;
+      Hummingbird_Failure_Detection_B.b_x_f =
+        (Hummingbird_Failure_Detection_B.b_x_f + 180.0) * 0.017453292519943295;
       n = -2;
     }
 
     switch (n) {
      case 0:
-      *x = cos(Hummingbird_Failure_Detection_B.b_x_j);
+      *x = cos(Hummingbird_Failure_Detection_B.b_x_f);
       break;
 
      case 1:
-      *x = -sin(Hummingbird_Failure_Detection_B.b_x_j);
+      *x = -sin(Hummingbird_Failure_Detection_B.b_x_f);
       break;
 
      case -1:
-      *x = sin(Hummingbird_Failure_Detection_B.b_x_j);
+      *x = sin(Hummingbird_Failure_Detection_B.b_x_f);
       break;
 
      default:
-      *x = -cos(Hummingbird_Failure_Detection_B.b_x_j);
+      *x = -cos(Hummingbird_Failure_Detection_B.b_x_f);
       break;
     }
   }
@@ -1793,23 +1827,23 @@ static void Hummingbird_Failure_Detect_sind(real_T *x)
   } else {
     Hummingbird_Failure_Detection_B.b_x = Hummingbird_Failure_rt_remd_snf(*x,
       360.0);
-    Hummingbird_Failure_Detection_B.absx_n = fabs
+    Hummingbird_Failure_Detection_B.absx_m = fabs
       (Hummingbird_Failure_Detection_B.b_x);
-    if (Hummingbird_Failure_Detection_B.absx_n > 180.0) {
+    if (Hummingbird_Failure_Detection_B.absx_m > 180.0) {
       if (Hummingbird_Failure_Detection_B.b_x > 0.0) {
         Hummingbird_Failure_Detection_B.b_x -= 360.0;
       } else {
         Hummingbird_Failure_Detection_B.b_x += 360.0;
       }
 
-      Hummingbird_Failure_Detection_B.absx_n = fabs
+      Hummingbird_Failure_Detection_B.absx_m = fabs
         (Hummingbird_Failure_Detection_B.b_x);
     }
 
-    if (Hummingbird_Failure_Detection_B.absx_n <= 45.0) {
+    if (Hummingbird_Failure_Detection_B.absx_m <= 45.0) {
       Hummingbird_Failure_Detection_B.b_x *= 0.017453292519943295;
       n = 0;
-    } else if (Hummingbird_Failure_Detection_B.absx_n <= 135.0) {
+    } else if (Hummingbird_Failure_Detection_B.absx_m <= 135.0) {
       if (Hummingbird_Failure_Detection_B.b_x > 0.0) {
         Hummingbird_Failure_Detection_B.b_x =
           (Hummingbird_Failure_Detection_B.b_x - 90.0) * 0.017453292519943295;
@@ -1853,11 +1887,11 @@ static void Hummingbird_Failure_Detect_sind(real_T *x)
 static void Hummingbird_Failure_De_lla2ecef(const real_T llaPos[3], real_T
   ecefPos[3])
 {
-  Hummingbird_Failure_Detection_B.sinphi_m = llaPos[0];
-  Hummingbird_Failure_Detect_sind(&Hummingbird_Failure_Detection_B.sinphi_m);
+  Hummingbird_Failure_Detection_B.sinphi_g = llaPos[0];
+  Hummingbird_Failure_Detect_sind(&Hummingbird_Failure_Detection_B.sinphi_g);
   Hummingbird_Failure_Detection_B.N = 6.378137E+6 / sqrt(1.0 -
-    Hummingbird_Failure_Detection_B.sinphi_m *
-    Hummingbird_Failure_Detection_B.sinphi_m * 0.0066943799901413165);
+    Hummingbird_Failure_Detection_B.sinphi_g *
+    Hummingbird_Failure_Detection_B.sinphi_g * 0.0066943799901413165);
   Hummingbird_Failure_Detection_B.b = llaPos[0];
   Hummingbird_Failure_Detect_cosd(&Hummingbird_Failure_Detection_B.b);
   Hummingbird_Failure_Detection_B.b *= Hummingbird_Failure_Detection_B.N +
@@ -1871,7 +1905,7 @@ static void Hummingbird_Failure_De_lla2ecef(const real_T llaPos[3], real_T
   ecefPos[1] = Hummingbird_Failure_Detection_B.b *
     Hummingbird_Failure_Detection_B.d;
   ecefPos[2] = (Hummingbird_Failure_Detection_B.N * 0.99330562000985867 +
-                llaPos[2]) * Hummingbird_Failure_Detection_B.sinphi_m;
+                llaPos[2]) * Hummingbird_Failure_Detection_B.sinphi_g;
 }
 
 // Function for MATLAB Function: '<S22>/MATLAB Function2'
@@ -1919,56 +1953,56 @@ static void Hummingbird_Failure_Det_lla2ned(const real_T lla[3], const real_T
 static real_T Hummingbird_Failure_Detect_norm(const real_T x[3])
 {
   real_T y;
-  Hummingbird_Failure_Detection_B.scale_f = 3.3121686421112381E-170;
-  Hummingbird_Failure_Detection_B.absxk_a = fabs(x[0]);
-  if (Hummingbird_Failure_Detection_B.absxk_a > 3.3121686421112381E-170) {
+  Hummingbird_Failure_Detection_B.scale_e = 3.3121686421112381E-170;
+  Hummingbird_Failure_Detection_B.absxk_bj = fabs(x[0]);
+  if (Hummingbird_Failure_Detection_B.absxk_bj > 3.3121686421112381E-170) {
     y = 1.0;
-    Hummingbird_Failure_Detection_B.scale_f =
-      Hummingbird_Failure_Detection_B.absxk_a;
+    Hummingbird_Failure_Detection_B.scale_e =
+      Hummingbird_Failure_Detection_B.absxk_bj;
   } else {
-    Hummingbird_Failure_Detection_B.t_ju =
-      Hummingbird_Failure_Detection_B.absxk_a / 3.3121686421112381E-170;
-    y = Hummingbird_Failure_Detection_B.t_ju *
-      Hummingbird_Failure_Detection_B.t_ju;
+    Hummingbird_Failure_Detection_B.t_j =
+      Hummingbird_Failure_Detection_B.absxk_bj / 3.3121686421112381E-170;
+    y = Hummingbird_Failure_Detection_B.t_j *
+      Hummingbird_Failure_Detection_B.t_j;
   }
 
-  Hummingbird_Failure_Detection_B.absxk_a = fabs(x[1]);
-  if (Hummingbird_Failure_Detection_B.absxk_a >
-      Hummingbird_Failure_Detection_B.scale_f) {
-    Hummingbird_Failure_Detection_B.t_ju =
-      Hummingbird_Failure_Detection_B.scale_f /
-      Hummingbird_Failure_Detection_B.absxk_a;
-    y = y * Hummingbird_Failure_Detection_B.t_ju *
-      Hummingbird_Failure_Detection_B.t_ju + 1.0;
-    Hummingbird_Failure_Detection_B.scale_f =
-      Hummingbird_Failure_Detection_B.absxk_a;
+  Hummingbird_Failure_Detection_B.absxk_bj = fabs(x[1]);
+  if (Hummingbird_Failure_Detection_B.absxk_bj >
+      Hummingbird_Failure_Detection_B.scale_e) {
+    Hummingbird_Failure_Detection_B.t_j =
+      Hummingbird_Failure_Detection_B.scale_e /
+      Hummingbird_Failure_Detection_B.absxk_bj;
+    y = y * Hummingbird_Failure_Detection_B.t_j *
+      Hummingbird_Failure_Detection_B.t_j + 1.0;
+    Hummingbird_Failure_Detection_B.scale_e =
+      Hummingbird_Failure_Detection_B.absxk_bj;
   } else {
-    Hummingbird_Failure_Detection_B.t_ju =
-      Hummingbird_Failure_Detection_B.absxk_a /
-      Hummingbird_Failure_Detection_B.scale_f;
-    y += Hummingbird_Failure_Detection_B.t_ju *
-      Hummingbird_Failure_Detection_B.t_ju;
+    Hummingbird_Failure_Detection_B.t_j =
+      Hummingbird_Failure_Detection_B.absxk_bj /
+      Hummingbird_Failure_Detection_B.scale_e;
+    y += Hummingbird_Failure_Detection_B.t_j *
+      Hummingbird_Failure_Detection_B.t_j;
   }
 
-  Hummingbird_Failure_Detection_B.absxk_a = fabs(x[2]);
-  if (Hummingbird_Failure_Detection_B.absxk_a >
-      Hummingbird_Failure_Detection_B.scale_f) {
-    Hummingbird_Failure_Detection_B.t_ju =
-      Hummingbird_Failure_Detection_B.scale_f /
-      Hummingbird_Failure_Detection_B.absxk_a;
-    y = y * Hummingbird_Failure_Detection_B.t_ju *
-      Hummingbird_Failure_Detection_B.t_ju + 1.0;
-    Hummingbird_Failure_Detection_B.scale_f =
-      Hummingbird_Failure_Detection_B.absxk_a;
+  Hummingbird_Failure_Detection_B.absxk_bj = fabs(x[2]);
+  if (Hummingbird_Failure_Detection_B.absxk_bj >
+      Hummingbird_Failure_Detection_B.scale_e) {
+    Hummingbird_Failure_Detection_B.t_j =
+      Hummingbird_Failure_Detection_B.scale_e /
+      Hummingbird_Failure_Detection_B.absxk_bj;
+    y = y * Hummingbird_Failure_Detection_B.t_j *
+      Hummingbird_Failure_Detection_B.t_j + 1.0;
+    Hummingbird_Failure_Detection_B.scale_e =
+      Hummingbird_Failure_Detection_B.absxk_bj;
   } else {
-    Hummingbird_Failure_Detection_B.t_ju =
-      Hummingbird_Failure_Detection_B.absxk_a /
-      Hummingbird_Failure_Detection_B.scale_f;
-    y += Hummingbird_Failure_Detection_B.t_ju *
-      Hummingbird_Failure_Detection_B.t_ju;
+    Hummingbird_Failure_Detection_B.t_j =
+      Hummingbird_Failure_Detection_B.absxk_bj /
+      Hummingbird_Failure_Detection_B.scale_e;
+    y += Hummingbird_Failure_Detection_B.t_j *
+      Hummingbird_Failure_Detection_B.t_j;
   }
 
-  return Hummingbird_Failure_Detection_B.scale_f * sqrt(y);
+  return Hummingbird_Failure_Detection_B.scale_e * sqrt(y);
 }
 
 // Function for MATLAB Function: '<S22>/MATLAB Function1'
@@ -1977,20 +2011,20 @@ static real_T Hummingbird_Failure_De_xzlangeM(const real_T x[9])
   real_T y;
   boolean_T exitg1;
   y = 0.0;
-  Hummingbird_Failure_Detection_B.k_p5 = 0;
+  Hummingbird_Failure_Detection_B.k_j = 0;
   exitg1 = false;
-  while ((!exitg1) && (Hummingbird_Failure_Detection_B.k_p5 < 9)) {
-    Hummingbird_Failure_Detection_B.absxk_n = fabs
-      (x[Hummingbird_Failure_Detection_B.k_p5]);
-    if (rtIsNaN(Hummingbird_Failure_Detection_B.absxk_n)) {
+  while ((!exitg1) && (Hummingbird_Failure_Detection_B.k_j < 9)) {
+    Hummingbird_Failure_Detection_B.absxk_j = fabs
+      (x[Hummingbird_Failure_Detection_B.k_j]);
+    if (rtIsNaN(Hummingbird_Failure_Detection_B.absxk_j)) {
       y = (rtNaN);
       exitg1 = true;
     } else {
-      if (Hummingbird_Failure_Detection_B.absxk_n > y) {
-        y = Hummingbird_Failure_Detection_B.absxk_n;
+      if (Hummingbird_Failure_Detection_B.absxk_j > y) {
+        y = Hummingbird_Failure_Detection_B.absxk_j;
       }
 
-      Hummingbird_Failure_Detection_B.k_p5++;
+      Hummingbird_Failure_Detection_B.k_j++;
     }
   }
 
@@ -2002,43 +2036,43 @@ static void Hummingbird_Failure_Det_xzlascl(real_T cfrom, real_T cto, int32_T m,
   int32_T n, real_T A[9], int32_T iA0, int32_T lda)
 {
   boolean_T notdone;
-  Hummingbird_Failure_Detection_B.cfromc_d = cfrom;
-  Hummingbird_Failure_Detection_B.ctoc_g = cto;
+  Hummingbird_Failure_Detection_B.cfromc_j = cfrom;
+  Hummingbird_Failure_Detection_B.ctoc_d = cto;
   notdone = true;
   while (notdone) {
-    Hummingbird_Failure_Detection_B.cfrom1_l =
-      Hummingbird_Failure_Detection_B.cfromc_d * 2.0041683600089728E-292;
-    Hummingbird_Failure_Detection_B.cto1_d =
-      Hummingbird_Failure_Detection_B.ctoc_g / 4.9896007738368E+291;
-    if ((fabs(Hummingbird_Failure_Detection_B.cfrom1_l) > fabs
-         (Hummingbird_Failure_Detection_B.ctoc_g)) &&
-        (Hummingbird_Failure_Detection_B.ctoc_g != 0.0)) {
+    Hummingbird_Failure_Detection_B.cfrom1_g =
+      Hummingbird_Failure_Detection_B.cfromc_j * 2.0041683600089728E-292;
+    Hummingbird_Failure_Detection_B.cto1_l =
+      Hummingbird_Failure_Detection_B.ctoc_d / 4.9896007738368E+291;
+    if ((fabs(Hummingbird_Failure_Detection_B.cfrom1_g) > fabs
+         (Hummingbird_Failure_Detection_B.ctoc_d)) &&
+        (Hummingbird_Failure_Detection_B.ctoc_d != 0.0)) {
       Hummingbird_Failure_Detection_B.mul_d = 2.0041683600089728E-292;
-      Hummingbird_Failure_Detection_B.cfromc_d =
-        Hummingbird_Failure_Detection_B.cfrom1_l;
-    } else if (fabs(Hummingbird_Failure_Detection_B.cto1_d) > fabs
-               (Hummingbird_Failure_Detection_B.cfromc_d)) {
+      Hummingbird_Failure_Detection_B.cfromc_j =
+        Hummingbird_Failure_Detection_B.cfrom1_g;
+    } else if (fabs(Hummingbird_Failure_Detection_B.cto1_l) > fabs
+               (Hummingbird_Failure_Detection_B.cfromc_j)) {
       Hummingbird_Failure_Detection_B.mul_d = 4.9896007738368E+291;
-      Hummingbird_Failure_Detection_B.ctoc_g =
-        Hummingbird_Failure_Detection_B.cto1_d;
+      Hummingbird_Failure_Detection_B.ctoc_d =
+        Hummingbird_Failure_Detection_B.cto1_l;
     } else {
       Hummingbird_Failure_Detection_B.mul_d =
-        Hummingbird_Failure_Detection_B.ctoc_g /
-        Hummingbird_Failure_Detection_B.cfromc_d;
+        Hummingbird_Failure_Detection_B.ctoc_d /
+        Hummingbird_Failure_Detection_B.cfromc_j;
       notdone = false;
     }
 
-    for (Hummingbird_Failure_Detection_B.j_j = 0;
-         Hummingbird_Failure_Detection_B.j_j < n;
-         Hummingbird_Failure_Detection_B.j_j++) {
-      Hummingbird_Failure_Detection_B.offset_m =
-        (Hummingbird_Failure_Detection_B.j_j * lda + iA0) - 2;
-      for (Hummingbird_Failure_Detection_B.b_i_h = 0;
-           Hummingbird_Failure_Detection_B.b_i_h < m;
-           Hummingbird_Failure_Detection_B.b_i_h++) {
+    for (Hummingbird_Failure_Detection_B.j_n = 0;
+         Hummingbird_Failure_Detection_B.j_n < n;
+         Hummingbird_Failure_Detection_B.j_n++) {
+      Hummingbird_Failure_Detection_B.offset_o =
+        (Hummingbird_Failure_Detection_B.j_n * lda + iA0) - 2;
+      for (Hummingbird_Failure_Detection_B.b_i_m = 0;
+           Hummingbird_Failure_Detection_B.b_i_m < m;
+           Hummingbird_Failure_Detection_B.b_i_m++) {
         Hummingbird_Failure_Detection_B.i1 =
-          (Hummingbird_Failure_Detection_B.b_i_h +
-           Hummingbird_Failure_Detection_B.offset_m) + 1;
+          (Hummingbird_Failure_Detection_B.b_i_m +
+           Hummingbird_Failure_Detection_B.offset_o) + 1;
         A[Hummingbird_Failure_Detection_B.i1] *=
           Hummingbird_Failure_Detection_B.mul_d;
       }
@@ -2056,91 +2090,14 @@ static real_T Hummingbird_Failure_Detec_xnrm2(int32_T n, const real_T x[9],
     if (n == 1) {
       y = fabs(x[ix0 - 1]);
     } else {
-      Hummingbird_Failure_Detection_B.scale_h = 3.3121686421112381E-170;
-      Hummingbird_Failure_Detection_B.kend_c = ix0 + n;
-      for (Hummingbird_Failure_Detection_B.k_p = ix0;
-           Hummingbird_Failure_Detection_B.k_p <
-           Hummingbird_Failure_Detection_B.kend_c;
-           Hummingbird_Failure_Detection_B.k_p++) {
-        Hummingbird_Failure_Detection_B.absxk_bn = fabs
-          (x[Hummingbird_Failure_Detection_B.k_p - 1]);
-        if (Hummingbird_Failure_Detection_B.absxk_bn >
-            Hummingbird_Failure_Detection_B.scale_h) {
-          Hummingbird_Failure_Detection_B.t_d =
-            Hummingbird_Failure_Detection_B.scale_h /
-            Hummingbird_Failure_Detection_B.absxk_bn;
-          y = y * Hummingbird_Failure_Detection_B.t_d *
-            Hummingbird_Failure_Detection_B.t_d + 1.0;
-          Hummingbird_Failure_Detection_B.scale_h =
-            Hummingbird_Failure_Detection_B.absxk_bn;
-        } else {
-          Hummingbird_Failure_Detection_B.t_d =
-            Hummingbird_Failure_Detection_B.absxk_bn /
-            Hummingbird_Failure_Detection_B.scale_h;
-          y += Hummingbird_Failure_Detection_B.t_d *
-            Hummingbird_Failure_Detection_B.t_d;
-        }
-      }
-
-      y = Hummingbird_Failure_Detection_B.scale_h * sqrt(y);
-    }
-  }
-
-  return y;
-}
-
-// Function for MATLAB Function: '<S22>/MATLAB Function1'
-static real_T Hummingbird_Failure_Detec_xdotc(int32_T n, const real_T x[9],
-  int32_T ix0, const real_T y[9], int32_T iy0)
-{
-  real_T d;
-  d = 0.0;
-  if (n >= 1) {
-    for (Hummingbird_Failure_Detection_B.k_as = 0;
-         Hummingbird_Failure_Detection_B.k_as < n;
-         Hummingbird_Failure_Detection_B.k_as++) {
-      d += x[(ix0 + Hummingbird_Failure_Detection_B.k_as) - 1] * y[(iy0 +
-        Hummingbird_Failure_Detection_B.k_as) - 1];
-    }
-  }
-
-  return d;
-}
-
-// Function for MATLAB Function: '<S22>/MATLAB Function1'
-static void Hummingbird_Failure_Detec_xaxpy(int32_T n, real_T a, int32_T ix0,
-  real_T y[9], int32_T iy0)
-{
-  if ((n >= 1) && (!(a == 0.0))) {
-    for (Hummingbird_Failure_Detection_B.k_ax = 0;
-         Hummingbird_Failure_Detection_B.k_ax < n;
-         Hummingbird_Failure_Detection_B.k_ax++) {
-      Hummingbird_Failure_Detection_B.i6 = (iy0 +
-        Hummingbird_Failure_Detection_B.k_ax) - 1;
-      y[Hummingbird_Failure_Detection_B.i6] += y[(ix0 +
-        Hummingbird_Failure_Detection_B.k_ax) - 1] * a;
-    }
-  }
-}
-
-// Function for MATLAB Function: '<S22>/MATLAB Function1'
-static real_T Hummingbird_Failure_Det_xnrm2_b(int32_T n, const real_T x[3],
-  int32_T ix0)
-{
-  real_T y;
-  y = 0.0;
-  if (n >= 1) {
-    if (n == 1) {
-      y = fabs(x[ix0 - 1]);
-    } else {
       Hummingbird_Failure_Detection_B.scale_n = 3.3121686421112381E-170;
-      Hummingbird_Failure_Detection_B.kend = ix0 + n;
-      for (Hummingbird_Failure_Detection_B.k_c = ix0;
-           Hummingbird_Failure_Detection_B.k_c <
-           Hummingbird_Failure_Detection_B.kend;
-           Hummingbird_Failure_Detection_B.k_c++) {
+      Hummingbird_Failure_Detection_B.kend_m = ix0 + n;
+      for (Hummingbird_Failure_Detection_B.k_m = ix0;
+           Hummingbird_Failure_Detection_B.k_m <
+           Hummingbird_Failure_Detection_B.kend_m;
+           Hummingbird_Failure_Detection_B.k_m++) {
         Hummingbird_Failure_Detection_B.absxk_b = fabs
-          (x[Hummingbird_Failure_Detection_B.k_c - 1]);
+          (x[Hummingbird_Failure_Detection_B.k_m - 1]);
         if (Hummingbird_Failure_Detection_B.absxk_b >
             Hummingbird_Failure_Detection_B.scale_n) {
           Hummingbird_Failure_Detection_B.t_l =
@@ -2167,17 +2124,94 @@ static real_T Hummingbird_Failure_Det_xnrm2_b(int32_T n, const real_T x[3],
 }
 
 // Function for MATLAB Function: '<S22>/MATLAB Function1'
+static real_T Hummingbird_Failure_Detec_xdotc(int32_T n, const real_T x[9],
+  int32_T ix0, const real_T y[9], int32_T iy0)
+{
+  real_T d;
+  d = 0.0;
+  if (n >= 1) {
+    for (Hummingbird_Failure_Detection_B.k_p = 0;
+         Hummingbird_Failure_Detection_B.k_p < n;
+         Hummingbird_Failure_Detection_B.k_p++) {
+      d += x[(ix0 + Hummingbird_Failure_Detection_B.k_p) - 1] * y[(iy0 +
+        Hummingbird_Failure_Detection_B.k_p) - 1];
+    }
+  }
+
+  return d;
+}
+
+// Function for MATLAB Function: '<S22>/MATLAB Function1'
+static void Hummingbird_Failure_Detec_xaxpy(int32_T n, real_T a, int32_T ix0,
+  real_T y[9], int32_T iy0)
+{
+  if ((n >= 1) && (!(a == 0.0))) {
+    for (Hummingbird_Failure_Detection_B.k_ct = 0;
+         Hummingbird_Failure_Detection_B.k_ct < n;
+         Hummingbird_Failure_Detection_B.k_ct++) {
+      Hummingbird_Failure_Detection_B.i6 = (iy0 +
+        Hummingbird_Failure_Detection_B.k_ct) - 1;
+      y[Hummingbird_Failure_Detection_B.i6] += y[(ix0 +
+        Hummingbird_Failure_Detection_B.k_ct) - 1] * a;
+    }
+  }
+}
+
+// Function for MATLAB Function: '<S22>/MATLAB Function1'
+static real_T Hummingbird_Failure_Det_xnrm2_b(int32_T n, const real_T x[3],
+  int32_T ix0)
+{
+  real_T y;
+  y = 0.0;
+  if (n >= 1) {
+    if (n == 1) {
+      y = fabs(x[ix0 - 1]);
+    } else {
+      Hummingbird_Failure_Detection_B.scale_l = 3.3121686421112381E-170;
+      Hummingbird_Failure_Detection_B.kend = ix0 + n;
+      for (Hummingbird_Failure_Detection_B.k_c = ix0;
+           Hummingbird_Failure_Detection_B.k_c <
+           Hummingbird_Failure_Detection_B.kend;
+           Hummingbird_Failure_Detection_B.k_c++) {
+        Hummingbird_Failure_Detection_B.absxk_o = fabs
+          (x[Hummingbird_Failure_Detection_B.k_c - 1]);
+        if (Hummingbird_Failure_Detection_B.absxk_o >
+            Hummingbird_Failure_Detection_B.scale_l) {
+          Hummingbird_Failure_Detection_B.t_b =
+            Hummingbird_Failure_Detection_B.scale_l /
+            Hummingbird_Failure_Detection_B.absxk_o;
+          y = y * Hummingbird_Failure_Detection_B.t_b *
+            Hummingbird_Failure_Detection_B.t_b + 1.0;
+          Hummingbird_Failure_Detection_B.scale_l =
+            Hummingbird_Failure_Detection_B.absxk_o;
+        } else {
+          Hummingbird_Failure_Detection_B.t_b =
+            Hummingbird_Failure_Detection_B.absxk_o /
+            Hummingbird_Failure_Detection_B.scale_l;
+          y += Hummingbird_Failure_Detection_B.t_b *
+            Hummingbird_Failure_Detection_B.t_b;
+        }
+      }
+
+      y = Hummingbird_Failure_Detection_B.scale_l * sqrt(y);
+    }
+  }
+
+  return y;
+}
+
+// Function for MATLAB Function: '<S22>/MATLAB Function1'
 static void Hummingbird_Failure_Det_xaxpy_l(int32_T n, real_T a, const real_T x
   [9], int32_T ix0, real_T y[3], int32_T iy0)
 {
   if ((n >= 1) && (!(a == 0.0))) {
-    for (Hummingbird_Failure_Detection_B.k_e = 0;
-         Hummingbird_Failure_Detection_B.k_e < n;
-         Hummingbird_Failure_Detection_B.k_e++) {
+    for (Hummingbird_Failure_Detection_B.k_c0 = 0;
+         Hummingbird_Failure_Detection_B.k_c0 < n;
+         Hummingbird_Failure_Detection_B.k_c0++) {
       Hummingbird_Failure_Detection_B.i5 = (iy0 +
-        Hummingbird_Failure_Detection_B.k_e) - 1;
+        Hummingbird_Failure_Detection_B.k_c0) - 1;
       y[Hummingbird_Failure_Detection_B.i5] += x[(ix0 +
-        Hummingbird_Failure_Detection_B.k_e) - 1] * a;
+        Hummingbird_Failure_Detection_B.k_c0) - 1] * a;
     }
   }
 }
@@ -2187,13 +2221,13 @@ static void Hummingbird_Failure_De_xaxpy_lx(int32_T n, real_T a, const real_T x
   [3], int32_T ix0, real_T y[9], int32_T iy0)
 {
   if ((n >= 1) && (!(a == 0.0))) {
-    for (Hummingbird_Failure_Detection_B.k_a = 0;
-         Hummingbird_Failure_Detection_B.k_a < n;
-         Hummingbird_Failure_Detection_B.k_a++) {
+    for (Hummingbird_Failure_Detection_B.k_h = 0;
+         Hummingbird_Failure_Detection_B.k_h < n;
+         Hummingbird_Failure_Detection_B.k_h++) {
       Hummingbird_Failure_Detection_B.i4 = (iy0 +
-        Hummingbird_Failure_Detection_B.k_a) - 1;
+        Hummingbird_Failure_Detection_B.k_h) - 1;
       y[Hummingbird_Failure_Detection_B.i4] += x[(ix0 +
-        Hummingbird_Failure_Detection_B.k_a) - 1] * a;
+        Hummingbird_Failure_Detection_B.k_h) - 1] * a;
     }
   }
 }
@@ -2236,10 +2270,10 @@ static void Hummingbird_Failure_D_xzlascl_o(real_T cfrom, real_T cto, int32_T m,
       for (Hummingbird_Failure_Detection_B.b_i = 0;
            Hummingbird_Failure_Detection_B.b_i < m;
            Hummingbird_Failure_Detection_B.b_i++) {
-        Hummingbird_Failure_Detection_B.i_m =
+        Hummingbird_Failure_Detection_B.i_i =
           (Hummingbird_Failure_Detection_B.b_i +
            Hummingbird_Failure_Detection_B.offset) + 1;
-        A[Hummingbird_Failure_Detection_B.i_m] *=
+        A[Hummingbird_Failure_Detection_B.i_i] *=
           Hummingbird_Failure_Detection_B.mul;
       }
     }
@@ -2943,20 +2977,20 @@ static void Hummingbird_Failure_D_lla2ned_f(const real_T lla[3], const real_T
       (Hummingbird_Failure_Detection_B.dLat);
     latp2 = (Hummingbird_Failure_Detection_B.flat > 90.0);
     Hummingbird_Failure_Detection_B.dLon += 180.0;
-    Hummingbird_Failure_Detection_B.absx_l =
+    Hummingbird_Failure_Detection_B.absx_d =
       Hummingbird_Failure_Detection_B.dLat * static_cast<real_T>(latp2);
-    if (rtIsNaN(Hummingbird_Failure_Detection_B.absx_l)) {
-      Hummingbird_Failure_Detection_B.absx_l = (rtNaN);
-    } else if (Hummingbird_Failure_Detection_B.absx_l < 0.0) {
-      Hummingbird_Failure_Detection_B.absx_l = -1.0;
+    if (rtIsNaN(Hummingbird_Failure_Detection_B.absx_d)) {
+      Hummingbird_Failure_Detection_B.absx_d = (rtNaN);
+    } else if (Hummingbird_Failure_Detection_B.absx_d < 0.0) {
+      Hummingbird_Failure_Detection_B.absx_d = -1.0;
     } else {
-      Hummingbird_Failure_Detection_B.absx_l =
-        (Hummingbird_Failure_Detection_B.absx_l > 0.0);
+      Hummingbird_Failure_Detection_B.absx_d =
+        (Hummingbird_Failure_Detection_B.absx_d > 0.0);
     }
 
     Hummingbird_Failure_Detection_B.dLat = (90.0 -
       (Hummingbird_Failure_Detection_B.flat * static_cast<real_T>(latp2) - 90.0))
-      * Hummingbird_Failure_Detection_B.absx_l * static_cast<real_T>(latp2) +
+      * Hummingbird_Failure_Detection_B.absx_d * static_cast<real_T>(latp2) +
       Hummingbird_Failure_Detection_B.dLat * static_cast<real_T>(!latp2);
   }
 
@@ -2964,18 +2998,18 @@ static void Hummingbird_Failure_D_lla2ned_f(const real_T lla[3], const real_T
       (Hummingbird_Failure_Detection_B.dLon < -180.0)) {
     Hummingbird_Failure_Detection_B.flat = Hummingbird_Failure_rt_remd_snf
       (Hummingbird_Failure_Detection_B.dLon, 360.0);
-    Hummingbird_Failure_Detection_B.absx_l =
+    Hummingbird_Failure_Detection_B.absx_d =
       Hummingbird_Failure_Detection_B.flat / 180.0;
-    if (Hummingbird_Failure_Detection_B.absx_l < 0.0) {
-      Hummingbird_Failure_Detection_B.absx_l = ceil
-        (Hummingbird_Failure_Detection_B.absx_l);
+    if (Hummingbird_Failure_Detection_B.absx_d < 0.0) {
+      Hummingbird_Failure_Detection_B.absx_d = ceil
+        (Hummingbird_Failure_Detection_B.absx_d);
     } else {
-      Hummingbird_Failure_Detection_B.absx_l = floor
-        (Hummingbird_Failure_Detection_B.absx_l);
+      Hummingbird_Failure_Detection_B.absx_d = floor
+        (Hummingbird_Failure_Detection_B.absx_d);
     }
 
     Hummingbird_Failure_Detection_B.dLon = (Hummingbird_Failure_Detection_B.flat
-      - 360.0 * Hummingbird_Failure_Detection_B.absx_l) +
+      - 360.0 * Hummingbird_Failure_Detection_B.absx_d) +
       Hummingbird_Failure_Detection_B.dLon * 0.0;
   }
 
@@ -2984,13 +3018,13 @@ static void Hummingbird_Failure_D_lla2ned_f(const real_T lla[3], const real_T
   Hummingbird_Failure_Detection_B.flat = 6.378137E+6 / sqrt(1.0 -
     0.0066943799901413165 * Hummingbird_Failure_Detection_B.flat *
     Hummingbird_Failure_Detection_B.flat);
-  Hummingbird_Failure_Detection_B.absx_l = lla0[0];
-  Hummingbird_Failure_Detect_sind(&Hummingbird_Failure_Detection_B.absx_l);
+  Hummingbird_Failure_Detection_B.absx_d = lla0[0];
+  Hummingbird_Failure_Detect_sind(&Hummingbird_Failure_Detection_B.absx_d);
   Hummingbird_Failure_Detection_B.g = lla0[0];
   Hummingbird_Failure_Detect_sind(&Hummingbird_Failure_Detection_B.g);
   xyzNED[0] = Hummingbird_Failure_Detection_B.dLat /
     (Hummingbird_Failu_rt_atan2d_snf(1.0, 0.99330562000985867 / (1.0 -
-       0.0066943799901413165 * Hummingbird_Failure_Detection_B.absx_l *
+       0.0066943799901413165 * Hummingbird_Failure_Detection_B.absx_d *
        Hummingbird_Failure_Detection_B.g) * Hummingbird_Failure_Detection_B.flat)
      * 57.295779513082323);
   if (rtIsInf(lla0[0]) || rtIsNaN(lla0[0])) {
@@ -2998,23 +3032,23 @@ static void Hummingbird_Failure_D_lla2ned_f(const real_T lla[3], const real_T
   } else {
     Hummingbird_Failure_Detection_B.dLat = Hummingbird_Failure_rt_remd_snf(lla0
       [0], 360.0);
-    Hummingbird_Failure_Detection_B.absx_l = fabs
+    Hummingbird_Failure_Detection_B.absx_d = fabs
       (Hummingbird_Failure_Detection_B.dLat);
-    if (Hummingbird_Failure_Detection_B.absx_l > 180.0) {
+    if (Hummingbird_Failure_Detection_B.absx_d > 180.0) {
       if (Hummingbird_Failure_Detection_B.dLat > 0.0) {
         Hummingbird_Failure_Detection_B.dLat -= 360.0;
       } else {
         Hummingbird_Failure_Detection_B.dLat += 360.0;
       }
 
-      Hummingbird_Failure_Detection_B.absx_l = fabs
+      Hummingbird_Failure_Detection_B.absx_d = fabs
         (Hummingbird_Failure_Detection_B.dLat);
     }
 
-    if (Hummingbird_Failure_Detection_B.absx_l <= 45.0) {
+    if (Hummingbird_Failure_Detection_B.absx_d <= 45.0) {
       Hummingbird_Failure_Detection_B.dLat *= 0.017453292519943295;
       n = 0;
-    } else if (Hummingbird_Failure_Detection_B.absx_l <= 135.0) {
+    } else if (Hummingbird_Failure_Detection_B.absx_d <= 135.0) {
       if (Hummingbird_Failure_Detection_B.dLat > 0.0) {
         Hummingbird_Failure_Detection_B.dLat =
           (Hummingbird_Failure_Detection_B.dLat - 90.0) * 0.017453292519943295;
@@ -3087,38 +3121,38 @@ static void Hummingbird_Failure_D_lla2ned_f(const real_T lla[3], const real_T
 static real_T Hummingbird_Failure_Dete_norm_j(const real_T x[2])
 {
   real_T y;
-  Hummingbird_Failure_Detection_B.scale_e = 3.3121686421112381E-170;
-  Hummingbird_Failure_Detection_B.absxk_bj = fabs(x[0]);
-  if (Hummingbird_Failure_Detection_B.absxk_bj > 3.3121686421112381E-170) {
+  Hummingbird_Failure_Detection_B.scale_h = 3.3121686421112381E-170;
+  Hummingbird_Failure_Detection_B.absxk_bn = fabs(x[0]);
+  if (Hummingbird_Failure_Detection_B.absxk_bn > 3.3121686421112381E-170) {
     y = 1.0;
-    Hummingbird_Failure_Detection_B.scale_e =
-      Hummingbird_Failure_Detection_B.absxk_bj;
+    Hummingbird_Failure_Detection_B.scale_h =
+      Hummingbird_Failure_Detection_B.absxk_bn;
   } else {
-    Hummingbird_Failure_Detection_B.t_j =
-      Hummingbird_Failure_Detection_B.absxk_bj / 3.3121686421112381E-170;
-    y = Hummingbird_Failure_Detection_B.t_j *
-      Hummingbird_Failure_Detection_B.t_j;
+    Hummingbird_Failure_Detection_B.t_d =
+      Hummingbird_Failure_Detection_B.absxk_bn / 3.3121686421112381E-170;
+    y = Hummingbird_Failure_Detection_B.t_d *
+      Hummingbird_Failure_Detection_B.t_d;
   }
 
-  Hummingbird_Failure_Detection_B.absxk_bj = fabs(x[1]);
-  if (Hummingbird_Failure_Detection_B.absxk_bj >
-      Hummingbird_Failure_Detection_B.scale_e) {
-    Hummingbird_Failure_Detection_B.t_j =
-      Hummingbird_Failure_Detection_B.scale_e /
-      Hummingbird_Failure_Detection_B.absxk_bj;
-    y = y * Hummingbird_Failure_Detection_B.t_j *
-      Hummingbird_Failure_Detection_B.t_j + 1.0;
-    Hummingbird_Failure_Detection_B.scale_e =
-      Hummingbird_Failure_Detection_B.absxk_bj;
+  Hummingbird_Failure_Detection_B.absxk_bn = fabs(x[1]);
+  if (Hummingbird_Failure_Detection_B.absxk_bn >
+      Hummingbird_Failure_Detection_B.scale_h) {
+    Hummingbird_Failure_Detection_B.t_d =
+      Hummingbird_Failure_Detection_B.scale_h /
+      Hummingbird_Failure_Detection_B.absxk_bn;
+    y = y * Hummingbird_Failure_Detection_B.t_d *
+      Hummingbird_Failure_Detection_B.t_d + 1.0;
+    Hummingbird_Failure_Detection_B.scale_h =
+      Hummingbird_Failure_Detection_B.absxk_bn;
   } else {
-    Hummingbird_Failure_Detection_B.t_j =
-      Hummingbird_Failure_Detection_B.absxk_bj /
-      Hummingbird_Failure_Detection_B.scale_e;
-    y += Hummingbird_Failure_Detection_B.t_j *
-      Hummingbird_Failure_Detection_B.t_j;
+    Hummingbird_Failure_Detection_B.t_d =
+      Hummingbird_Failure_Detection_B.absxk_bn /
+      Hummingbird_Failure_Detection_B.scale_h;
+    y += Hummingbird_Failure_Detection_B.t_d *
+      Hummingbird_Failure_Detection_B.t_d;
   }
 
-  return Hummingbird_Failure_Detection_B.scale_e * sqrt(y);
+  return Hummingbird_Failure_Detection_B.scale_h * sqrt(y);
 }
 
 // Function for Chart: '<Root>/Chart'
@@ -3129,8 +3163,8 @@ static void exit_internal_Flight_controller(void)
 }
 
 // Function for Chart: '<S1410>/Chart'
-static void Hu_enter_atomic_Mixed_MR_Assist(real_T *assist, real_T *arms_pos,
-  const real32_T TmpSignalConversionAtSFunctio_i[8])
+static void Hu_enter_atomic_Mixed_MR_Assist(const real32_T
+  TmpSignalConversionAtSFunctio_i[8])
 {
   if ((Hummingbird_Failure_Detection_B.dM[0] < 0.0) &&
       (TmpSignalConversionAtSFunctio_i[0] < -0.31415926535897926)) {
@@ -3183,37 +3217,29 @@ static void Hu_enter_atomic_Mixed_MR_Assist(real_T *assist, real_T *arms_pos,
     Hummingbird_Failure_Detection_B.mixer[2] = 1.0;
   }
 
-  *assist = 1.0;
-  *arms_pos = 0.0;
+  Hummingbird_Failure_Detection_B.assist = 1.0;
+  Hummingbird_Failure_Detection_B.arms_pos = 0.0;
 }
 
 // Function for Chart: '<S1410>/Chart'
-static void Hummingbird_Fai_enter_atomic_FW(const real_T Memory1[3], real_T
-  *assist, real_T *arms_pos)
+static void Hummingbird_Fai_enter_atomic_FW(const real_T Memory1[3], const
+  real_T TmpSignalConversionAtSFunctionI[3])
 {
   boolean_T b_y;
   boolean_T exitg1;
-  Hummingbird_Failure_Detection_B.mixer[0] = 1.0;
-  Hummingbird_Failure_Detection_B.y_tmp = fabs
-    (Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunctionI[0]);
-  Hummingbird_Failure_Detection_B.y_p[0] = Hummingbird_Failure_Detection_B.y_tmp;
-  Hummingbird_Failure_Detection_B.mixer[1] = 1.0;
-  Hummingbird_Failure_Detection_B.y_tmp_o = fabs
-    (Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunctionI[1]);
-  Hummingbird_Failure_Detection_B.y_p[1] =
-    Hummingbird_Failure_Detection_B.y_tmp_o;
-  Hummingbird_Failure_Detection_B.mixer[2] = 1.0;
-  Hummingbird_Failure_Detection_B.y_tmp_b = fabs
-    (Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunctionI[2]);
-  Hummingbird_Failure_Detection_B.y_p[2] =
-    Hummingbird_Failure_Detection_B.y_tmp_b;
-  b_y = true;
+  Hummingbird_Failure_Detection_B.y_b[0] = fabs(TmpSignalConversionAtSFunctionI
+    [0]);
+  Hummingbird_Failure_Detection_B.y_b[1] = fabs(TmpSignalConversionAtSFunctionI
+    [1]);
+  Hummingbird_Failure_Detection_B.y_b[2] = fabs(TmpSignalConversionAtSFunctionI
+    [2]);
+  b_y = false;
   Hummingbird_Failure_Detection_B.b_k = 0;
   exitg1 = false;
   while ((!exitg1) && (Hummingbird_Failure_Detection_B.b_k < 3)) {
-    if (!(Hummingbird_Failure_Detection_B.y_p[Hummingbird_Failure_Detection_B.b_k]
-          < 4.0)) {
-      b_y = false;
+    if (Hummingbird_Failure_Detection_B.y_b[Hummingbird_Failure_Detection_B.b_k]
+        > 4.0) {
+      b_y = true;
       exitg1 = true;
     } else {
       Hummingbird_Failure_Detection_B.b_k++;
@@ -3221,20 +3247,17 @@ static void Hummingbird_Fai_enter_atomic_FW(const real_T Memory1[3], real_T
   }
 
   if (b_y) {
-    *assist = 0.0;
-    *arms_pos = 1.0;
-  } else {
-    *arms_pos = 0.0;
-    *assist = 1.0;
-    if (Hummingbird_Failure_Detection_B.y_tmp > 4.0 * Memory1[0]) {
+    Hummingbird_Failure_Detection_B.arms_pos = 0.0;
+    Hummingbird_Failure_Detection_B.assist = 1.0;
+    if (fabs(TmpSignalConversionAtSFunctionI[0]) > 4.0 * Memory1[0]) {
       Hummingbird_Failure_Detection_B.mixer[0] = 0.2;
     }
 
-    if (Hummingbird_Failure_Detection_B.y_tmp_o > 4.0 * Memory1[1]) {
+    if (fabs(TmpSignalConversionAtSFunctionI[1]) > 4.0 * Memory1[1]) {
       Hummingbird_Failure_Detection_B.mixer[1] = 0.2;
     }
 
-    if (Hummingbird_Failure_Detection_B.y_tmp_b > 2.0 * Memory1[2]) {
+    if (fabs(TmpSignalConversionAtSFunctionI[2]) > 2.0 * Memory1[2]) {
       Hummingbird_Failure_Detection_B.mixer[2] = 0.2;
     }
   }
@@ -3289,6 +3312,9 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
     -0.00050005792718292737, 0.0, -0.006204756255817, 0.0, 0.000432458171345293,
     0.0, -0.0026697396905476403 };
 
+  static const real_T b[9] = { 0.0, 0.0, 0.2117, 0.0, 0.0, 0.0, 0.2117, 0.0, 0.0
+  };
+
   boolean_T exitg1;
 
   {                                    // Sample time: [0.001s, 0.0s]
@@ -3298,18 +3324,18 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
   Hummingbird_Fa_PX4Timestamp(&Hummingbird_Failure_Detection_B.PX4Timestamp);
 
   // MATLABSystem: '<S8>/SourceBlock'
-  b_varargout_1 = uORB_read_step
+  Hummingbird_Failure_Detection_B.b_varargout_1 = uORB_read_step
     (Hummingbird_Failure_Detectio_DW.obj_j.orbMetadataObj,
      &Hummingbird_Failure_Detectio_DW.obj_j.eventStructObj,
-     &Hummingbird_Failure_Detection_B.r11, false, 1.0);
+     &Hummingbird_Failure_Detection_B.r12, false, 1.0);
 
   // Outputs for Enabled SubSystem: '<S8>/Enabled Subsystem' incorporates:
   //   EnablePort: '<S1451>/Enable'
 
   // Start for MATLABSystem: '<S8>/SourceBlock'
-  if (b_varargout_1) {
+  if (Hummingbird_Failure_Detection_B.b_varargout_1) {
     // SignalConversion generated from: '<S1451>/In1'
-    Hummingbird_Failure_Detection_B.In1_mj = Hummingbird_Failure_Detection_B.r11;
+    Hummingbird_Failure_Detection_B.In1_mj = Hummingbird_Failure_Detection_B.r12;
   }
 
   // End of Outputs for SubSystem: '<S8>/Enabled Subsystem'
@@ -3339,18 +3365,18 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
   Hummingbird_Fa_PX4Timestamp(&Hummingbird_Failure_Detection_B.PX4Timestamp_g);
 
   // MATLABSystem: '<S9>/SourceBlock'
-  b_varargout_1 = uORB_read_step
+  Hummingbird_Failure_Detection_B.b_varargout_1 = uORB_read_step
     (Hummingbird_Failure_Detectio_DW.obj_g2.orbMetadataObj,
      &Hummingbird_Failure_Detectio_DW.obj_g2.eventStructObj,
-     &Hummingbird_Failure_Detection_B.r12, false, 1.0);
+     &Hummingbird_Failure_Detection_B.r13, false, 1.0);
 
   // Outputs for Enabled SubSystem: '<S9>/Enabled Subsystem' incorporates:
   //   EnablePort: '<S1452>/Enable'
 
   // Start for MATLABSystem: '<S9>/SourceBlock'
-  if (b_varargout_1) {
+  if (Hummingbird_Failure_Detection_B.b_varargout_1) {
     // SignalConversion generated from: '<S1452>/In1'
-    Hummingbird_Failure_Detection_B.In1_fo = Hummingbird_Failure_Detection_B.r12;
+    Hummingbird_Failure_Detection_B.In1_fo = Hummingbird_Failure_Detection_B.r13;
   }
 
   // End of Outputs for SubSystem: '<S9>/Enabled Subsystem'
@@ -3372,22 +3398,22 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
                   &Hummingbird_Failure_Detectio_DW.obj_b.orbAdvertiseObj,
                   &Hummingbird_Failure_Detection_B.BusAssignment_g);
 
-  // MATLABSystem: '<S1477>/SourceBlock'
-  b_varargout_1 = uORB_read_step
+  // MATLABSystem: '<S1485>/SourceBlock'
+  Hummingbird_Failure_Detection_B.b_varargout_1 = uORB_read_step
     (Hummingbird_Failure_Detectio_DW.obj_o.orbMetadataObj,
      &Hummingbird_Failure_Detectio_DW.obj_o.eventStructObj,
      &Hummingbird_Failure_Detection_B.r1, false, 1.0);
 
-  // Outputs for Enabled SubSystem: '<S1477>/Enabled Subsystem' incorporates:
-  //   EnablePort: '<S1544>/Enable'
+  // Outputs for Enabled SubSystem: '<S1485>/Enabled Subsystem' incorporates:
+  //   EnablePort: '<S1557>/Enable'
 
-  // Start for MATLABSystem: '<S1477>/SourceBlock'
-  if (b_varargout_1) {
-    // SignalConversion generated from: '<S1544>/In1'
+  // Start for MATLABSystem: '<S1485>/SourceBlock'
+  if (Hummingbird_Failure_Detection_B.b_varargout_1) {
+    // SignalConversion generated from: '<S1557>/In1'
     Hummingbird_Failure_Detection_B.In1_j = Hummingbird_Failure_Detection_B.r1;
   }
 
-  // End of Outputs for SubSystem: '<S1477>/Enabled Subsystem'
+  // End of Outputs for SubSystem: '<S1485>/Enabled Subsystem'
 
   // BusCreator: '<S13>/Bus Creator3' incorporates:
   //   Gain: '<S13>/Convert to ft1'
@@ -3400,7 +3426,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
   Hummingbird_Failure_Detection_B.b_absxk =
     Hummingbird_Failure_Detection_P.Converttoft2_Gain *
     Hummingbird_Failure_Detection_B.In1_j.y;
-  Hummingbird_Failure_Detection_B.r_f =
+  Hummingbird_Failure_Detection_B.r_c =
     Hummingbird_Failure_Detection_P.Converttoft3_Gain *
     Hummingbird_Failure_Detection_B.In1_j.z;
 
@@ -3422,27 +3448,27 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
     (Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1,
      Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0);
 
-  // MATLABSystem: '<S1475>/SourceBlock'
-  b_varargout_1 = uORB_read_step
+  // MATLABSystem: '<S1482>/SourceBlock'
+  Hummingbird_Failure_Detection_B.b_varargout_1 = uORB_read_step
     (Hummingbird_Failure_Detectio_DW.obj_k.orbMetadataObj,
      &Hummingbird_Failure_Detectio_DW.obj_k.eventStructObj,
      &Hummingbird_Failure_Detection_B.r5, false, 1.0);
 
-  // Outputs for Enabled SubSystem: '<S1475>/Enabled Subsystem' incorporates:
-  //   EnablePort: '<S1542>/Enable'
+  // Outputs for Enabled SubSystem: '<S1482>/Enabled Subsystem' incorporates:
+  //   EnablePort: '<S1554>/Enable'
 
-  // Start for MATLABSystem: '<S1475>/SourceBlock'
-  if (b_varargout_1) {
-    // SignalConversion generated from: '<S1542>/In1'
+  // Start for MATLABSystem: '<S1482>/SourceBlock'
+  if (Hummingbird_Failure_Detection_B.b_varargout_1) {
+    // SignalConversion generated from: '<S1554>/In1'
     Hummingbird_Failure_Detection_B.In1_l = Hummingbird_Failure_Detection_B.r5;
   }
 
-  // End of Outputs for SubSystem: '<S1475>/Enabled Subsystem'
+  // End of Outputs for SubSystem: '<S1482>/Enabled Subsystem'
 
   // MATLABSystem: '<S13>/Coordinate Transformation Conversion1' incorporates:
   //   Math: '<S13>/Transpose2'
 
-  Hummingbird_Failure_Detection_B.a_i = 1.0F / static_cast<real32_T>(sqrt(
+  Hummingbird_Failure_Detection_B.a_j = 1.0F / static_cast<real32_T>(sqrt(
     static_cast<real_T>(((Hummingbird_Failure_Detection_B.In1_l.q[0] *
     Hummingbird_Failure_Detection_B.In1_l.q[0] +
     Hummingbird_Failure_Detection_B.In1_l.q[1] *
@@ -3453,28 +3479,28 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
                         Hummingbird_Failure_Detection_B.In1_l.q[3])));
   Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_0 =
     Hummingbird_Failure_Detection_B.In1_l.q[0] *
-    Hummingbird_Failure_Detection_B.a_i;
+    Hummingbird_Failure_Detection_B.a_j;
   Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1 =
     Hummingbird_Failure_Detection_B.In1_l.q[1] *
-    Hummingbird_Failure_Detection_B.a_i;
+    Hummingbird_Failure_Detection_B.a_j;
   Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_2 =
     Hummingbird_Failure_Detection_B.In1_l.q[2] *
-    Hummingbird_Failure_Detection_B.a_i;
+    Hummingbird_Failure_Detection_B.a_j;
   Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3 =
     Hummingbird_Failure_Detection_B.In1_l.q[3] *
-    Hummingbird_Failure_Detection_B.a_i;
-  Hummingbird_Failure_Detection_B.a_i =
+    Hummingbird_Failure_Detection_B.a_j;
+  Hummingbird_Failure_Detection_B.a_j =
     Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1 *
     Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3 * 2.0F -
     Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_0 *
     Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_2 * 2.0F;
-  if (Hummingbird_Failure_Detection_B.a_i > 1.0F) {
-    Hummingbird_Failure_Detection_B.a_i = 1.0F;
+  if (Hummingbird_Failure_Detection_B.a_j > 1.0F) {
+    Hummingbird_Failure_Detection_B.a_j = 1.0F;
   }
 
   Hummingbird_Failure_Detection_B.ParamStep =
-    Hummingbird_Failure_Detection_B.a_i;
-  if (Hummingbird_Failure_Detection_B.a_i < -1.0F) {
+    Hummingbird_Failure_Detection_B.a_j;
+  if (Hummingbird_Failure_Detection_B.a_j < -1.0F) {
     Hummingbird_Failure_Detection_B.ParamStep = -1.0F;
   }
 
@@ -3482,34 +3508,34 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       (static_cast<real32_T>(fabs(static_cast<real_T>
          (Hummingbird_Failure_Detection_B.ParamStep + 1.0F))) < 1.1920929E-6F))
   {
-    Hummingbird_Failure_Detection_B.a_i = -2.0F *
+    Hummingbird_Failure_Detection_B.a_j = -2.0F *
       Hummingbird_Failu_rt_atan2f_snf
       (Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1,
        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_0);
-    Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3 = 0.0F;
-    Hummingbird_Failure_Detection_B.b_o = 1.57079637F;
+    Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1 = 0.0F;
+    Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_2 = 1.57079637F;
   } else if ((Hummingbird_Failure_Detection_B.ParamStep > 0.0F) && (static_cast<
               real32_T>(fabs(static_cast<real_T>
                 (Hummingbird_Failure_Detection_B.ParamStep - 1.0F))) <
               1.1920929E-6F)) {
-    Hummingbird_Failure_Detection_B.a_i = 2.0F * Hummingbird_Failu_rt_atan2f_snf
+    Hummingbird_Failure_Detection_B.a_j = 2.0F * Hummingbird_Failu_rt_atan2f_snf
       (Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1,
        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_0);
-    Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3 = 0.0F;
-    Hummingbird_Failure_Detection_B.b_o = -1.57079637F;
+    Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1 = 0.0F;
+    Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_2 = -1.57079637F;
   } else {
-    Hummingbird_Failure_Detection_B.b_o =
+    Hummingbird_Failure_Detection_B.Gain_ny =
       Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_0 *
       Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_0 * 2.0F - 1.0F;
-    Hummingbird_Failure_Detection_B.a_i = Hummingbird_Failu_rt_atan2f_snf
+    Hummingbird_Failure_Detection_B.a_j = Hummingbird_Failu_rt_atan2f_snf
       (Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_0 *
        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3 * 2.0F +
        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1 *
        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_2 * 2.0F,
        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1 *
        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1 * 2.0F +
-       Hummingbird_Failure_Detection_B.b_o);
-    Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3 =
+       Hummingbird_Failure_Detection_B.Gain_ny);
+    Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1 =
       Hummingbird_Failu_rt_atan2f_snf
       (Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_0 *
        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1 * 2.0F +
@@ -3517,166 +3543,156 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3 * 2.0F,
        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3 *
        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3 * 2.0F +
-       Hummingbird_Failure_Detection_B.b_o);
-    Hummingbird_Failure_Detection_B.b_o = -static_cast<real32_T>(asin(
-      static_cast<real_T>(Hummingbird_Failure_Detection_B.ParamStep)));
+       Hummingbird_Failure_Detection_B.Gain_ny);
+    Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_2 =
+      -static_cast<real32_T>(asin(static_cast<real_T>
+      (Hummingbird_Failure_Detection_B.ParamStep)));
   }
 
+  // MATLABSystem: '<S1483>/SourceBlock'
+  Hummingbird_Failure_Detection_B.b_varargout_1 = uORB_read_step
+    (Hummingbird_Failure_Detectio_DW.obj_a.orbMetadataObj,
+     &Hummingbird_Failure_Detectio_DW.obj_a.eventStructObj,
+     &Hummingbird_Failure_Detection_B.r9, false, 1.0);
+
+  // Outputs for Enabled SubSystem: '<S1483>/Enabled Subsystem' incorporates:
+  //   EnablePort: '<S1555>/Enable'
+
+  // Start for MATLABSystem: '<S1483>/SourceBlock'
+  if (Hummingbird_Failure_Detection_B.b_varargout_1) {
+    // SignalConversion generated from: '<S1555>/In1'
+    Hummingbird_Failure_Detection_B.In1_f = Hummingbird_Failure_Detection_B.r9;
+  }
+
+  // End of Outputs for SubSystem: '<S1483>/Enabled Subsystem'
   Hummingbird_Fai_SourceBlock(&Hummingbird_Failure_Detection_B.SourceBlock_kw,
     &Hummingbird_Failure_Detectio_DW.SourceBlock_kw);
 
-  // Outputs for Enabled SubSystem: '<S1465>/Enabled Subsystem' incorporates:
-  //   EnablePort: '<S1541>/Enable'
+  // Outputs for Enabled SubSystem: '<S1471>/Enabled Subsystem' incorporates:
+  //   EnablePort: '<S1552>/Enable'
 
   if (Hummingbird_Failure_Detection_B.SourceBlock_kw.SourceBlock_o1) {
-    // SignalConversion generated from: '<S1541>/In1' incorporates:
-    //   MATLABSystem: '<S1465>/SourceBlock'
+    // SignalConversion generated from: '<S1552>/In1' incorporates:
+    //   MATLABSystem: '<S1471>/SourceBlock'
 
     Hummingbird_Failure_Detection_B.In1_fm =
       Hummingbird_Failure_Detection_B.SourceBlock_kw.SourceBlock_o2;
   }
 
-  // End of Outputs for SubSystem: '<S1465>/Enabled Subsystem'
+  // End of Outputs for SubSystem: '<S1471>/Enabled Subsystem'
 
   // MATLABSystem: '<S13>/Read Parameter'
-  b_varargout_1 = MW_ParamRead_Step
+  Hummingbird_Failure_Detection_B.b_varargout_1 = MW_ParamRead_Step
     (Hummingbird_Failure_Detectio_DW.obj_cf.MW_PARAMHANDLE, MW_SINGLE,
-     &Hummingbird_Failure_Detection_B.ParamStep);
-  if (b_varargout_1) {
-    Hummingbird_Failure_Detection_B.ParamStep = 0.0F;
+     &Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3);
+  if (Hummingbird_Failure_Detection_B.b_varargout_1) {
+    Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3 = 0.0F;
   }
-
-  // MATLABSystem: '<S1476>/SourceBlock'
-  b_varargout_1 = uORB_read_step
-    (Hummingbird_Failure_Detectio_DW.obj_a.orbMetadataObj,
-     &Hummingbird_Failure_Detectio_DW.obj_a.eventStructObj,
-     &Hummingbird_Failure_Detection_B.r8, false, 1.0);
-
-  // Outputs for Enabled SubSystem: '<S1476>/Enabled Subsystem' incorporates:
-  //   EnablePort: '<S1543>/Enable'
-
-  // Start for MATLABSystem: '<S1476>/SourceBlock'
-  if (b_varargout_1) {
-    // SignalConversion generated from: '<S1543>/In1'
-    Hummingbird_Failure_Detection_B.In1_f = Hummingbird_Failure_Detection_B.r8;
-  }
-
-  // End of Outputs for SubSystem: '<S1476>/Enabled Subsystem'
 
   // Switch: '<S13>/Switch' incorporates:
   //   MATLABSystem: '<S13>/Read Parameter'
   //
-  if (Hummingbird_Failure_Detection_B.ParamStep >
+  if (Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3 >
       Hummingbird_Failure_Detection_P.Switch_Threshold) {
     Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_0 =
-      Hummingbird_Failure_Detection_B.In1_fm.p;
-    Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1 =
       Hummingbird_Failure_Detection_B.In1_fm.q;
-    Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_2 =
-      Hummingbird_Failure_Detection_B.In1_fm.r;
   } else {
     Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_0 =
-      Hummingbird_Failure_Detection_B.In1_f.gyro_rad[0];
-    Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1 =
       Hummingbird_Failure_Detection_B.In1_f.gyro_rad[1];
-    Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_2 =
-      Hummingbird_Failure_Detection_B.In1_f.gyro_rad[2];
   }
 
-  // End of Switch: '<S13>/Switch'
-
-  // Gain: '<S1518>/Filter Coefficient' incorporates:
+  // Gain: '<S1527>/Filter Coefficient' incorporates:
   //   DataTypeConversion: '<S13>/Cast To Double7'
-  //   DiscreteIntegrator: '<S1510>/Filter'
-  //   Gain: '<S1508>/Derivative Gain'
-  //   Sum: '<S1510>/SumD'
+  //   DiscreteIntegrator: '<S1519>/Filter'
+  //   Gain: '<S1517>/Derivative Gain'
+  //   Sum: '<S1519>/SumD'
   //   Switch: '<S13>/Switch'
 
-  Hummingbird_Failure_Detection_B.rtb_FilterCoefficient_g2 =
+  Hummingbird_Failure_Detection_B.rtb_FilterCoefficient_f =
     (Hummingbird_Failure_Detection_P.PIDController_D *
-     Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_0 -
+     Hummingbird_Failure_Detection_B.In1_f.gyro_rad[0] -
      Hummingbird_Failure_Detectio_DW.Filter_DSTATE[0]) *
     Hummingbird_Failure_Detection_P.PIDController_N;
   Hummingbird_Failure_Detection_B.rtb_FilterCoefficient_idx_0 =
-    Hummingbird_Failure_Detection_B.rtb_FilterCoefficient_g2;
+    Hummingbird_Failure_Detection_B.rtb_FilterCoefficient_f;
 
-  // Sum: '<S1524>/Sum' incorporates:
+  // Sum: '<S1533>/Sum' incorporates:
   //   DataTypeConversion: '<S13>/Cast To Double7'
-  //   Gain: '<S1518>/Filter Coefficient'
-  //   Gain: '<S1520>/Proportional Gain'
+  //   Gain: '<S1527>/Filter Coefficient'
+  //   Gain: '<S1529>/Proportional Gain'
   //   Switch: '<S13>/Switch'
 
   Hummingbird_Failure_Detection_B.Sum_e[0] =
     Hummingbird_Failure_Detection_P.PIDController_P *
-    Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_0 +
-    Hummingbird_Failure_Detection_B.rtb_FilterCoefficient_g2;
+    Hummingbird_Failure_Detection_B.In1_f.gyro_rad[0] +
+    Hummingbird_Failure_Detection_B.rtb_FilterCoefficient_f;
 
-  // Gain: '<S1518>/Filter Coefficient' incorporates:
+  // Gain: '<S1527>/Filter Coefficient' incorporates:
   //   DataTypeConversion: '<S13>/Cast To Double7'
-  //   DiscreteIntegrator: '<S1510>/Filter'
-  //   Gain: '<S1508>/Derivative Gain'
-  //   Sum: '<S1510>/SumD'
+  //   DiscreteIntegrator: '<S1519>/Filter'
+  //   Gain: '<S1517>/Derivative Gain'
+  //   Sum: '<S1519>/SumD'
   //   Switch: '<S13>/Switch'
 
-  Hummingbird_Failure_Detection_B.rtb_FilterCoefficient_g2 =
+  Hummingbird_Failure_Detection_B.rtb_FilterCoefficient_f =
     (Hummingbird_Failure_Detection_P.PIDController_D *
-     Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1 -
+     Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_0 -
      Hummingbird_Failure_Detectio_DW.Filter_DSTATE[1]) *
     Hummingbird_Failure_Detection_P.PIDController_N;
   Hummingbird_Failure_Detection_B.rtb_FilterCoefficient_idx_1 =
-    Hummingbird_Failure_Detection_B.rtb_FilterCoefficient_g2;
+    Hummingbird_Failure_Detection_B.rtb_FilterCoefficient_f;
 
-  // Sum: '<S1524>/Sum' incorporates:
+  // Sum: '<S1533>/Sum' incorporates:
   //   DataTypeConversion: '<S13>/Cast To Double7'
-  //   Gain: '<S1518>/Filter Coefficient'
-  //   Gain: '<S1520>/Proportional Gain'
+  //   Gain: '<S1527>/Filter Coefficient'
+  //   Gain: '<S1529>/Proportional Gain'
   //   Switch: '<S13>/Switch'
 
   Hummingbird_Failure_Detection_B.Sum_e[1] =
     Hummingbird_Failure_Detection_P.PIDController_P *
-    Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1 +
-    Hummingbird_Failure_Detection_B.rtb_FilterCoefficient_g2;
+    Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_0 +
+    Hummingbird_Failure_Detection_B.rtb_FilterCoefficient_f;
 
-  // Gain: '<S1518>/Filter Coefficient' incorporates:
+  // Gain: '<S1527>/Filter Coefficient' incorporates:
   //   DataTypeConversion: '<S13>/Cast To Double7'
-  //   DiscreteIntegrator: '<S1510>/Filter'
-  //   Gain: '<S1508>/Derivative Gain'
-  //   Sum: '<S1510>/SumD'
+  //   DiscreteIntegrator: '<S1519>/Filter'
+  //   Gain: '<S1517>/Derivative Gain'
+  //   Sum: '<S1519>/SumD'
   //   Switch: '<S13>/Switch'
 
-  Hummingbird_Failure_Detection_B.rtb_FilterCoefficient_g2 =
+  Hummingbird_Failure_Detection_B.rtb_FilterCoefficient_f =
     (Hummingbird_Failure_Detection_P.PIDController_D *
-     Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_2 -
+     Hummingbird_Failure_Detection_B.In1_f.gyro_rad[2] -
      Hummingbird_Failure_Detectio_DW.Filter_DSTATE[2]) *
     Hummingbird_Failure_Detection_P.PIDController_N;
 
-  // Sum: '<S1524>/Sum' incorporates:
+  // Sum: '<S1533>/Sum' incorporates:
   //   DataTypeConversion: '<S13>/Cast To Double7'
-  //   Gain: '<S1518>/Filter Coefficient'
-  //   Gain: '<S1520>/Proportional Gain'
+  //   Gain: '<S1527>/Filter Coefficient'
+  //   Gain: '<S1529>/Proportional Gain'
   //   Switch: '<S13>/Switch'
 
   Hummingbird_Failure_Detection_B.Sum_e[2] =
     Hummingbird_Failure_Detection_P.PIDController_P *
-    Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_2 +
-    Hummingbird_Failure_Detection_B.rtb_FilterCoefficient_g2;
+    Hummingbird_Failure_Detection_B.In1_f.gyro_rad[2] +
+    Hummingbird_Failure_Detection_B.rtb_FilterCoefficient_f;
 
-  // MATLABSystem: '<S1461>/SourceBlock'
-  b_varargout_1 = uORB_read_step
-    (Hummingbird_Failure_Detectio_DW.obj_m.orbMetadataObj,
-     &Hummingbird_Failure_Detectio_DW.obj_m.eventStructObj,
-     &Hummingbird_Failure_Detection_B.r9, false, 1.0);
+  // MATLABSystem: '<S1467>/SourceBlock'
+  Hummingbird_Failure_Detection_B.b_varargout_1 = uORB_read_step
+    (Hummingbird_Failure_Detectio_DW.obj_me.orbMetadataObj,
+     &Hummingbird_Failure_Detectio_DW.obj_me.eventStructObj,
+     &Hummingbird_Failure_Detection_B.r10, false, 1.0);
 
-  // Outputs for Enabled SubSystem: '<S1461>/Enabled Subsystem' incorporates:
-  //   EnablePort: '<S1537>/Enable'
+  // Outputs for Enabled SubSystem: '<S1467>/Enabled Subsystem' incorporates:
+  //   EnablePort: '<S1548>/Enable'
 
-  // Start for MATLABSystem: '<S1461>/SourceBlock'
-  if (b_varargout_1) {
-    // SignalConversion generated from: '<S1537>/In1'
-    Hummingbird_Failure_Detection_B.In1_p = Hummingbird_Failure_Detection_B.r9;
+  // Start for MATLABSystem: '<S1467>/SourceBlock'
+  if (Hummingbird_Failure_Detection_B.b_varargout_1) {
+    // SignalConversion generated from: '<S1548>/In1'
+    Hummingbird_Failure_Detection_B.In1_p = Hummingbird_Failure_Detection_B.r10;
   }
 
-  // End of Outputs for SubSystem: '<S1461>/Enabled Subsystem'
+  // End of Outputs for SubSystem: '<S1467>/Enabled Subsystem'
 
   // DataTypeConversion: '<S13>/Cast To Double8' incorporates:
   //   Gain: '<S13>/Convert To ft//s1'
@@ -3685,22 +3701,22 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
     Hummingbird_Failure_Detection_P.ConvertTofts1_Gain *
     Hummingbird_Failure_Detection_B.In1_p.true_airspeed_m_s;
 
-  // MATLABSystem: '<S1479>/SourceBlock'
-  b_varargout_1 = uORB_read_step
+  // MATLABSystem: '<S1486>/SourceBlock'
+  Hummingbird_Failure_Detection_B.b_varargout_1 = uORB_read_step
     (Hummingbird_Failure_Detectio_DW.obj_gv.orbMetadataObj,
      &Hummingbird_Failure_Detectio_DW.obj_gv.eventStructObj,
      &Hummingbird_Failure_Detection_B.r6, false, 1.0);
 
-  // Outputs for Enabled SubSystem: '<S1479>/Enabled Subsystem' incorporates:
-  //   EnablePort: '<S1480>/Enable'
+  // Outputs for Enabled SubSystem: '<S1486>/Enabled Subsystem' incorporates:
+  //   EnablePort: '<S1487>/Enable'
 
-  // Start for MATLABSystem: '<S1479>/SourceBlock'
-  if (b_varargout_1) {
-    // SignalConversion generated from: '<S1480>/In1'
+  // Start for MATLABSystem: '<S1486>/SourceBlock'
+  if (Hummingbird_Failure_Detection_B.b_varargout_1) {
+    // SignalConversion generated from: '<S1487>/In1'
     Hummingbird_Failure_Detection_B.In1_i = Hummingbird_Failure_Detection_B.r6;
   }
 
-  // End of Outputs for SubSystem: '<S1479>/Enabled Subsystem'
+  // End of Outputs for SubSystem: '<S1486>/Enabled Subsystem'
 
   // DataTypeConversion: '<S13>/Cast To Double9' incorporates:
   //   Gain: '<S13>/Convert To ft//s3'
@@ -3723,44 +3739,44 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
     Hummingbird_Failure_Detection_P.ConvertTofts5_Gain *
     Hummingbird_Failure_Detection_B.In1_i.z;
 
-  // MATLABSystem: '<S1459>/SourceBlock'
-  b_varargout_1 = uORB_read_step
+  // MATLABSystem: '<S1465>/SourceBlock'
+  Hummingbird_Failure_Detection_B.b_varargout_1 = uORB_read_step
     (Hummingbird_Failure_Detectio_DW.obj_h.orbMetadataObj,
      &Hummingbird_Failure_Detectio_DW.obj_h.eventStructObj,
-     &Hummingbird_Failure_Detection_B.r13, false, 1.0);
+     &Hummingbird_Failure_Detection_B.r14, false, 1.0);
 
-  // Outputs for Enabled SubSystem: '<S1459>/Enabled Subsystem' incorporates:
-  //   EnablePort: '<S1535>/Enable'
+  // Outputs for Enabled SubSystem: '<S1465>/Enabled Subsystem' incorporates:
+  //   EnablePort: '<S1546>/Enable'
 
-  // Start for MATLABSystem: '<S1459>/SourceBlock'
-  if (b_varargout_1) {
-    // SignalConversion generated from: '<S1535>/In1'
-    Hummingbird_Failure_Detection_B.In1_fv = Hummingbird_Failure_Detection_B.r13;
+  // Start for MATLABSystem: '<S1465>/SourceBlock'
+  if (Hummingbird_Failure_Detection_B.b_varargout_1) {
+    // SignalConversion generated from: '<S1546>/In1'
+    Hummingbird_Failure_Detection_B.In1_fv = Hummingbird_Failure_Detection_B.r14;
   }
 
-  // End of Outputs for SubSystem: '<S1459>/Enabled Subsystem'
+  // End of Outputs for SubSystem: '<S1465>/Enabled Subsystem'
 
-  // MATLABSystem: '<S1478>/SourceBlock'
-  b_varargout_1 = uORB_read_step
+  // MATLABSystem: '<S1484>/SourceBlock'
+  Hummingbird_Failure_Detection_B.b_varargout_1 = uORB_read_step
     (Hummingbird_Failure_Detectio_DW.obj_i.orbMetadataObj,
      &Hummingbird_Failure_Detectio_DW.obj_i.eventStructObj,
      &Hummingbird_Failure_Detection_B.r3, false, 1.0);
 
-  // Outputs for Enabled SubSystem: '<S1478>/Enabled Subsystem' incorporates:
-  //   EnablePort: '<S1545>/Enable'
+  // Outputs for Enabled SubSystem: '<S1484>/Enabled Subsystem' incorporates:
+  //   EnablePort: '<S1556>/Enable'
 
-  // Start for MATLABSystem: '<S1478>/SourceBlock'
-  if (b_varargout_1) {
-    // SignalConversion generated from: '<S1545>/In1'
+  // Start for MATLABSystem: '<S1484>/SourceBlock'
+  if (Hummingbird_Failure_Detection_B.b_varargout_1) {
+    // SignalConversion generated from: '<S1556>/In1'
     Hummingbird_Failure_Detection_B.In1_a = Hummingbird_Failure_Detection_B.r3;
   }
 
-  // End of Outputs for SubSystem: '<S1478>/Enabled Subsystem'
+  // End of Outputs for SubSystem: '<S1484>/Enabled Subsystem'
 
   // Gain: '<S13>/Gain13' incorporates:
   //   DataTypeConversion: '<S13>/Cast To Double20'
 
-  Hummingbird_Failure_Detection_B.CastToDouble25 =
+  Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator =
     Hummingbird_Failure_Detection_P.Gain13_Gain_a *
     Hummingbird_Failure_Detection_B.In1_a.alt;
 
@@ -3768,59 +3784,60 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
   //   MATLABSystem: '<S13>/Coordinate Transformation Conversion1'
   //
   Hummingbird_Failure_Detection_B.BusConversion_InsertedFor_Chart.X =
-    Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3;
+    Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1;
   Hummingbird_Failure_Detection_B.BusConversion_InsertedFor_Chart.Y =
-    Hummingbird_Failure_Detection_B.b_o;
+    Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_2;
   Hummingbird_Failure_Detection_B.BusConversion_InsertedFor_Chart.Z =
-    Hummingbird_Failure_Detection_B.a_i;
+    Hummingbird_Failure_Detection_B.a_j;
 
-  // MATLABSystem: '<S1460>/SourceBlock'
-  b_varargout_1 = uORB_read_step
+  // MATLABSystem: '<S1466>/SourceBlock'
+  Hummingbird_Failure_Detection_B.b_varargout_1 = uORB_read_step
     (Hummingbird_Failure_Detectio_DW.obj_p.orbMetadataObj,
      &Hummingbird_Failure_Detectio_DW.obj_p.eventStructObj,
      &Hummingbird_Failure_Detection_B.r2, false, 1.0);
 
-  // Outputs for Enabled SubSystem: '<S1460>/Enabled Subsystem' incorporates:
-  //   EnablePort: '<S1536>/Enable'
+  // Outputs for Enabled SubSystem: '<S1466>/Enabled Subsystem' incorporates:
+  //   EnablePort: '<S1547>/Enable'
 
-  // Start for MATLABSystem: '<S1460>/SourceBlock'
-  if (b_varargout_1) {
-    // SignalConversion generated from: '<S1536>/In1'
+  // Start for MATLABSystem: '<S1466>/SourceBlock'
+  if (Hummingbird_Failure_Detection_B.b_varargout_1) {
+    // SignalConversion generated from: '<S1547>/In1'
     Hummingbird_Failure_Detection_B.In1_d = Hummingbird_Failure_Detection_B.r2;
   }
 
-  // End of Outputs for SubSystem: '<S1460>/Enabled Subsystem'
+  // End of Outputs for SubSystem: '<S1466>/Enabled Subsystem'
 
-  // RateTransition generated from: '<S1468>/Sum' incorporates:
-  //   RateTransition generated from: '<S1466>/Sum'
-  //   RateTransition generated from: '<S1467>/Sum'
-  //   RateTransition generated from: '<S1468>/Divide'
-  //   RateTransition generated from: '<S1469>/Sum'
-  //   RateTransition generated from: '<S1470>/Sum'
-  //   RateTransition generated from: '<S1471>/Sum'
-  //   RateTransition generated from: '<S1472>/Sum'
+  // RateTransition generated from: '<S1475>/Sum' incorporates:
   //   RateTransition generated from: '<S1473>/Sum'
   //   RateTransition generated from: '<S1474>/Sum'
+  //   RateTransition generated from: '<S1475>/Divide'
+  //   RateTransition generated from: '<S1476>/Sum'
+  //   RateTransition generated from: '<S1477>/Sum'
+  //   RateTransition generated from: '<S1478>/Sum'
+  //   RateTransition generated from: '<S1479>/Sum'
+  //   RateTransition generated from: '<S1480>/Sum'
+  //   RateTransition generated from: '<S1481>/Sum'
 
-  b_varargout_1 = Hummingbird_Failure_Detectio_M->Timing.RateInteraction.TID0_1;
-  if (b_varargout_1) {
-    // RateTransition generated from: '<S1468>/Sum'
+  Hummingbird_Failure_Detection_B.b_varargout_1 =
+    Hummingbird_Failure_Detectio_M->Timing.RateInteraction.TID0_1;
+  if (Hummingbird_Failure_Detection_B.b_varargout_1) {
+    // RateTransition generated from: '<S1475>/Sum'
     Hummingbird_Failure_Detection_B.TmpRTBAtSumInport2 =
       Hummingbird_Failure_Detectio_DW.TmpRTBAtSumInport2_Buffer0;
 
-    // RateTransition generated from: '<S1468>/Divide'
+    // RateTransition generated from: '<S1475>/Divide'
     Hummingbird_Failure_Detection_B.TmpRTBAtDivideInport2 =
       Hummingbird_Failure_Detectio_DW.TmpRTBAtDivideInport2_Buffer0;
   }
 
-  // End of RateTransition generated from: '<S1468>/Sum'
+  // End of RateTransition generated from: '<S1475>/Sum'
 
   // DataTypeConversion: '<S13>/Cast To single2' incorporates:
-  //   Constant: '<S1468>/Constant'
-  //   Gain: '<S1468>/Gain'
-  //   Product: '<S1468>/Divide'
-  //   Sum: '<S1468>/Sum'
-  //   Sum: '<S1468>/Sum2'
+  //   Constant: '<S1475>/Constant'
+  //   Gain: '<S1475>/Gain'
+  //   Product: '<S1475>/Divide'
+  //   Sum: '<S1475>/Sum'
+  //   Sum: '<S1475>/Sum2'
 
   Hummingbird_Failure_Detection_B.prev_altitude = floor((static_cast<real32_T>
     (Hummingbird_Failure_Detection_B.In1_d.values[2]) -
@@ -3845,25 +3862,25 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
 
   // End of DataTypeConversion: '<S13>/Cast To single2'
 
-  // RateTransition generated from: '<S1466>/Sum' incorporates:
-  //   RateTransition generated from: '<S1466>/Divide'
+  // RateTransition generated from: '<S1473>/Sum' incorporates:
+  //   RateTransition generated from: '<S1473>/Divide'
 
-  if (b_varargout_1) {
-    // RateTransition generated from: '<S1466>/Sum'
+  if (Hummingbird_Failure_Detection_B.b_varargout_1) {
+    // RateTransition generated from: '<S1473>/Sum'
     Hummingbird_Failure_Detection_B.TmpRTBAtSumInport2_m =
       Hummingbird_Failure_Detectio_DW.TmpRTBAtSumInport2_Buffer0_o;
 
-    // RateTransition generated from: '<S1466>/Divide'
+    // RateTransition generated from: '<S1473>/Divide'
     Hummingbird_Failure_Detection_B.TmpRTBAtDivideInport2_p =
       Hummingbird_Failure_Detectio_DW.TmpRTBAtDivideInport2_Buffer0_l;
   }
 
   // DataTypeConversion: '<S13>/Cast To single' incorporates:
-  //   Constant: '<S1466>/Constant'
-  //   Gain: '<S1466>/Gain'
-  //   Product: '<S1466>/Divide'
-  //   Sum: '<S1466>/Sum'
-  //   Sum: '<S1466>/Sum2'
+  //   Constant: '<S1473>/Constant'
+  //   Gain: '<S1473>/Gain'
+  //   Product: '<S1473>/Divide'
+  //   Sum: '<S1473>/Sum'
+  //   Sum: '<S1473>/Sum2'
 
   Hummingbird_Failure_Detection_B.prev_altitude = floor((static_cast<real32_T>
     (Hummingbird_Failure_Detection_B.In1_d.values[0]) -
@@ -3888,25 +3905,25 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
 
   // End of DataTypeConversion: '<S13>/Cast To single'
 
-  // RateTransition generated from: '<S1467>/Sum' incorporates:
-  //   RateTransition generated from: '<S1467>/Divide'
+  // RateTransition generated from: '<S1474>/Sum' incorporates:
+  //   RateTransition generated from: '<S1474>/Divide'
 
-  if (b_varargout_1) {
-    // RateTransition generated from: '<S1467>/Sum'
+  if (Hummingbird_Failure_Detection_B.b_varargout_1) {
+    // RateTransition generated from: '<S1474>/Sum'
     Hummingbird_Failure_Detection_B.TmpRTBAtSumInport2_mb =
       Hummingbird_Failure_Detectio_DW.TmpRTBAtSumInport2_Buffer0_os;
 
-    // RateTransition generated from: '<S1467>/Divide'
+    // RateTransition generated from: '<S1474>/Divide'
     Hummingbird_Failure_Detection_B.TmpRTBAtDivideInport2_py =
       Hummingbird_Failure_Detectio_DW.TmpRTBAtDivideInport2_Buffer_lz;
   }
 
   // DataTypeConversion: '<S13>/Cast To single1' incorporates:
-  //   Constant: '<S1467>/Constant'
-  //   Gain: '<S1467>/Gain'
-  //   Product: '<S1467>/Divide'
-  //   Sum: '<S1467>/Sum'
-  //   Sum: '<S1467>/Sum2'
+  //   Constant: '<S1474>/Constant'
+  //   Gain: '<S1474>/Gain'
+  //   Product: '<S1474>/Divide'
+  //   Sum: '<S1474>/Sum'
+  //   Sum: '<S1474>/Sum2'
 
   Hummingbird_Failure_Detection_B.prev_altitude = floor((static_cast<real32_T>
     (Hummingbird_Failure_Detection_B.In1_d.values[1]) -
@@ -3931,25 +3948,25 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
 
   // End of DataTypeConversion: '<S13>/Cast To single1'
 
-  // RateTransition generated from: '<S1469>/Sum' incorporates:
-  //   RateTransition generated from: '<S1469>/Divide'
+  // RateTransition generated from: '<S1476>/Sum' incorporates:
+  //   RateTransition generated from: '<S1476>/Divide'
 
-  if (b_varargout_1) {
-    // RateTransition generated from: '<S1469>/Sum'
+  if (Hummingbird_Failure_Detection_B.b_varargout_1) {
+    // RateTransition generated from: '<S1476>/Sum'
     Hummingbird_Failure_Detection_B.TmpRTBAtSumInport2_mbd =
       Hummingbird_Failure_Detectio_DW.TmpRTBAtSumInport2_Buffer0_osg;
 
-    // RateTransition generated from: '<S1469>/Divide'
+    // RateTransition generated from: '<S1476>/Divide'
     Hummingbird_Failure_Detection_B.TmpRTBAtDivideInport2_pyt =
       Hummingbird_Failure_Detectio_DW.TmpRTBAtDivideInport2_Buffe_lzh;
   }
 
   // DataTypeConversion: '<S13>/Cast To single3' incorporates:
-  //   Constant: '<S1469>/Constant'
-  //   Gain: '<S1469>/Gain'
-  //   Product: '<S1469>/Divide'
-  //   Sum: '<S1469>/Sum'
-  //   Sum: '<S1469>/Sum2'
+  //   Constant: '<S1476>/Constant'
+  //   Gain: '<S1476>/Gain'
+  //   Product: '<S1476>/Divide'
+  //   Sum: '<S1476>/Sum'
+  //   Sum: '<S1476>/Sum2'
 
   Hummingbird_Failure_Detection_B.prev_altitude = floor((static_cast<real32_T>
     (Hummingbird_Failure_Detection_B.In1_d.values[3]) -
@@ -3974,25 +3991,25 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
 
   // End of DataTypeConversion: '<S13>/Cast To single3'
 
-  // RateTransition generated from: '<S1470>/Sum' incorporates:
-  //   RateTransition generated from: '<S1470>/Divide'
+  // RateTransition generated from: '<S1477>/Sum' incorporates:
+  //   RateTransition generated from: '<S1477>/Divide'
 
-  if (b_varargout_1) {
-    // RateTransition generated from: '<S1470>/Sum'
+  if (Hummingbird_Failure_Detection_B.b_varargout_1) {
+    // RateTransition generated from: '<S1477>/Sum'
     Hummingbird_Failure_Detection_B.TmpRTBAtSumInport2_mbdz =
       Hummingbird_Failure_Detectio_DW.TmpRTBAtSumInport2_Buffer0_osgb;
 
-    // RateTransition generated from: '<S1470>/Divide'
+    // RateTransition generated from: '<S1477>/Divide'
     Hummingbird_Failure_Detection_B.TmpRTBAtDivideInport2_pyts =
       Hummingbird_Failure_Detectio_DW.TmpRTBAtDivideInport2_Buff_lzhx;
   }
 
   // DataTypeConversion: '<S13>/Cast To single4' incorporates:
-  //   Constant: '<S1470>/Constant'
-  //   Gain: '<S1470>/Gain'
-  //   Product: '<S1470>/Divide'
-  //   Sum: '<S1470>/Sum'
-  //   Sum: '<S1470>/Sum2'
+  //   Constant: '<S1477>/Constant'
+  //   Gain: '<S1477>/Gain'
+  //   Product: '<S1477>/Divide'
+  //   Sum: '<S1477>/Sum'
+  //   Sum: '<S1477>/Sum2'
 
   Hummingbird_Failure_Detection_B.prev_altitude = floor((static_cast<real32_T>
     (Hummingbird_Failure_Detection_B.In1_d.values[4]) -
@@ -4017,25 +4034,25 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
 
   // End of DataTypeConversion: '<S13>/Cast To single4'
 
-  // RateTransition generated from: '<S1471>/Sum' incorporates:
-  //   RateTransition generated from: '<S1471>/Divide'
+  // RateTransition generated from: '<S1478>/Sum' incorporates:
+  //   RateTransition generated from: '<S1478>/Divide'
 
-  if (b_varargout_1) {
-    // RateTransition generated from: '<S1471>/Sum'
+  if (Hummingbird_Failure_Detection_B.b_varargout_1) {
+    // RateTransition generated from: '<S1478>/Sum'
     Hummingbird_Failure_Detection_B.TmpRTBAtSumInport2_mbdzh =
       Hummingbird_Failure_Detectio_DW.TmpRTBAtSumInport2_Buffer_osgbz;
 
-    // RateTransition generated from: '<S1471>/Divide'
+    // RateTransition generated from: '<S1478>/Divide'
     Hummingbird_Failure_Detection_B.TmpRTBAtDivideInport2_pytsl =
       Hummingbird_Failure_Detectio_DW.TmpRTBAtDivideInport2_Buf_lzhxe;
   }
 
   // DataTypeConversion: '<S13>/Cast To single5' incorporates:
-  //   Constant: '<S1471>/Constant'
-  //   Gain: '<S1471>/Gain'
-  //   Product: '<S1471>/Divide'
-  //   Sum: '<S1471>/Sum'
-  //   Sum: '<S1471>/Sum2'
+  //   Constant: '<S1478>/Constant'
+  //   Gain: '<S1478>/Gain'
+  //   Product: '<S1478>/Divide'
+  //   Sum: '<S1478>/Sum'
+  //   Sum: '<S1478>/Sum2'
 
   Hummingbird_Failure_Detection_B.prev_altitude = floor((static_cast<real32_T>
     (Hummingbird_Failure_Detection_B.In1_d.values[5]) -
@@ -4060,25 +4077,25 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
 
   // End of DataTypeConversion: '<S13>/Cast To single5'
 
-  // RateTransition generated from: '<S1472>/Sum' incorporates:
-  //   RateTransition generated from: '<S1472>/Divide'
+  // RateTransition generated from: '<S1479>/Sum' incorporates:
+  //   RateTransition generated from: '<S1479>/Divide'
 
-  if (b_varargout_1) {
-    // RateTransition generated from: '<S1472>/Sum'
+  if (Hummingbird_Failure_Detection_B.b_varargout_1) {
+    // RateTransition generated from: '<S1479>/Sum'
     Hummingbird_Failure_Detection_B.TmpRTBAtSumInport2_mbdzha =
       Hummingbird_Failure_Detectio_DW.TmpRTBAtSumInport2_Buffe_osgbzt;
 
-    // RateTransition generated from: '<S1472>/Divide'
+    // RateTransition generated from: '<S1479>/Divide'
     Hummingbird_Failure_Detection_B.TmpRTBAtDivideInport2_pytslg =
       Hummingbird_Failure_Detectio_DW.TmpRTBAtDivideInport2_Bu_lzhxel;
   }
 
   // DataTypeConversion: '<S13>/Cast To single6' incorporates:
-  //   Constant: '<S1472>/Constant'
-  //   Gain: '<S1472>/Gain'
-  //   Product: '<S1472>/Divide'
-  //   Sum: '<S1472>/Sum'
-  //   Sum: '<S1472>/Sum2'
+  //   Constant: '<S1479>/Constant'
+  //   Gain: '<S1479>/Gain'
+  //   Product: '<S1479>/Divide'
+  //   Sum: '<S1479>/Sum'
+  //   Sum: '<S1479>/Sum2'
 
   Hummingbird_Failure_Detection_B.prev_altitude = floor((static_cast<real32_T>
     (Hummingbird_Failure_Detection_B.In1_d.values[6]) -
@@ -4103,25 +4120,25 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
 
   // End of DataTypeConversion: '<S13>/Cast To single6'
 
-  // RateTransition generated from: '<S1473>/Sum' incorporates:
-  //   RateTransition generated from: '<S1473>/Divide'
+  // RateTransition generated from: '<S1480>/Sum' incorporates:
+  //   RateTransition generated from: '<S1480>/Divide'
 
-  if (b_varargout_1) {
-    // RateTransition generated from: '<S1473>/Sum'
+  if (Hummingbird_Failure_Detection_B.b_varargout_1) {
+    // RateTransition generated from: '<S1480>/Sum'
     Hummingbird_Failure_Detection_B.TmpRTBAtSumInport2_mbdzhaq =
       Hummingbird_Failure_Detectio_DW.TmpRTBAtSumInport2_Buff_osgbztg;
 
-    // RateTransition generated from: '<S1473>/Divide'
+    // RateTransition generated from: '<S1480>/Divide'
     Hummingbird_Failure_Detection_B.TmpRTBAtDivideInport2_pytslgw =
       Hummingbird_Failure_Detectio_DW.TmpRTBAtDivideInport2_B_lzhxel2;
   }
 
   // DataTypeConversion: '<S13>/Cast To single7' incorporates:
-  //   Constant: '<S1473>/Constant'
-  //   Gain: '<S1473>/Gain'
-  //   Product: '<S1473>/Divide'
-  //   Sum: '<S1473>/Sum'
-  //   Sum: '<S1473>/Sum2'
+  //   Constant: '<S1480>/Constant'
+  //   Gain: '<S1480>/Gain'
+  //   Product: '<S1480>/Divide'
+  //   Sum: '<S1480>/Sum'
+  //   Sum: '<S1480>/Sum2'
 
   Hummingbird_Failure_Detection_B.prev_altitude = floor((static_cast<real32_T>
     (Hummingbird_Failure_Detection_B.In1_d.values[7]) -
@@ -4146,25 +4163,25 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
 
   // End of DataTypeConversion: '<S13>/Cast To single7'
 
-  // RateTransition generated from: '<S1474>/Sum' incorporates:
-  //   RateTransition generated from: '<S1474>/Divide'
+  // RateTransition generated from: '<S1481>/Sum' incorporates:
+  //   RateTransition generated from: '<S1481>/Divide'
 
-  if (b_varargout_1) {
-    // RateTransition generated from: '<S1474>/Sum'
+  if (Hummingbird_Failure_Detection_B.b_varargout_1) {
+    // RateTransition generated from: '<S1481>/Sum'
     Hummingbird_Failure_Detection_B.TmpRTBAtSumInport2_mbdzhaqa =
       Hummingbird_Failure_Detectio_DW.TmpRTBAtSumInport2_Buf_osgbztgq;
 
-    // RateTransition generated from: '<S1474>/Divide'
+    // RateTransition generated from: '<S1481>/Divide'
     Hummingbird_Failure_Detection_B.TmpRTBAtDivideInport2_pytslgwp =
       Hummingbird_Failure_Detectio_DW.TmpRTBAtDivideInport2__lzhxel2b;
   }
 
   // DataTypeConversion: '<S13>/Cast To single8' incorporates:
-  //   Constant: '<S1474>/Constant'
-  //   Gain: '<S1474>/Gain'
-  //   Product: '<S1474>/Divide'
-  //   Sum: '<S1474>/Sum'
-  //   Sum: '<S1474>/Sum2'
+  //   Constant: '<S1481>/Constant'
+  //   Gain: '<S1481>/Gain'
+  //   Product: '<S1481>/Divide'
+  //   Sum: '<S1481>/Sum'
+  //   Sum: '<S1481>/Sum2'
 
   Hummingbird_Failure_Detection_B.prev_altitude = floor((static_cast<real32_T>
     (Hummingbird_Failure_Detection_B.In1_d.values[8]) -
@@ -4209,22 +4226,22 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
   Hummingbird_Failure_Detection_B.BusCreator.channel_18 =
     Hummingbird_Failure_Detection_B.In1_d.values[17];
 
-  // MATLABSystem: '<S1462>/SourceBlock'
-  b_varargout_1 = uORB_read_step
+  // MATLABSystem: '<S1468>/SourceBlock'
+  Hummingbird_Failure_Detection_B.b_varargout_1 = uORB_read_step
     (Hummingbird_Failure_Detectio_DW.obj_az.orbMetadataObj,
      &Hummingbird_Failure_Detectio_DW.obj_az.eventStructObj,
      &Hummingbird_Failure_Detection_B.r, false, 1.0);
 
-  // Outputs for Enabled SubSystem: '<S1462>/Enabled Subsystem' incorporates:
-  //   EnablePort: '<S1538>/Enable'
+  // Outputs for Enabled SubSystem: '<S1468>/Enabled Subsystem' incorporates:
+  //   EnablePort: '<S1549>/Enable'
 
-  // Start for MATLABSystem: '<S1462>/SourceBlock'
-  if (b_varargout_1) {
-    // SignalConversion generated from: '<S1538>/In1'
+  // Start for MATLABSystem: '<S1468>/SourceBlock'
+  if (Hummingbird_Failure_Detection_B.b_varargout_1) {
+    // SignalConversion generated from: '<S1549>/In1'
     Hummingbird_Failure_Detection_B.In1 = Hummingbird_Failure_Detection_B.r;
   }
 
-  // End of Outputs for SubSystem: '<S1462>/Enabled Subsystem'
+  // End of Outputs for SubSystem: '<S1468>/Enabled Subsystem'
 
   // Gain: '<S13>/Gain1' incorporates:
   //   DataTypeConversion: '<S13>/Cast To Double14'
@@ -4307,22 +4324,22 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
     Hummingbird_Failure_Detection_P.Gain6_Gain_i *
     Hummingbird_Failure_Detection_B.In1.previous.alt;
 
-  // MATLABSystem: '<S1463>/SourceBlock'
-  b_varargout_1 = uORB_read_step
+  // MATLABSystem: '<S1469>/SourceBlock'
+  Hummingbird_Failure_Detection_B.b_varargout_1 = uORB_read_step
     (Hummingbird_Failure_Detectio_DW.obj_g.orbMetadataObj,
      &Hummingbird_Failure_Detectio_DW.obj_g.eventStructObj,
      &Hummingbird_Failure_Detection_B.r7, false, 1.0);
 
-  // Outputs for Enabled SubSystem: '<S1463>/Enabled Subsystem' incorporates:
-  //   EnablePort: '<S1539>/Enable'
+  // Outputs for Enabled SubSystem: '<S1469>/Enabled Subsystem' incorporates:
+  //   EnablePort: '<S1550>/Enable'
 
-  // Start for MATLABSystem: '<S1463>/SourceBlock'
-  if (b_varargout_1) {
-    // SignalConversion generated from: '<S1539>/In1'
+  // Start for MATLABSystem: '<S1469>/SourceBlock'
+  if (Hummingbird_Failure_Detection_B.b_varargout_1) {
+    // SignalConversion generated from: '<S1550>/In1'
     Hummingbird_Failure_Detection_B.In1_i4 = Hummingbird_Failure_Detection_B.r7;
   }
 
-  // End of Outputs for SubSystem: '<S1463>/Enabled Subsystem'
+  // End of Outputs for SubSystem: '<S1469>/Enabled Subsystem'
 
   // Gain: '<S13>/Gain9' incorporates:
   //   DataTypeConversion: '<S13>/Cast To Double23'
@@ -4384,7 +4401,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         Hummingbird_Failure_Detectio_DW.mission_start[1] =
           Hummingbird_Failure_Detection_B.In1_a.lon;
         Hummingbird_Failure_Detectio_DW.mission_start[2] =
-          Hummingbird_Failure_Detection_B.CastToDouble25;
+          Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator;
       } else if (Hummingbird_Failure_Detection_B.BusCreator.Flight_Mode > 1200)
       {
         Hummingbird_Failure_Detectio_DW.is_Flight_controller =
@@ -4540,13 +4557,13 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         //
         Hummingbird_Failure_Detection_B.y[0] =
           Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_1 -
-          Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3;
+          Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1;
         Hummingbird_Failure_Detection_B.y[1] =
           Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 -
-          Hummingbird_Failure_Detection_B.b_o;
+          Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_2;
         Hummingbird_Failure_Detection_B.y[2] =
           Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_0 -
-          Hummingbird_Failure_Detection_B.a_i;
+          Hummingbird_Failure_Detection_B.a_j;
         Hummingbird__ReadParameter1
           (&Hummingbird_Failure_Detection_B.ReadParameter1_b3rgaen,
            &Hummingbird_Failure_Detectio_DW.ReadParameter1_b3rgaen);
@@ -4643,13 +4660,13 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
 
         Hummingbird_Failure_Detection_B.DProdOut_n[0] =
           Hummingbird_Failure_Detection_B.y[0] -
-          Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_0;
+          Hummingbird_Failure_Detection_B.In1_f.gyro_rad[0];
         Hummingbird_Failure_Detection_B.DProdOut_n[1] =
           Hummingbird_Failure_Detection_B.y[1] -
-          Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1;
+          Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_0;
         Hummingbird_Failure_Detection_B.DProdOut_n[2] =
           Hummingbird_Failure_Detection_B.y[2] -
-          Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_2;
+          Hummingbird_Failure_Detection_B.In1_f.gyro_rad[2];
         Hummingbi_ReadParameter1_b3
           (&Hummingbird_Failure_Detection_B.ReadParameter1_b3rgaenb3,
            &Hummingbird_Failure_Detectio_DW.ReadParameter1_b3rgaenb3);
@@ -4723,13 +4740,13 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         Hummingbird_Failure_Detection_B.BusAssignment_ia.yaw_rate_error =
           static_cast<real32_T>(Hummingbird_Failure_Detection_B.y[2]);
         Hummingbird_Failure_Detection_B.BusAssignment_ia._padding0[0] =
-          Hummingbird_Failure_Detection_P.Constant_Value_c4[0];
+          Hummingbird_Failure_Detection_P.Constant_Value_c4q[0];
         Hummingbird_Failure_Detection_B.BusAssignment_ia._padding0[1] =
-          Hummingbird_Failure_Detection_P.Constant_Value_c4[1];
+          Hummingbird_Failure_Detection_P.Constant_Value_c4q[1];
         Hummingbird_Failure_Detection_B.BusAssignment_ia._padding0[2] =
-          Hummingbird_Failure_Detection_P.Constant_Value_c4[2];
+          Hummingbird_Failure_Detection_P.Constant_Value_c4q[2];
         Hummingbird_Failure_Detection_B.BusAssignment_ia._padding0[3] =
-          Hummingbird_Failure_Detection_P.Constant_Value_c4[3];
+          Hummingbird_Failure_Detection_P.Constant_Value_c4q[3];
         Hummingbird_Fai_SinkBlock_j
           (&Hummingbird_Failure_Detection_B.BusAssignment_ia,
            &Hummingbird_Failure_Detectio_DW.SinkBlock_cp);
@@ -4862,14 +4879,14 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
           Hummingbird_Failure_Detection_B.BusCreator2.Setpoints.previous.gps_pos.altitude;
       }
 
-      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[0] =
+      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[0] =
         Hummingbird_Failure_Detection_B.BusCreator2.Home.GPS.lat;
-      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[1] =
+      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[1] =
         Hummingbird_Failure_Detection_B.BusCreator2.Home.GPS.lon;
-      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[2] =
+      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[2] =
         Hummingbird_Failure_Detection_B.BusCreator2.Home.GPS.altitude;
       Hummingbird_Failure_Det_lla2ned(Hummingbird_Failure_Detection_B.prev_lat,
-        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c,
+        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k,
         Hummingbird_Failure_Detection_B.dv);
       if (rtIsNaN
           (Hummingbird_Failure_Detection_B.BusCreator2.Setpoints.current.gps_pos.lat))
@@ -4884,11 +4901,11 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         Hummingbird_Failure_Detection_B.DProdOut_n[1] = 0.0;
         Hummingbird_Failure_Detection_B.DProdOut_n[2] = 0.0;
       } else {
-        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[0] =
+        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[0] =
           Hummingbird_Failure_Detection_B.BusCreator2.Setpoints.current.gps_pos.lat;
-        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[1] =
+        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[1] =
           Hummingbird_Failure_Detection_B.BusCreator2.Setpoints.current.gps_pos.lon;
-        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[2] =
+        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[2] =
           Hummingbird_Failure_Detection_B.BusCreator2.Setpoints.current.gps_pos.altitude;
         Hummingbird_Failure_Detection_B.prev_lat[0] =
           Hummingbird_Failure_Detection_B.BusCreator2.Home.GPS.lat;
@@ -4897,7 +4914,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         Hummingbird_Failure_Detection_B.prev_lat[2] =
           Hummingbird_Failure_Detection_B.BusCreator2.Home.GPS.altitude;
         Hummingbird_Failure_Det_lla2ned
-          (Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c,
+          (Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k,
            Hummingbird_Failure_Detection_B.prev_lat,
            Hummingbird_Failure_Detection_B.dv1);
         Hummingbird_Failure_Detection_B.DProdOut_n[0] = 3.28084 *
@@ -4916,7 +4933,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
 
       Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 =
         Hummingbird_Failure_Detection_B.DProdOut_n[2] -
-        Hummingbird_Failure_Detection_B.CastToDouble25;
+        Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator;
 
       // Gain: '<S824>/Filter Coefficient' incorporates:
       //   DiscreteIntegrator: '<S816>/Filter'
@@ -5000,14 +5017,14 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //   MATLABSystem: '<S13>/Coordinate Transformation Conversion1'
       //
       Hummingbird_MATLABFunction2(static_cast<real_T>
-        (Hummingbird_Failure_Detection_B.a_i), Hummingbird_Failu_rt_atan2d_snf
+        (Hummingbird_Failure_Detection_B.a_j), Hummingbird_Failu_rt_atan2d_snf
         (Hummingbird_Failure_Detection_B.DProdOut_n[1] - (3.28084 *
         Hummingbird_Failure_Detection_B.dv[1] +
         Hummingbird_Failure_Detection_B.BusCreator2.Home.local_pos.Y),
          Hummingbird_Failure_Detection_B.DProdOut_n[0] - (3.28084 *
         Hummingbird_Failure_Detection_B.dv[0] +
         Hummingbird_Failure_Detection_B.BusCreator2.Home.local_pos.X)),
-        &Hummingbird_Failure_Detection_B.CastToDouble25);
+        &Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator);
       Hummingbird_Fa_PX4Timestamp
         (&Hummingbird_Failure_Detection_B.PX4Timestamp_pb);
 
@@ -5095,13 +5112,13 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         Hummingbird_Failure_Detection_B.prev_altitude;
 
       // MATLAB Function: '<S732>/MATLAB Function'
-      Hummingbird_Failure_Detection_B.rtb_prev_waypoint_c[0] =
+      Hummingbird_Failure_Detection_B.rtb_prev_waypoint_p[0] =
         Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_0;
-      Hummingbird_Failure_Detection_B.rtb_prev_waypoint_c[1] =
+      Hummingbird_Failure_Detection_B.rtb_prev_waypoint_p[1] =
         Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_1;
       Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1 =
         Hummingbird_Failure_Dete_norm_j
-        (Hummingbird_Failure_Detection_B.rtb_prev_waypoint_c);
+        (Hummingbird_Failure_Detection_B.rtb_prev_waypoint_p);
       if (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1 > 30.0) {
         Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_0 =
           Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_0 /
@@ -5132,13 +5149,13 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //   Gain: '<S1095>/Derivative Gain'
       //   Sum: '<S1097>/SumD'
 
-      Hummingbird_Failure_Detection_B.Saturation4 =
+      Hummingbird_Failure_Detection_B.Saturation1 =
         (Hummingbird_Failure_Detection_P.PIDController9_D[0] *
          Hummingbird_Failure_Detection_B.y[0] -
          Hummingbird_Failure_Detectio_DW.Filter_DSTATE_e[0]) *
         Hummingbird_Failure_Detection_P.PIDController9_N;
       Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_0 =
-        Hummingbird_Failure_Detection_B.Saturation4;
+        Hummingbird_Failure_Detection_B.Saturation1;
 
       // Sum: '<S1111>/Sum' incorporates:
       //   DiscreteIntegrator: '<S1102>/Integrator'
@@ -5149,7 +5166,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         (Hummingbird_Failure_Detection_P.PIDController9_P[0] *
          Hummingbird_Failure_Detection_B.y[0] +
          Hummingbird_Failure_Detectio_DW.Integrator_DSTATE_c[0]) +
-        Hummingbird_Failure_Detection_B.Saturation4;
+        Hummingbird_Failure_Detection_B.Saturation1;
 
       // Saturate: '<S1109>/Saturation'
       if (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 >
@@ -5168,13 +5185,13 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //   Gain: '<S1095>/Derivative Gain'
       //   Sum: '<S1097>/SumD'
 
-      Hummingbird_Failure_Detection_B.Saturation4 =
+      Hummingbird_Failure_Detection_B.Saturation1 =
         (Hummingbird_Failure_Detection_P.PIDController9_D[1] *
          Hummingbird_Failure_Detection_B.y[1] -
          Hummingbird_Failure_Detectio_DW.Filter_DSTATE_e[1]) *
         Hummingbird_Failure_Detection_P.PIDController9_N;
       Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_1 =
-        Hummingbird_Failure_Detection_B.Saturation4;
+        Hummingbird_Failure_Detection_B.Saturation1;
 
       // Sum: '<S1111>/Sum' incorporates:
       //   DiscreteIntegrator: '<S1102>/Integrator'
@@ -5185,7 +5202,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         (Hummingbird_Failure_Detection_P.PIDController9_P[1] *
          Hummingbird_Failure_Detection_B.y[1] +
          Hummingbird_Failure_Detectio_DW.Integrator_DSTATE_c[1]) +
-        Hummingbird_Failure_Detection_B.Saturation4;
+        Hummingbird_Failure_Detection_B.Saturation1;
 
       // Saturate: '<S1109>/Saturation'
       if (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1 >
@@ -5204,7 +5221,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //   Gain: '<S1095>/Derivative Gain'
       //   Sum: '<S1097>/SumD'
 
-      Hummingbird_Failure_Detection_B.Saturation4 =
+      Hummingbird_Failure_Detection_B.Saturation1 =
         (Hummingbird_Failure_Detection_P.PIDController9_D[2] *
          Hummingbird_Failure_Detection_B.y[2] -
          Hummingbird_Failure_Detectio_DW.Filter_DSTATE_e[2]) *
@@ -5219,7 +5236,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         (Hummingbird_Failure_Detection_P.PIDController9_P[2] *
          Hummingbird_Failure_Detection_B.y[2] +
          Hummingbird_Failure_Detectio_DW.Integrator_DSTATE_c[2]) +
-        Hummingbird_Failure_Detection_B.Saturation4;
+        Hummingbird_Failure_Detection_B.Saturation1;
 
       // Saturate: '<S1109>/Saturation'
       if (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 >
@@ -5238,9 +5255,9 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //   MATLABSystem: '<S13>/Coordinate Transformation Conversion1'
       //
       Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 = cos
-        (static_cast<real_T>(Hummingbird_Failure_Detection_B.a_i));
+        (static_cast<real_T>(Hummingbird_Failure_Detection_B.a_j));
       Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 = sin
-        (static_cast<real_T>(Hummingbird_Failure_Detection_B.a_i));
+        (static_cast<real_T>(Hummingbird_Failure_Detection_B.a_j));
       Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 = asin
         ((-Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 *
           Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 +
@@ -5299,7 +5316,8 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       Hummingbird_Failure_Detection_B.BusAssignment_ov.pitch = static_cast<
         real32_T>(Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0);
       Hummingbird_Failure_Detection_B.BusAssignment_ov.yaw_rate =
-        static_cast<real32_T>(Hummingbird_Failure_Detection_B.CastToDouble25);
+        static_cast<real32_T>
+        (Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator);
       Hummingbird_Failure_Detection_B.BusAssignment_ov._padding0[0] =
         Hummingbird_Failure_Detection_P.Constant5_Value_d[0];
       Hummingbird_Failure_Detection_B.BusAssignment_ov._padding0[1] =
@@ -5322,12 +5340,12 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //
       Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 =
         Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 -
-        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3;
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1;
       Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 =
         Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 -
-        Hummingbird_Failure_Detection_B.b_o;
-      Hummingbird_Failure_Detection_B.CastToDouble25 -=
-        Hummingbird_Failure_Detection_B.a_i;
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_2;
+      Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator -=
+        Hummingbird_Failure_Detection_B.a_j;
       Hummin_ReadParameter1_b3rga
         (&Hummingbird_Failure_Detection_B.ReadParameter1_j,
          &Hummingbird_Failure_Detectio_DW.ReadParameter1_j);
@@ -5364,7 +5382,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
          Hummingbird_Failure_Detectio_DW.Filter_DSTATE_k[1]) *
         Hummingbird_Failure_Detection_P.Constant4_Value_e;
       Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 =
-        (Hummingbird_Failure_Detection_B.CastToDouble25 *
+        (Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator *
          Hummingbird_Failure_Detection_B.ReadParameter2_b3rgaenb3ayu5.ReadParameter2_o1
          - Hummingbird_Failure_Detectio_DW.Filter_DSTATE_k[2]) *
         Hummingbird_Failure_Detection_P.Constant4_Value_e;
@@ -5381,7 +5399,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         Hummingbird_Failure_Detection_B.ReadParameter_o.ReadParameter_o1 +
         Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1;
       Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2 =
-        Hummingbird_Failure_Detection_B.CastToDouble25 *
+        Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator *
         Hummingbird_Failure_Detection_B.ReadParameter2_b3rgaenb3ayu.ReadParameter2_o1
         + Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2;
 
@@ -5420,11 +5438,11 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //   Switch: '<S13>/Switch'
 
       Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 -=
-        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_0;
+        Hummingbird_Failure_Detection_B.In1_f.gyro_rad[0];
       Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 -=
-        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1;
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_0;
       Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2 -=
-        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_2;
+        Hummingbird_Failure_Detection_B.In1_f.gyro_rad[2];
 
       // BusAssignment: '<S844>/Bus Assignment' incorporates:
       //   Constant: '<S731>/Constant1'
@@ -5684,7 +5702,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
 
       Hummingbird_Failure_Detectio_DW.Filter_DSTATE_e[2] +=
         Hummingbird_Failure_Detection_P.Filter_gainval_lu *
-        Hummingbird_Failure_Detection_B.Saturation4;
+        Hummingbird_Failure_Detection_B.Saturation1;
 
       // Update for DiscreteIntegrator: '<S982>/Filter'
       Hummingbird_Failure_Detectio_DW.Filter_DSTATE_k[2] +=
@@ -5789,7 +5807,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //   Sum: '<S1357>/Sum'
       //
       Hummingbird_MATLABFunction2(static_cast<real_T>
-        (Hummingbird_Failure_Detection_B.a_i),
+        (Hummingbird_Failure_Detection_B.a_j),
         Hummingbird_Failure_Detection_P.Gain_Gain_j2 *
         (Hummingbird_Failure_Detection_P.Gain_Gain_j * (static_cast<real_T>
         (Hummingbird_Failure_Detection_B.BusCreator.Yaw) -
@@ -6011,10 +6029,10 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //
       Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 =
         Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_1 -
-        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3;
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1;
       Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1 =
         Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_0 -
-        Hummingbird_Failure_Detection_B.b_o;
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_2;
       Hummin_ReadParameter1_b3rga
         (&Hummingbird_Failure_Detection_B.ReadParameter1_ld,
          &Hummingbird_Failure_Detectio_DW.ReadParameter1_ld);
@@ -6097,12 +6115,12 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //   Switch: '<S13>/Switch'
 
       Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_0 -=
-        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_0;
+        Hummingbird_Failure_Detection_B.In1_f.gyro_rad[0];
       Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_1 -=
-        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1;
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_0;
       Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 =
         Hummingbird_Failure_Detection_B.CastToDouble11 -
-        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_2;
+        Hummingbird_Failure_Detection_B.In1_f.gyro_rad[2];
 
       // BusAssignment: '<S1183>/Bus Assignment' incorporates:
       //   Constant: '<S1122>/Constant1'
@@ -6281,7 +6299,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //
       Hummingbird_Failure_Detectio_DW.Filter_DSTATE_c[2] +=
         ((Hummingbird_Failure_Detection_B.CastToDouble11 -
-          Hummingbird_Failure_Detection_B.a_i) *
+          Hummingbird_Failure_Detection_B.a_j) *
          Hummingbird_Failure_Detection_B.ReadParameter2_o.ReadParameter2_o1 -
          Hummingbird_Failure_Detectio_DW.Filter_DSTATE_c[2]) *
         Hummingbird_Failure_Detection_P.Constant4_Value_ey *
@@ -6435,10 +6453,10 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //
       Hummingbird_Failure_Detection_B.y[0] =
         Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 -
-        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3;
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1;
       Hummingbird_Failure_Detection_B.y[1] =
         Hummingbird_Failure_Detection_B.CastToDouble10 -
-        Hummingbird_Failure_Detection_B.b_o;
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_2;
       Hummin_ReadParameter1_b3rga
         (&Hummingbird_Failure_Detection_B.ReadParameter1_b3rgaenb3ayu,
          &Hummingbird_Failure_Detectio_DW.ReadParameter1_b3rgaenb3ayu);
@@ -6527,13 +6545,13 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         Hummingbird_Failure_Detection_B.DProdOut_n[1];
       Hummingbird_Failure_Detection_B.DProdOut_n[0] =
         Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 -
-        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_0;
+        Hummingbird_Failure_Detection_B.In1_f.gyro_rad[0];
       Hummingbird_Failure_Detection_B.DProdOut_n[1] =
         Hummingbird_Failure_Detection_B.CastToDouble10 -
-        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1;
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_0;
       Hummingbird_Failure_Detection_B.DProdOut_n[2] =
         Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_1 -
-        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_2;
+        Hummingbird_Failure_Detection_B.In1_f.gyro_rad[2];
 
       // BusAssignment: '<S558>/Bus Assignment' incorporates:
       //   Constant: '<S498>/Constant'
@@ -6624,7 +6642,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         Hummingbird_Failure_Detection_B.Filter_os[1];
       Hummingbird_Failure_Detectio_DW.Filter_DSTATE_bl[2] +=
         ((Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_1 -
-          Hummingbird_Failure_Detection_B.a_i) *
+          Hummingbird_Failure_Detection_B.a_j) *
          Hummingbird_Failure_Detection_B.ReadParameter2_b3rgaenb3.ReadParameter2_o1
          - Hummingbird_Failure_Detectio_DW.Filter_DSTATE_bl[2]) *
         Hummingbird_Failure_Detection_P.Constant1_Value_d *
@@ -6644,7 +6662,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         Hummingbird_Failure_Detectio_DW.mission_start[1] =
           Hummingbird_Failure_Detection_B.In1_a.lon;
         Hummingbird_Failure_Detectio_DW.mission_start[2] =
-          Hummingbird_Failure_Detection_B.CastToDouble25;
+          Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator;
       } else if (Hummingbird_Failure_Detection_B.BusCreator.Flight_Mode > 1200)
       {
         exit_internal_Flight_controller();
@@ -6801,13 +6819,13 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         //
         Hummingbird_Failure_Detection_B.y[0] =
           Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_1 -
-          Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3;
+          Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1;
         Hummingbird_Failure_Detection_B.y[1] =
           Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 -
-          Hummingbird_Failure_Detection_B.b_o;
+          Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_2;
         Hummingbird_Failure_Detection_B.y[2] =
           Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_0 -
-          Hummingbird_Failure_Detection_B.a_i;
+          Hummingbird_Failure_Detection_B.a_j;
         Hummingbird__ReadParameter1
           (&Hummingbird_Failure_Detection_B.ReadParameter1_b3rgaen,
            &Hummingbird_Failure_Detectio_DW.ReadParameter1_b3rgaen);
@@ -6904,13 +6922,13 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
 
         Hummingbird_Failure_Detection_B.DProdOut_n[0] =
           Hummingbird_Failure_Detection_B.y[0] -
-          Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_0;
+          Hummingbird_Failure_Detection_B.In1_f.gyro_rad[0];
         Hummingbird_Failure_Detection_B.DProdOut_n[1] =
           Hummingbird_Failure_Detection_B.y[1] -
-          Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1;
+          Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_0;
         Hummingbird_Failure_Detection_B.DProdOut_n[2] =
           Hummingbird_Failure_Detection_B.y[2] -
-          Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_2;
+          Hummingbird_Failure_Detection_B.In1_f.gyro_rad[2];
         Hummingbi_ReadParameter1_b3
           (&Hummingbird_Failure_Detection_B.ReadParameter1_b3rgaenb3,
            &Hummingbird_Failure_Detectio_DW.ReadParameter1_b3rgaenb3);
@@ -6984,13 +7002,13 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         Hummingbird_Failure_Detection_B.BusAssignment_ia.yaw_rate_error =
           static_cast<real32_T>(Hummingbird_Failure_Detection_B.y[2]);
         Hummingbird_Failure_Detection_B.BusAssignment_ia._padding0[0] =
-          Hummingbird_Failure_Detection_P.Constant_Value_c4[0];
+          Hummingbird_Failure_Detection_P.Constant_Value_c4q[0];
         Hummingbird_Failure_Detection_B.BusAssignment_ia._padding0[1] =
-          Hummingbird_Failure_Detection_P.Constant_Value_c4[1];
+          Hummingbird_Failure_Detection_P.Constant_Value_c4q[1];
         Hummingbird_Failure_Detection_B.BusAssignment_ia._padding0[2] =
-          Hummingbird_Failure_Detection_P.Constant_Value_c4[2];
+          Hummingbird_Failure_Detection_P.Constant_Value_c4q[2];
         Hummingbird_Failure_Detection_B.BusAssignment_ia._padding0[3] =
-          Hummingbird_Failure_Detection_P.Constant_Value_c4[3];
+          Hummingbird_Failure_Detection_P.Constant_Value_c4q[3];
         Hummingbird_Fai_SinkBlock_j
           (&Hummingbird_Failure_Detection_B.BusAssignment_ia,
            &Hummingbird_Failure_Detectio_DW.SinkBlock_cp);
@@ -7125,14 +7143,14 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
           Hummingbird_Failure_Detection_B.BusCreator2.Setpoints.previous.gps_pos.altitude;
       }
 
-      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[0] =
+      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[0] =
         Hummingbird_Failure_Detection_B.BusCreator2.Home.GPS.lat;
-      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[1] =
+      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[1] =
         Hummingbird_Failure_Detection_B.BusCreator2.Home.GPS.lon;
-      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[2] =
+      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[2] =
         Hummingbird_Failure_Detection_B.BusCreator2.Home.GPS.altitude;
       Hummingbird_Failure_Det_lla2ned(Hummingbird_Failure_Detection_B.prev_lat,
-        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c,
+        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k,
         Hummingbird_Failure_Detection_B.dv);
       if (rtIsNaN
           (Hummingbird_Failure_Detection_B.BusCreator2.Setpoints.current.gps_pos.lat))
@@ -7147,11 +7165,11 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         Hummingbird_Failure_Detection_B.DProdOut_n[1] = 0.0;
         Hummingbird_Failure_Detection_B.DProdOut_n[2] = 0.0;
       } else {
-        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[0] =
+        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[0] =
           Hummingbird_Failure_Detection_B.BusCreator2.Setpoints.current.gps_pos.lat;
-        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[1] =
+        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[1] =
           Hummingbird_Failure_Detection_B.BusCreator2.Setpoints.current.gps_pos.lon;
-        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[2] =
+        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[2] =
           Hummingbird_Failure_Detection_B.BusCreator2.Setpoints.current.gps_pos.altitude;
         Hummingbird_Failure_Detection_B.prev_lat[0] =
           Hummingbird_Failure_Detection_B.BusCreator2.Home.GPS.lat;
@@ -7160,7 +7178,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         Hummingbird_Failure_Detection_B.prev_lat[2] =
           Hummingbird_Failure_Detection_B.BusCreator2.Home.GPS.altitude;
         Hummingbird_Failure_Det_lla2ned
-          (Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c,
+          (Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k,
            Hummingbird_Failure_Detection_B.prev_lat,
            Hummingbird_Failure_Detection_B.dv1);
         Hummingbird_Failure_Detection_B.DProdOut_n[0] = 3.28084 *
@@ -7179,7 +7197,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
 
       Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 =
         Hummingbird_Failure_Detection_B.DProdOut_n[2] -
-        Hummingbird_Failure_Detection_B.CastToDouble25;
+        Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator;
 
       // Gain: '<S824>/Filter Coefficient' incorporates:
       //   DiscreteIntegrator: '<S816>/Filter'
@@ -7263,14 +7281,14 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //   MATLABSystem: '<S13>/Coordinate Transformation Conversion1'
       //
       Hummingbird_MATLABFunction2(static_cast<real_T>
-        (Hummingbird_Failure_Detection_B.a_i), Hummingbird_Failu_rt_atan2d_snf
+        (Hummingbird_Failure_Detection_B.a_j), Hummingbird_Failu_rt_atan2d_snf
         (Hummingbird_Failure_Detection_B.DProdOut_n[1] - (3.28084 *
         Hummingbird_Failure_Detection_B.dv[1] +
         Hummingbird_Failure_Detection_B.BusCreator2.Home.local_pos.Y),
          Hummingbird_Failure_Detection_B.DProdOut_n[0] - (3.28084 *
         Hummingbird_Failure_Detection_B.dv[0] +
         Hummingbird_Failure_Detection_B.BusCreator2.Home.local_pos.X)),
-        &Hummingbird_Failure_Detection_B.CastToDouble25);
+        &Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator);
       Hummingbird_Fa_PX4Timestamp
         (&Hummingbird_Failure_Detection_B.PX4Timestamp_pb);
 
@@ -7358,13 +7376,13 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         Hummingbird_Failure_Detection_B.prev_altitude;
 
       // MATLAB Function: '<S732>/MATLAB Function'
-      Hummingbird_Failure_Detection_B.rtb_prev_waypoint_c[0] =
+      Hummingbird_Failure_Detection_B.rtb_prev_waypoint_p[0] =
         Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_0;
-      Hummingbird_Failure_Detection_B.rtb_prev_waypoint_c[1] =
+      Hummingbird_Failure_Detection_B.rtb_prev_waypoint_p[1] =
         Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_1;
       Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1 =
         Hummingbird_Failure_Dete_norm_j
-        (Hummingbird_Failure_Detection_B.rtb_prev_waypoint_c);
+        (Hummingbird_Failure_Detection_B.rtb_prev_waypoint_p);
       if (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1 > 30.0) {
         Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_0 =
           Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_0 /
@@ -7395,13 +7413,13 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //   Gain: '<S1095>/Derivative Gain'
       //   Sum: '<S1097>/SumD'
 
-      Hummingbird_Failure_Detection_B.Saturation4 =
+      Hummingbird_Failure_Detection_B.Saturation1 =
         (Hummingbird_Failure_Detection_P.PIDController9_D[0] *
          Hummingbird_Failure_Detection_B.y[0] -
          Hummingbird_Failure_Detectio_DW.Filter_DSTATE_e[0]) *
         Hummingbird_Failure_Detection_P.PIDController9_N;
       Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_0 =
-        Hummingbird_Failure_Detection_B.Saturation4;
+        Hummingbird_Failure_Detection_B.Saturation1;
 
       // Sum: '<S1111>/Sum' incorporates:
       //   DiscreteIntegrator: '<S1102>/Integrator'
@@ -7412,7 +7430,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         (Hummingbird_Failure_Detection_P.PIDController9_P[0] *
          Hummingbird_Failure_Detection_B.y[0] +
          Hummingbird_Failure_Detectio_DW.Integrator_DSTATE_c[0]) +
-        Hummingbird_Failure_Detection_B.Saturation4;
+        Hummingbird_Failure_Detection_B.Saturation1;
 
       // Saturate: '<S1109>/Saturation'
       if (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 >
@@ -7431,13 +7449,13 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //   Gain: '<S1095>/Derivative Gain'
       //   Sum: '<S1097>/SumD'
 
-      Hummingbird_Failure_Detection_B.Saturation4 =
+      Hummingbird_Failure_Detection_B.Saturation1 =
         (Hummingbird_Failure_Detection_P.PIDController9_D[1] *
          Hummingbird_Failure_Detection_B.y[1] -
          Hummingbird_Failure_Detectio_DW.Filter_DSTATE_e[1]) *
         Hummingbird_Failure_Detection_P.PIDController9_N;
       Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_1 =
-        Hummingbird_Failure_Detection_B.Saturation4;
+        Hummingbird_Failure_Detection_B.Saturation1;
 
       // Sum: '<S1111>/Sum' incorporates:
       //   DiscreteIntegrator: '<S1102>/Integrator'
@@ -7448,7 +7466,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         (Hummingbird_Failure_Detection_P.PIDController9_P[1] *
          Hummingbird_Failure_Detection_B.y[1] +
          Hummingbird_Failure_Detectio_DW.Integrator_DSTATE_c[1]) +
-        Hummingbird_Failure_Detection_B.Saturation4;
+        Hummingbird_Failure_Detection_B.Saturation1;
 
       // Saturate: '<S1109>/Saturation'
       if (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1 >
@@ -7467,7 +7485,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //   Gain: '<S1095>/Derivative Gain'
       //   Sum: '<S1097>/SumD'
 
-      Hummingbird_Failure_Detection_B.Saturation4 =
+      Hummingbird_Failure_Detection_B.Saturation1 =
         (Hummingbird_Failure_Detection_P.PIDController9_D[2] *
          Hummingbird_Failure_Detection_B.y[2] -
          Hummingbird_Failure_Detectio_DW.Filter_DSTATE_e[2]) *
@@ -7482,7 +7500,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         (Hummingbird_Failure_Detection_P.PIDController9_P[2] *
          Hummingbird_Failure_Detection_B.y[2] +
          Hummingbird_Failure_Detectio_DW.Integrator_DSTATE_c[2]) +
-        Hummingbird_Failure_Detection_B.Saturation4;
+        Hummingbird_Failure_Detection_B.Saturation1;
 
       // Saturate: '<S1109>/Saturation'
       if (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 >
@@ -7501,9 +7519,9 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //   MATLABSystem: '<S13>/Coordinate Transformation Conversion1'
       //
       Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 = cos
-        (static_cast<real_T>(Hummingbird_Failure_Detection_B.a_i));
+        (static_cast<real_T>(Hummingbird_Failure_Detection_B.a_j));
       Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 = sin
-        (static_cast<real_T>(Hummingbird_Failure_Detection_B.a_i));
+        (static_cast<real_T>(Hummingbird_Failure_Detection_B.a_j));
       Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 = asin
         ((-Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 *
           Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 +
@@ -7562,7 +7580,8 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       Hummingbird_Failure_Detection_B.BusAssignment_ov.pitch = static_cast<
         real32_T>(Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0);
       Hummingbird_Failure_Detection_B.BusAssignment_ov.yaw_rate =
-        static_cast<real32_T>(Hummingbird_Failure_Detection_B.CastToDouble25);
+        static_cast<real32_T>
+        (Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator);
       Hummingbird_Failure_Detection_B.BusAssignment_ov._padding0[0] =
         Hummingbird_Failure_Detection_P.Constant5_Value_d[0];
       Hummingbird_Failure_Detection_B.BusAssignment_ov._padding0[1] =
@@ -7585,12 +7604,12 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //
       Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 =
         Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 -
-        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3;
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1;
       Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 =
         Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 -
-        Hummingbird_Failure_Detection_B.b_o;
-      Hummingbird_Failure_Detection_B.CastToDouble25 -=
-        Hummingbird_Failure_Detection_B.a_i;
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_2;
+      Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator -=
+        Hummingbird_Failure_Detection_B.a_j;
       Hummin_ReadParameter1_b3rga
         (&Hummingbird_Failure_Detection_B.ReadParameter1_j,
          &Hummingbird_Failure_Detectio_DW.ReadParameter1_j);
@@ -7627,7 +7646,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
          Hummingbird_Failure_Detectio_DW.Filter_DSTATE_k[1]) *
         Hummingbird_Failure_Detection_P.Constant4_Value_e;
       Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 =
-        (Hummingbird_Failure_Detection_B.CastToDouble25 *
+        (Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator *
          Hummingbird_Failure_Detection_B.ReadParameter2_b3rgaenb3ayu5.ReadParameter2_o1
          - Hummingbird_Failure_Detectio_DW.Filter_DSTATE_k[2]) *
         Hummingbird_Failure_Detection_P.Constant4_Value_e;
@@ -7644,7 +7663,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         Hummingbird_Failure_Detection_B.ReadParameter_o.ReadParameter_o1 +
         Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1;
       Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2 =
-        Hummingbird_Failure_Detection_B.CastToDouble25 *
+        Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator *
         Hummingbird_Failure_Detection_B.ReadParameter2_b3rgaenb3ayu.ReadParameter2_o1
         + Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2;
 
@@ -7683,11 +7702,11 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //   Switch: '<S13>/Switch'
 
       Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 -=
-        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_0;
+        Hummingbird_Failure_Detection_B.In1_f.gyro_rad[0];
       Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 -=
-        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1;
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_0;
       Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2 -=
-        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_2;
+        Hummingbird_Failure_Detection_B.In1_f.gyro_rad[2];
 
       // BusAssignment: '<S844>/Bus Assignment' incorporates:
       //   Constant: '<S731>/Constant1'
@@ -7947,7 +7966,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
 
       Hummingbird_Failure_Detectio_DW.Filter_DSTATE_e[2] +=
         Hummingbird_Failure_Detection_P.Filter_gainval_lu *
-        Hummingbird_Failure_Detection_B.Saturation4;
+        Hummingbird_Failure_Detection_B.Saturation1;
 
       // Update for DiscreteIntegrator: '<S982>/Filter'
       Hummingbird_Failure_Detectio_DW.Filter_DSTATE_k[2] +=
@@ -8053,7 +8072,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //   Sum: '<S1357>/Sum'
       //
       Hummingbird_MATLABFunction2(static_cast<real_T>
-        (Hummingbird_Failure_Detection_B.a_i),
+        (Hummingbird_Failure_Detection_B.a_j),
         Hummingbird_Failure_Detection_P.Gain_Gain_j2 *
         (Hummingbird_Failure_Detection_P.Gain_Gain_j * (static_cast<real_T>
         (Hummingbird_Failure_Detection_B.BusCreator.Yaw) -
@@ -8275,10 +8294,10 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //
       Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 =
         Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_1 -
-        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3;
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1;
       Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1 =
         Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_0 -
-        Hummingbird_Failure_Detection_B.b_o;
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_2;
       Hummin_ReadParameter1_b3rga
         (&Hummingbird_Failure_Detection_B.ReadParameter1_ld,
          &Hummingbird_Failure_Detectio_DW.ReadParameter1_ld);
@@ -8361,12 +8380,12 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //   Switch: '<S13>/Switch'
 
       Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_0 -=
-        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_0;
+        Hummingbird_Failure_Detection_B.In1_f.gyro_rad[0];
       Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_1 -=
-        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1;
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_0;
       Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 =
         Hummingbird_Failure_Detection_B.CastToDouble11 -
-        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_2;
+        Hummingbird_Failure_Detection_B.In1_f.gyro_rad[2];
 
       // BusAssignment: '<S1183>/Bus Assignment' incorporates:
       //   Constant: '<S1122>/Constant1'
@@ -8545,7 +8564,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //
       Hummingbird_Failure_Detectio_DW.Filter_DSTATE_c[2] +=
         ((Hummingbird_Failure_Detection_B.CastToDouble11 -
-          Hummingbird_Failure_Detection_B.a_i) *
+          Hummingbird_Failure_Detection_B.a_j) *
          Hummingbird_Failure_Detection_B.ReadParameter2_o.ReadParameter2_o1 -
          Hummingbird_Failure_Detectio_DW.Filter_DSTATE_c[2]) *
         Hummingbird_Failure_Detection_P.Constant4_Value_ey *
@@ -8700,10 +8719,10 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //
       Hummingbird_Failure_Detection_B.y[0] =
         Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 -
-        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3;
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1;
       Hummingbird_Failure_Detection_B.y[1] =
         Hummingbird_Failure_Detection_B.CastToDouble10 -
-        Hummingbird_Failure_Detection_B.b_o;
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_2;
       Hummin_ReadParameter1_b3rga
         (&Hummingbird_Failure_Detection_B.ReadParameter1_b3rgaenb3ayu,
          &Hummingbird_Failure_Detectio_DW.ReadParameter1_b3rgaenb3ayu);
@@ -8792,13 +8811,13 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         Hummingbird_Failure_Detection_B.DProdOut_n[1];
       Hummingbird_Failure_Detection_B.DProdOut_n[0] =
         Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 -
-        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_0;
+        Hummingbird_Failure_Detection_B.In1_f.gyro_rad[0];
       Hummingbird_Failure_Detection_B.DProdOut_n[1] =
         Hummingbird_Failure_Detection_B.CastToDouble10 -
-        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1;
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_0;
       Hummingbird_Failure_Detection_B.DProdOut_n[2] =
         Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_1 -
-        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_2;
+        Hummingbird_Failure_Detection_B.In1_f.gyro_rad[2];
 
       // BusAssignment: '<S558>/Bus Assignment' incorporates:
       //   Constant: '<S498>/Constant'
@@ -8889,7 +8908,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         Hummingbird_Failure_Detection_B.Filter_os[1];
       Hummingbird_Failure_Detectio_DW.Filter_DSTATE_bl[2] +=
         ((Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_1 -
-          Hummingbird_Failure_Detection_B.a_i) *
+          Hummingbird_Failure_Detection_B.a_j) *
          Hummingbird_Failure_Detection_B.ReadParameter2_b3rgaenb3.ReadParameter2_o1
          - Hummingbird_Failure_Detectio_DW.Filter_DSTATE_bl[2]) *
         Hummingbird_Failure_Detection_P.Constant1_Value_d *
@@ -8924,14 +8943,14 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
 
       Hummingbird_Failure_Detection_B.prev_lat[2] =
         Hummingbird_Failure_Detection_B.prev_altitude / 3.28084;
-      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[0] =
+      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[0] =
         Hummingbird_Failure_Detection_B.BusCreator2.Home.GPS.lat;
-      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[1] =
+      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[1] =
         Hummingbird_Failure_Detection_B.BusCreator2.Home.GPS.lon;
-      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[2] =
+      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[2] =
         Hummingbird_Failure_Detection_B.BusCreator2.Home.GPS.altitude / 3.28084;
       Hummingbird_Failure_Det_lla2ned(Hummingbird_Failure_Detection_B.prev_lat,
-        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c,
+        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k,
         Hummingbird_Failure_Detection_B.dv);
       Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_0 = 3.28084 *
         Hummingbird_Failure_Detection_B.dv[0] +
@@ -8952,11 +8971,11 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1 = 0.0;
         Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 = 0.0;
       } else {
-        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[0] =
+        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[0] =
           Hummingbird_Failure_Detection_B.BusCreator2.Setpoints.current.gps_pos.lat;
-        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[1] =
+        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[1] =
           Hummingbird_Failure_Detection_B.BusCreator2.Setpoints.current.gps_pos.lon;
-        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[2] =
+        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[2] =
           Hummingbird_Failure_Detection_B.BusCreator2.Setpoints.current.gps_pos.altitude
           / 3.28084;
         Hummingbird_Failure_Detection_B.prev_lat[0] =
@@ -8967,7 +8986,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
           Hummingbird_Failure_Detection_B.BusCreator2.Home.GPS.altitude /
           3.28084;
         Hummingbird_Failure_Det_lla2ned
-          (Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c,
+          (Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k,
            Hummingbird_Failure_Detection_B.prev_lat,
            Hummingbird_Failure_Detection_B.dv1);
         Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 = 3.28084 *
@@ -8994,11 +9013,11 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 = 1.0;
         Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2 = 0.0;
       } else {
-        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[0] =
+        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[0] =
           Hummingbird_Failure_Detection_B.BusCreator2.Setpoints.next.gps_pos.lat;
-        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[1] =
+        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[1] =
           Hummingbird_Failure_Detection_B.BusCreator2.Setpoints.next.gps_pos.lon;
-        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[2] =
+        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[2] =
           Hummingbird_Failure_Detection_B.BusCreator2.Setpoints.next.gps_pos.altitude
           / 3.28084;
         Hummingbird_Failure_Detection_B.prev_lat[0] =
@@ -9009,7 +9028,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
           Hummingbird_Failure_Detection_B.BusCreator2.Home.GPS.altitude /
           3.28084;
         Hummingbird_Failure_Det_lla2ned
-          (Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c,
+          (Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k,
            Hummingbird_Failure_Detection_B.prev_lat,
            Hummingbird_Failure_Detection_B.dv1);
         Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 = 3.28084 *
@@ -9033,7 +9052,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       Hummingbird_Failure_Detection_B.DProdOut_n[1] =
         Hummingbird_Failure_Detection_B.b_absxk;
       Hummingbird_Failure_Detection_B.DProdOut_n[2] =
-        Hummingbird_Failure_Detection_B.r_f;
+        Hummingbird_Failure_Detection_B.r_c;
 
       // MATLAB Function: '<S22>/MATLAB Function1' incorporates:
       //   BusCreator generated from: '<Root>/Chart'
@@ -9057,21 +9076,21 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
           Hummingbird_Failure_Detection_B.t;
       }
 
-      Hummingbird_Failure_Detection_B.Saturation4 = fabs
+      Hummingbird_Failure_Detection_B.Saturation1 = fabs
         (Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1);
-      if (Hummingbird_Failure_Detection_B.Saturation4 >
+      if (Hummingbird_Failure_Detection_B.Saturation1 >
           Hummingbird_Failure_Detection_B.prev_altitude) {
         Hummingbird_Failure_Detection_B.t =
           Hummingbird_Failure_Detection_B.prev_altitude /
-          Hummingbird_Failure_Detection_B.Saturation4;
+          Hummingbird_Failure_Detection_B.Saturation1;
         Hummingbird_Failure_Detection_B.V = Hummingbird_Failure_Detection_B.V *
           Hummingbird_Failure_Detection_B.t * Hummingbird_Failure_Detection_B.t
           + 1.0;
         Hummingbird_Failure_Detection_B.prev_altitude =
-          Hummingbird_Failure_Detection_B.Saturation4;
+          Hummingbird_Failure_Detection_B.Saturation1;
       } else {
         Hummingbird_Failure_Detection_B.t =
-          Hummingbird_Failure_Detection_B.Saturation4 /
+          Hummingbird_Failure_Detection_B.Saturation1 /
           Hummingbird_Failure_Detection_B.prev_altitude;
         Hummingbird_Failure_Detection_B.V += Hummingbird_Failure_Detection_B.t *
           Hummingbird_Failure_Detection_B.t;
@@ -9100,18 +9119,18 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       Hummingbird_Failure_Detection_B.V =
         Hummingbird_Failure_Detection_B.prev_altitude * sqrt
         (Hummingbird_Failure_Detection_B.V);
-      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[0] =
+      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[0] =
         Hummingbird_Failure_Detection_B.b_t -
         Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0;
-      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[1] =
+      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[1] =
         Hummingbird_Failure_Detection_B.b_absxk -
         Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1;
-      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[2] =
-        Hummingbird_Failure_Detection_B.r_f -
+      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[2] =
+        Hummingbird_Failure_Detection_B.r_c -
         Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2;
       Hummingbird_Failure_Detection_B.t = 1.0 / (exp
         ((Hummingbird_Failure_Detect_norm
-          (Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c) - 150.0) / 50.0) +
+          (Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k) - 150.0) / 50.0) +
         1.0) * 100.0;
       Hummingbird_Failure_Detection_B.absxk =
         Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 -
@@ -9134,7 +9153,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
          Hummingbird_Failure_Detection_B.b_gamma *
          Hummingbird_Failure_Detection_B.b_gamma) *
         Hummingbird_Failure_Detection_B.t;
-      Hummingbird_Failure_Detection_B.r_f =
+      Hummingbird_Failure_Detection_B.r_c =
         Hummingbird_Failure_Detection_B.b_absxk -
         (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1 -
          (Hummingbird_Failure_Detection_B.eta +
@@ -9145,7 +9164,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
           Hummingbird_Failure_Detection_B.rd) *
          Hummingbird_Failure_Detection_B.t);
       Hummingbird_Failure_Detection_B.theta = Hummingbird_Failu_rt_atan2d_snf
-        (Hummingbird_Failure_Detection_B.r_f,
+        (Hummingbird_Failure_Detection_B.r_c,
          Hummingbird_Failure_Detection_B.b_t);
       Hummingbird_Failure_Detection_B.prev_altitude = 3.3121686421112381E-170;
       Hummingbird_Failure_Detection_B.b_absxk = fabs
@@ -9163,7 +9182,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       }
 
       Hummingbird_Failure_Detection_B.b_absxk = fabs
-        (Hummingbird_Failure_Detection_B.r_f);
+        (Hummingbird_Failure_Detection_B.r_c);
       if (Hummingbird_Failure_Detection_B.b_absxk >
           Hummingbird_Failure_Detection_B.prev_altitude) {
         Hummingbird_Failure_Detection_B.b_t =
@@ -9184,7 +9203,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
           Hummingbird_Failure_Detection_B.b_t;
       }
 
-      Hummingbird_Failure_Detection_B.r_f =
+      Hummingbird_Failure_Detection_B.r_c =
         Hummingbird_Failure_Detection_B.prev_altitude * sqrt
         (Hummingbird_Failure_Detection_B.absx);
       Hummingbird_Failure_Detection_B.b_absxk = sin
@@ -9269,10 +9288,10 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         ((Hummingbird_Failure_Detection_B.theta - 150.0) / 50.0) + 1.0)) * 0.7 *
         Hummingbird_Failure_Detection_B.prev_altitude;
       Hummingbird_Failure_Detection_B.prev_altitude =
-        Hummingbird_Failure_Detection_B.r_f - Hummingbird_Failure_Detection_B.t;
+        Hummingbird_Failure_Detection_B.r_c - Hummingbird_Failure_Detection_B.t;
       Hummingbird_Failure_Detection_B.absxk =
         Hummingbird_Failure_Detection_B.b_gamma *
-        Hummingbird_Failure_Detection_B.r_f;
+        Hummingbird_Failure_Detection_B.r_c;
       Hummingbird_Failure_Detection_B.eta = sqrt
         (Hummingbird_Failure_Detection_B.prev_altitude *
          Hummingbird_Failure_Detection_B.prev_altitude +
@@ -9287,7 +9306,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       Hummingbird_Failure_Detection_B.absxk *=
         Hummingbird_Failure_Detection_B.rd;
       Hummingbird_Failure_Detection_B.V = ((Hummingbird_Failure_Detection_B.t -
-        Hummingbird_Failure_Detection_B.r_f) * Hummingbird_Failure_Detection_B.t
+        Hummingbird_Failure_Detection_B.r_c) * Hummingbird_Failure_Detection_B.t
         / (Hummingbird_Failure_Detection_B.V * Hummingbird_Failure_Detection_B.V
            * (Hummingbird_Failure_Detection_B.eta *
               Hummingbird_Failure_Detection_B.eta)) + 1.0) *
@@ -9445,16 +9464,16 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
           || rtIsNaN
           (Hummingbird_Failure_Detection_B.BusCreator2.Setpoints.previous.gps_pos.lon))
       {
-        Hummingbird_Failure_Detection_B.prev_lat_b[0] =
+        Hummingbird_Failure_Detection_B.prev_lat_c[0] =
           Hummingbird_Failure_Detectio_DW.mission_start[0];
-        Hummingbird_Failure_Detection_B.prev_lat_b[1] =
+        Hummingbird_Failure_Detection_B.prev_lat_c[1] =
           Hummingbird_Failure_Detectio_DW.mission_start[1];
         Hummingbird_Failure_Detection_B.prev_altitude =
           Hummingbird_Failure_Detectio_DW.mission_start[2];
       } else {
-        Hummingbird_Failure_Detection_B.prev_lat_b[0] =
+        Hummingbird_Failure_Detection_B.prev_lat_c[0] =
           Hummingbird_Failure_Detection_B.BusCreator2.Setpoints.previous.gps_pos.lat;
-        Hummingbird_Failure_Detection_B.prev_lat_b[1] =
+        Hummingbird_Failure_Detection_B.prev_lat_c[1] =
           Hummingbird_Failure_Detection_B.BusCreator2.Setpoints.previous.gps_pos.lon;
         Hummingbird_Failure_Detection_B.prev_altitude =
           Hummingbird_Failure_Detection_B.BusCreator2.Setpoints.previous.gps_pos.altitude;
@@ -9470,7 +9489,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 =
           Hummingbird_Failure_Detection_B.In1_a.lon;
         Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 =
-          Hummingbird_Failure_Detection_B.CastToDouble25;
+          Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator;
       } else {
         Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 =
           Hummingbird_Failure_Detection_B.BusCreator2.Setpoints.current.gps_pos.lat;
@@ -9484,24 +9503,24 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         -(Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 -
           Hummingbird_Failure_Detection_B.BusCreator2.Home.GPS.altitude);
       Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_1 =
-        -(Hummingbird_Failure_Detection_B.CastToDouble25 -
+        -(Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator -
           Hummingbird_Failure_Detection_B.BusCreator2.Home.GPS.altitude);
-      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[0] =
+      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[0] =
         Hummingbird_Failure_Detection_B.In1_a.lat;
-      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[1] =
+      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[1] =
         Hummingbird_Failure_Detection_B.In1_a.lon;
-      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[2] =
-        Hummingbird_Failure_Detection_B.CastToDouble25 / 3.28084;
+      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[2] =
+        Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator / 3.28084;
       Hummingbird_Failure_Detection_B.DProdOut_n[0] =
         Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0;
       Hummingbird_Failure_Detection_B.DProdOut_n[1] =
         Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1;
-      Hummingbird_Failure_Detection_B.CastToDouble25 =
+      Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator =
         Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 / 3.28084;
       Hummingbird_Failure_Detection_B.DProdOut_n[2] =
-        Hummingbird_Failure_Detection_B.CastToDouble25;
+        Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator;
       Hummingbird_Failure_D_lla2ned_f
-        (Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c,
+        (Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k,
          Hummingbird_Failure_Detection_B.DProdOut_n,
          Hummingbird_Failure_Detection_B.dv);
       Hummingbird_Failure_Detection_B.DProdOut_n[0] =
@@ -9520,23 +9539,23 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 = atan
         (Hummingbird_Failure_Detection_B.dv[2] * 3.28084 /
          Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2);
-      Hummingbird_Failure_Detection_B.prev_lat_b[2] =
+      Hummingbird_Failure_Detection_B.prev_lat_c[2] =
         Hummingbird_Failure_Detection_B.prev_altitude / 3.28084;
       Hummingbird_Failure_Detection_B.DProdOut_n[0] =
         Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0;
       Hummingbird_Failure_Detection_B.DProdOut_n[1] =
         Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1;
       Hummingbird_Failure_Detection_B.DProdOut_n[2] =
-        Hummingbird_Failure_Detection_B.CastToDouble25;
-      Hummingbird_Failure_D_lla2ned_f(Hummingbird_Failure_Detection_B.prev_lat_b,
+        Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator;
+      Hummingbird_Failure_D_lla2ned_f(Hummingbird_Failure_Detection_B.prev_lat_c,
         Hummingbird_Failure_Detection_B.DProdOut_n,
-        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c);
+        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k);
       Hummingbird_Failure_Detection_B.DProdOut_n[0] =
-        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[0] * 3.28084;
+        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[0] * 3.28084;
       Hummingbird_Failure_Detection_B.DProdOut_n[1] =
-        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[1] * 3.28084;
+        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[1] * 3.28084;
       Hummingbird_Failure_Detection_B.DProdOut_n[2] =
-        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[2] * 3.28084;
+        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[2] * 3.28084;
       Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 = sqrt
         (Hummingbird_Failure_Detection_B.DProdOut_n[0] *
          Hummingbird_Failure_Detection_B.DProdOut_n[0] +
@@ -9551,11 +9570,11 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
          Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0);
 
       // MATLABSystem: '<S23>/Read Parameter'
-      b_varargout_1 = MW_ParamRead_Step
+      Hummingbird_Failure_Detection_B.b_varargout_1 = MW_ParamRead_Step
         (Hummingbird_Failure_Detectio_DW.obj_lp.MW_PARAMHANDLE, MW_SINGLE,
-         &Hummingbird_Failure_Detection_B.ParamStep);
-      if (b_varargout_1) {
-        Hummingbird_Failure_Detection_B.ParamStep = 0.0F;
+         &Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3);
+      if (Hummingbird_Failure_Detection_B.b_varargout_1) {
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3 = 0.0F;
       }
 
       // Gain: '<S23>/Gain' incorporates:
@@ -9563,7 +9582,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //
       Hummingbird_Failure_Detection_B.Gain_ny =
         Hummingbird_Failure_Detection_P.Gain_Gain_h *
-        Hummingbird_Failure_Detection_B.ParamStep;
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3;
 
       // BusAssignment: '<S33>/Bus Assignment' incorporates:
       //   BusCreator generated from: '<Root>/Chart'
@@ -9636,20 +9655,20 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
           Hummingbird_Failure_Detection_B.t * Hummingbird_Failure_Detection_B.t;
       }
 
-      if (Hummingbird_Failure_Detection_B.Saturation4 >
+      if (Hummingbird_Failure_Detection_B.Saturation1 >
           Hummingbird_Failure_Detection_B.prev_altitude) {
         Hummingbird_Failure_Detection_B.t =
           Hummingbird_Failure_Detection_B.prev_altitude /
-          Hummingbird_Failure_Detection_B.Saturation4;
+          Hummingbird_Failure_Detection_B.Saturation1;
         Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 =
           Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 *
           Hummingbird_Failure_Detection_B.t * Hummingbird_Failure_Detection_B.t
           + 1.0;
         Hummingbird_Failure_Detection_B.prev_altitude =
-          Hummingbird_Failure_Detection_B.Saturation4;
+          Hummingbird_Failure_Detection_B.Saturation1;
       } else {
         Hummingbird_Failure_Detection_B.t =
-          Hummingbird_Failure_Detection_B.Saturation4 /
+          Hummingbird_Failure_Detection_B.Saturation1 /
           Hummingbird_Failure_Detection_B.prev_altitude;
         Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 +=
           Hummingbird_Failure_Detection_B.t * Hummingbird_Failure_Detection_B.t;
@@ -9725,7 +9744,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         -Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1 -
         Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 * tan
         (Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1);
-      Hummingbird_Failure_Detection_B.ParamStep =
+      Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3 =
         Hummingbird_Failure_Detection_B.Gain_ny *
         Hummingbird_Failure_Detection_B.Gain_ny * 0.621118F +
         static_cast<real32_T>(Hummingbird_Failure_Detection_B.CastToDouble11 *
@@ -9763,7 +9782,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       Hummingbird_Failure_Detection_B.BusAssignment_k.energy =
         static_cast<real32_T>(Hummingbird_Failure_Detection_B.CastToDouble10);
       Hummingbird_Failure_Detection_B.BusAssignment_k.energy_setpoint =
-        Hummingbird_Failure_Detection_B.ParamStep;
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3;
       Hummingbird_Failure_Detection_B.BusAssignment_k.energy_setpoint_dot =
         static_cast<real32_T>(Hummingbird_Failure_Detection_P.Constant_Value_hn /
         32.2 + sin(Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0));
@@ -9817,23 +9836,23 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
 
       // Sum: '<S23>/Sum'
       Hummingbird_Failure_Detection_B.CastToDouble10 =
-        Hummingbird_Failure_Detection_B.ParamStep -
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3 -
         Hummingbird_Failure_Detection_B.CastToDouble10;
 
       // MATLABSystem: '<S35>/Read Parameter2'
-      b_varargout_1 = MW_ParamRead_Step
+      Hummingbird_Failure_Detection_B.b_varargout_1 = MW_ParamRead_Step
         (Hummingbird_Failure_Detectio_DW.obj_i5.MW_PARAMHANDLE, MW_SINGLE,
-         &Hummingbird_Failure_Detection_B.ParamStep);
-      if (b_varargout_1) {
-        Hummingbird_Failure_Detection_B.ParamStep = 0.0F;
+         &Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3);
+      if (Hummingbird_Failure_Detection_B.b_varargout_1) {
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3 = 0.0F;
       }
 
       // MATLABSystem: '<S35>/Read Parameter1'
-      b_varargout_1 = MW_ParamRead_Step
+      Hummingbird_Failure_Detection_B.b_varargout_1 = MW_ParamRead_Step
         (Hummingbird_Failure_Detectio_DW.obj_mw.MW_PARAMHANDLE, MW_SINGLE,
-         &Hummingbird_Failure_Detection_B.ParamStep_n);
-      if (b_varargout_1) {
-        Hummingbird_Failure_Detection_B.ParamStep_n = 0.0F;
+         &Hummingbird_Failure_Detection_B.ParamStep);
+      if (Hummingbird_Failure_Detection_B.b_varargout_1) {
+        Hummingbird_Failure_Detection_B.ParamStep = 0.0F;
       }
 
       // Product: '<S74>/NProd Out' incorporates:
@@ -9845,16 +9864,16 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //
       Hummingbird_Failure_Detection_B.CastToDouble11 =
         (Hummingbird_Failure_Detection_B.CastToDouble10 *
-         Hummingbird_Failure_Detection_B.ParamStep -
+         Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3 -
          Hummingbird_Failure_Detectio_DW.Filter_DSTATE_ef) *
         Hummingbird_Failure_Detection_P.Constant2_Value;
 
       // MATLABSystem: '<S35>/Read Parameter'
-      b_varargout_1 = MW_ParamRead_Step
+      Hummingbird_Failure_Detection_B.b_varargout_1 = MW_ParamRead_Step
         (Hummingbird_Failure_Detectio_DW.obj_a1.MW_PARAMHANDLE, MW_SINGLE,
-         &Hummingbird_Failure_Detection_B.ParamStep);
-      if (b_varargout_1) {
-        Hummingbird_Failure_Detection_B.ParamStep = 0.0F;
+         &Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3);
+      if (Hummingbird_Failure_Detection_B.b_varargout_1) {
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3 = 0.0F;
       }
 
       // Sum: '<S80>/Sum' incorporates:
@@ -9864,7 +9883,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //
       Hummingbird_Failure_Detection_B.dtFW =
         (Hummingbird_Failure_Detection_B.CastToDouble10 *
-         Hummingbird_Failure_Detection_B.ParamStep +
+         Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3 +
          Hummingbird_Failure_Detectio_DW.Integrator_DSTATE_d) +
         Hummingbird_Failure_Detection_B.CastToDouble11;
 
@@ -9892,18 +9911,18 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_1;
 
       // MATLABSystem: '<S36>/Read Parameter2'
-      b_varargout_1 = MW_ParamRead_Step
+      Hummingbird_Failure_Detection_B.b_varargout_1 = MW_ParamRead_Step
         (Hummingbird_Failure_Detectio_DW.obj_ou.MW_PARAMHANDLE, MW_SINGLE,
-         &Hummingbird_Failure_Detection_B.ParamStep);
-      if (b_varargout_1) {
-        Hummingbird_Failure_Detection_B.ParamStep = 0.0F;
+         &Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3);
+      if (Hummingbird_Failure_Detection_B.b_varargout_1) {
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3 = 0.0F;
       }
 
       // MATLABSystem: '<S36>/Read Parameter1'
-      b_varargout_1 = MW_ParamRead_Step
+      Hummingbird_Failure_Detection_B.b_varargout_1 = MW_ParamRead_Step
         (Hummingbird_Failure_Detectio_DW.obj_de.MW_PARAMHANDLE, MW_SINGLE,
          &Hummingbird_Failure_Detection_B.Gain_ny);
-      if (b_varargout_1) {
+      if (Hummingbird_Failure_Detection_B.b_varargout_1) {
         Hummingbird_Failure_Detection_B.Gain_ny = 0.0F;
       }
 
@@ -9923,16 +9942,16 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //
       Hummingbird_Failure_Detection_B.CastToDouble9 =
         (Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_1 *
-         Hummingbird_Failure_Detection_B.ParamStep -
+         Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3 -
          Hummingbird_Failure_Detectio_DW.Filter_DSTATE_f1) *
         Hummingbird_Failure_Detection_P.Constant2_Value_b;
 
       // MATLABSystem: '<S36>/Read Parameter'
-      b_varargout_1 = MW_ParamRead_Step
+      Hummingbird_Failure_Detection_B.b_varargout_1 = MW_ParamRead_Step
         (Hummingbird_Failure_Detectio_DW.obj_io.MW_PARAMHANDLE, MW_SINGLE,
-         &Hummingbird_Failure_Detection_B.ParamStep);
-      if (b_varargout_1) {
-        Hummingbird_Failure_Detection_B.ParamStep = 0.0F;
+         &Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3);
+      if (Hummingbird_Failure_Detection_B.b_varargout_1) {
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3 = 0.0F;
       }
 
       // Sum: '<S132>/Sum' incorporates:
@@ -9942,7 +9961,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //
       Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 =
         (Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_1 *
-         Hummingbird_Failure_Detection_B.ParamStep +
+         Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3 +
          Hummingbird_Failure_Detectio_DW.Integrator_DSTATE_cp) +
         Hummingbird_Failure_Detection_B.CastToDouble9;
 
@@ -10033,13 +10052,13 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //
       Hummingbird_Failure_Detection_B.DProdOut_n[0] =
         Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_0 -
-        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3;
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1;
       Hummingbird_Failure_Detection_B.DProdOut_n[1] =
         Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 -
-        Hummingbird_Failure_Detection_B.b_o;
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_2;
       Hummingbird_Failure_Detection_B.DProdOut_n[2] =
         Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_1 -
-        Hummingbird_Failure_Detection_B.a_i;
+        Hummingbird_Failure_Detection_B.a_j;
       Hummingbird__ReadParameter1
         (&Hummingbird_Failure_Detection_B.ReadParameter1_b3r,
          &Hummingbird_Failure_Detectio_DW.ReadParameter1_b3r);
@@ -10136,13 +10155,13 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
 
       Hummingbird_Failure_Detection_B.Filter_os[0] =
         Hummingbird_Failure_Detection_B.DProdOut_n[0] -
-        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_0;
+        Hummingbird_Failure_Detection_B.In1_f.gyro_rad[0];
       Hummingbird_Failure_Detection_B.Filter_os[1] =
         Hummingbird_Failure_Detection_B.DProdOut_n[1] -
-        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1;
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_0;
       Hummingbird_Failure_Detection_B.Filter_os[2] =
         Hummingbird_Failure_Detection_B.DProdOut_n[2] -
-        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_2;
+        Hummingbird_Failure_Detection_B.In1_f.gyro_rad[2];
       Hummingbi_ReadParameter1_b3
         (&Hummingbird_Failure_Detection_B.ReadParameter1_b3rga,
          &Hummingbird_Failure_Detectio_DW.ReadParameter1_b3rga);
@@ -10207,24 +10226,24 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //   DataTypeConversion: '<S21>/Cast To Single5'
       //   MATLABSystem: '<S151>/PX4 Timestamp'
 
-      Hummingbird_Failure_Detection_B.BusAssignment_b.timestamp =
+      Hummingbird_Failure_Detection_B.BusAssignment_b0.timestamp =
         Hummingbird_Failure_Detection_B.PX4Timestamp_b.PX4Timestamp;
-      Hummingbird_Failure_Detection_B.BusAssignment_b.roll_rate_error =
+      Hummingbird_Failure_Detection_B.BusAssignment_b0.roll_rate_error =
         static_cast<real32_T>(Hummingbird_Failure_Detection_B.DProdOut_n[0]);
-      Hummingbird_Failure_Detection_B.BusAssignment_b.pitch_rate_error =
+      Hummingbird_Failure_Detection_B.BusAssignment_b0.pitch_rate_error =
         static_cast<real32_T>(Hummingbird_Failure_Detection_B.DProdOut_n[1]);
-      Hummingbird_Failure_Detection_B.BusAssignment_b.yaw_rate_error =
+      Hummingbird_Failure_Detection_B.BusAssignment_b0.yaw_rate_error =
         static_cast<real32_T>(Hummingbird_Failure_Detection_B.DProdOut_n[2]);
-      Hummingbird_Failure_Detection_B.BusAssignment_b._padding0[0] =
+      Hummingbird_Failure_Detection_B.BusAssignment_b0._padding0[0] =
         Hummingbird_Failure_Detection_P.Constant_Value_e4[0];
-      Hummingbird_Failure_Detection_B.BusAssignment_b._padding0[1] =
+      Hummingbird_Failure_Detection_B.BusAssignment_b0._padding0[1] =
         Hummingbird_Failure_Detection_P.Constant_Value_e4[1];
-      Hummingbird_Failure_Detection_B.BusAssignment_b._padding0[2] =
+      Hummingbird_Failure_Detection_B.BusAssignment_b0._padding0[2] =
         Hummingbird_Failure_Detection_P.Constant_Value_e4[2];
-      Hummingbird_Failure_Detection_B.BusAssignment_b._padding0[3] =
+      Hummingbird_Failure_Detection_B.BusAssignment_b0._padding0[3] =
         Hummingbird_Failure_Detection_P.Constant_Value_e4[3];
       Hummingbird_Fai_SinkBlock_j
-        (&Hummingbird_Failure_Detection_B.BusAssignment_b,
+        (&Hummingbird_Failure_Detection_B.BusAssignment_b0,
          &Hummingbird_Failure_Detectio_DW.SinkBlock_j);
 
       // Sum: '<S21>/Sum3'
@@ -10281,7 +10300,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //
       Hummingbird_Failure_Detectio_DW.Integrator_DSTATE_d +=
         Hummingbird_Failure_Detection_B.CastToDouble10 *
-        Hummingbird_Failure_Detection_B.ParamStep_n *
+        Hummingbird_Failure_Detection_B.ParamStep *
         Hummingbird_Failure_Detection_P.Integrator_gainval;
       if (Hummingbird_Failure_Detectio_DW.Integrator_DSTATE_d >
           Hummingbird_Failure_Detection_P.PIDController_UpperIntegratorSa) {
@@ -10496,13 +10515,13 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //
       Hummingbird_Failure_Detection_B.y[0] =
         Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_1 -
-        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3;
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1;
       Hummingbird_Failure_Detection_B.y[1] =
         Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 -
-        Hummingbird_Failure_Detection_B.b_o;
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_2;
       Hummingbird_Failure_Detection_B.y[2] =
         Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_0 -
-        Hummingbird_Failure_Detection_B.a_i;
+        Hummingbird_Failure_Detection_B.a_j;
       Hummingbird__ReadParameter1
         (&Hummingbird_Failure_Detection_B.ReadParameter1_b3rgaen,
          &Hummingbird_Failure_Detectio_DW.ReadParameter1_b3rgaen);
@@ -10599,13 +10618,13 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
 
       Hummingbird_Failure_Detection_B.DProdOut_n[0] =
         Hummingbird_Failure_Detection_B.y[0] -
-        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_0;
+        Hummingbird_Failure_Detection_B.In1_f.gyro_rad[0];
       Hummingbird_Failure_Detection_B.DProdOut_n[1] =
         Hummingbird_Failure_Detection_B.y[1] -
-        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1;
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_0;
       Hummingbird_Failure_Detection_B.DProdOut_n[2] =
         Hummingbird_Failure_Detection_B.y[2] -
-        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_2;
+        Hummingbird_Failure_Detection_B.In1_f.gyro_rad[2];
       Hummingbi_ReadParameter1_b3
         (&Hummingbird_Failure_Detection_B.ReadParameter1_b3rgaenb3,
          &Hummingbird_Failure_Detectio_DW.ReadParameter1_b3rgaenb3);
@@ -10679,13 +10698,13 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       Hummingbird_Failure_Detection_B.BusAssignment_ia.yaw_rate_error =
         static_cast<real32_T>(Hummingbird_Failure_Detection_B.y[2]);
       Hummingbird_Failure_Detection_B.BusAssignment_ia._padding0[0] =
-        Hummingbird_Failure_Detection_P.Constant_Value_c4[0];
+        Hummingbird_Failure_Detection_P.Constant_Value_c4q[0];
       Hummingbird_Failure_Detection_B.BusAssignment_ia._padding0[1] =
-        Hummingbird_Failure_Detection_P.Constant_Value_c4[1];
+        Hummingbird_Failure_Detection_P.Constant_Value_c4q[1];
       Hummingbird_Failure_Detection_B.BusAssignment_ia._padding0[2] =
-        Hummingbird_Failure_Detection_P.Constant_Value_c4[2];
+        Hummingbird_Failure_Detection_P.Constant_Value_c4q[2];
       Hummingbird_Failure_Detection_B.BusAssignment_ia._padding0[3] =
-        Hummingbird_Failure_Detection_P.Constant_Value_c4[3];
+        Hummingbird_Failure_Detection_P.Constant_Value_c4q[3];
       Hummingbird_Fai_SinkBlock_j
         (&Hummingbird_Failure_Detection_B.BusAssignment_ia,
          &Hummingbird_Failure_Detectio_DW.SinkBlock_cp);
@@ -10902,10 +10921,10 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //
       Hummingbird_Failure_Detection_B.y[0] =
         Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 -
-        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3;
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1;
       Hummingbird_Failure_Detection_B.y[1] =
         Hummingbird_Failure_Detection_B.CastToDouble10 -
-        Hummingbird_Failure_Detection_B.b_o;
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_2;
       Hummin_ReadParameter1_b3rga
         (&Hummingbird_Failure_Detection_B.ReadParameter1_b3rgaenb3ayu,
          &Hummingbird_Failure_Detectio_DW.ReadParameter1_b3rgaenb3ayu);
@@ -10994,13 +11013,13 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         Hummingbird_Failure_Detection_B.DProdOut_n[1];
       Hummingbird_Failure_Detection_B.DProdOut_n[0] =
         Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 -
-        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_0;
+        Hummingbird_Failure_Detection_B.In1_f.gyro_rad[0];
       Hummingbird_Failure_Detection_B.DProdOut_n[1] =
         Hummingbird_Failure_Detection_B.CastToDouble10 -
-        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1;
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_0;
       Hummingbird_Failure_Detection_B.DProdOut_n[2] =
         Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_1 -
-        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_2;
+        Hummingbird_Failure_Detection_B.In1_f.gyro_rad[2];
 
       // BusAssignment: '<S558>/Bus Assignment' incorporates:
       //   Constant: '<S498>/Constant'
@@ -11091,7 +11110,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         Hummingbird_Failure_Detection_B.Filter_os[1];
       Hummingbird_Failure_Detectio_DW.Filter_DSTATE_bl[2] +=
         ((Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_1 -
-          Hummingbird_Failure_Detection_B.a_i) *
+          Hummingbird_Failure_Detection_B.a_j) *
          Hummingbird_Failure_Detection_B.ReadParameter2_b3rgaenb3.ReadParameter2_o1
          - Hummingbird_Failure_Detectio_DW.Filter_DSTATE_bl[2]) *
         Hummingbird_Failure_Detection_P.Constant1_Value_d *
@@ -11128,14 +11147,14 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
           Hummingbird_Failure_Detection_B.BusCreator2.Setpoints.previous.gps_pos.altitude;
       }
 
-      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[0] =
+      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[0] =
         Hummingbird_Failure_Detection_B.BusCreator2.Home.GPS.lat;
-      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[1] =
+      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[1] =
         Hummingbird_Failure_Detection_B.BusCreator2.Home.GPS.lon;
-      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[2] =
+      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[2] =
         Hummingbird_Failure_Detection_B.BusCreator2.Home.GPS.altitude;
       Hummingbird_Failure_Det_lla2ned(Hummingbird_Failure_Detection_B.prev_lat,
-        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c,
+        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k,
         Hummingbird_Failure_Detection_B.dv);
       if (rtIsNaN
           (Hummingbird_Failure_Detection_B.BusCreator2.Setpoints.current.gps_pos.lat))
@@ -11150,11 +11169,11 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         Hummingbird_Failure_Detection_B.DProdOut_n[1] = 0.0;
         Hummingbird_Failure_Detection_B.DProdOut_n[2] = 0.0;
       } else {
-        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[0] =
+        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[0] =
           Hummingbird_Failure_Detection_B.BusCreator2.Setpoints.current.gps_pos.lat;
-        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[1] =
+        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[1] =
           Hummingbird_Failure_Detection_B.BusCreator2.Setpoints.current.gps_pos.lon;
-        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[2] =
+        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[2] =
           Hummingbird_Failure_Detection_B.BusCreator2.Setpoints.current.gps_pos.altitude;
         Hummingbird_Failure_Detection_B.prev_lat[0] =
           Hummingbird_Failure_Detection_B.BusCreator2.Home.GPS.lat;
@@ -11163,7 +11182,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         Hummingbird_Failure_Detection_B.prev_lat[2] =
           Hummingbird_Failure_Detection_B.BusCreator2.Home.GPS.altitude;
         Hummingbird_Failure_Det_lla2ned
-          (Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c,
+          (Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k,
            Hummingbird_Failure_Detection_B.prev_lat,
            Hummingbird_Failure_Detection_B.dv1);
         Hummingbird_Failure_Detection_B.DProdOut_n[0] = 3.28084 *
@@ -11182,7 +11201,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
 
       Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 =
         Hummingbird_Failure_Detection_B.DProdOut_n[2] -
-        Hummingbird_Failure_Detection_B.CastToDouble25;
+        Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator;
 
       // Gain: '<S824>/Filter Coefficient' incorporates:
       //   DiscreteIntegrator: '<S816>/Filter'
@@ -11266,14 +11285,14 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //   MATLABSystem: '<S13>/Coordinate Transformation Conversion1'
       //
       Hummingbird_MATLABFunction2(static_cast<real_T>
-        (Hummingbird_Failure_Detection_B.a_i), Hummingbird_Failu_rt_atan2d_snf
+        (Hummingbird_Failure_Detection_B.a_j), Hummingbird_Failu_rt_atan2d_snf
         (Hummingbird_Failure_Detection_B.DProdOut_n[1] - (3.28084 *
         Hummingbird_Failure_Detection_B.dv[1] +
         Hummingbird_Failure_Detection_B.BusCreator2.Home.local_pos.Y),
          Hummingbird_Failure_Detection_B.DProdOut_n[0] - (3.28084 *
         Hummingbird_Failure_Detection_B.dv[0] +
         Hummingbird_Failure_Detection_B.BusCreator2.Home.local_pos.X)),
-        &Hummingbird_Failure_Detection_B.CastToDouble25);
+        &Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator);
       Hummingbird_Fa_PX4Timestamp
         (&Hummingbird_Failure_Detection_B.PX4Timestamp_pb);
 
@@ -11361,13 +11380,13 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         Hummingbird_Failure_Detection_B.prev_altitude;
 
       // MATLAB Function: '<S732>/MATLAB Function'
-      Hummingbird_Failure_Detection_B.rtb_prev_waypoint_c[0] =
+      Hummingbird_Failure_Detection_B.rtb_prev_waypoint_p[0] =
         Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_0;
-      Hummingbird_Failure_Detection_B.rtb_prev_waypoint_c[1] =
+      Hummingbird_Failure_Detection_B.rtb_prev_waypoint_p[1] =
         Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_1;
       Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1 =
         Hummingbird_Failure_Dete_norm_j
-        (Hummingbird_Failure_Detection_B.rtb_prev_waypoint_c);
+        (Hummingbird_Failure_Detection_B.rtb_prev_waypoint_p);
       if (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1 > 30.0) {
         Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_0 =
           Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_0 /
@@ -11398,13 +11417,13 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //   Gain: '<S1095>/Derivative Gain'
       //   Sum: '<S1097>/SumD'
 
-      Hummingbird_Failure_Detection_B.Saturation4 =
+      Hummingbird_Failure_Detection_B.Saturation1 =
         (Hummingbird_Failure_Detection_P.PIDController9_D[0] *
          Hummingbird_Failure_Detection_B.y[0] -
          Hummingbird_Failure_Detectio_DW.Filter_DSTATE_e[0]) *
         Hummingbird_Failure_Detection_P.PIDController9_N;
       Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_0 =
-        Hummingbird_Failure_Detection_B.Saturation4;
+        Hummingbird_Failure_Detection_B.Saturation1;
 
       // Sum: '<S1111>/Sum' incorporates:
       //   DiscreteIntegrator: '<S1102>/Integrator'
@@ -11415,7 +11434,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         (Hummingbird_Failure_Detection_P.PIDController9_P[0] *
          Hummingbird_Failure_Detection_B.y[0] +
          Hummingbird_Failure_Detectio_DW.Integrator_DSTATE_c[0]) +
-        Hummingbird_Failure_Detection_B.Saturation4;
+        Hummingbird_Failure_Detection_B.Saturation1;
 
       // Saturate: '<S1109>/Saturation'
       if (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 >
@@ -11434,13 +11453,13 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //   Gain: '<S1095>/Derivative Gain'
       //   Sum: '<S1097>/SumD'
 
-      Hummingbird_Failure_Detection_B.Saturation4 =
+      Hummingbird_Failure_Detection_B.Saturation1 =
         (Hummingbird_Failure_Detection_P.PIDController9_D[1] *
          Hummingbird_Failure_Detection_B.y[1] -
          Hummingbird_Failure_Detectio_DW.Filter_DSTATE_e[1]) *
         Hummingbird_Failure_Detection_P.PIDController9_N;
       Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_1 =
-        Hummingbird_Failure_Detection_B.Saturation4;
+        Hummingbird_Failure_Detection_B.Saturation1;
 
       // Sum: '<S1111>/Sum' incorporates:
       //   DiscreteIntegrator: '<S1102>/Integrator'
@@ -11451,7 +11470,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         (Hummingbird_Failure_Detection_P.PIDController9_P[1] *
          Hummingbird_Failure_Detection_B.y[1] +
          Hummingbird_Failure_Detectio_DW.Integrator_DSTATE_c[1]) +
-        Hummingbird_Failure_Detection_B.Saturation4;
+        Hummingbird_Failure_Detection_B.Saturation1;
 
       // Saturate: '<S1109>/Saturation'
       if (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1 >
@@ -11470,7 +11489,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //   Gain: '<S1095>/Derivative Gain'
       //   Sum: '<S1097>/SumD'
 
-      Hummingbird_Failure_Detection_B.Saturation4 =
+      Hummingbird_Failure_Detection_B.Saturation1 =
         (Hummingbird_Failure_Detection_P.PIDController9_D[2] *
          Hummingbird_Failure_Detection_B.y[2] -
          Hummingbird_Failure_Detectio_DW.Filter_DSTATE_e[2]) *
@@ -11485,7 +11504,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         (Hummingbird_Failure_Detection_P.PIDController9_P[2] *
          Hummingbird_Failure_Detection_B.y[2] +
          Hummingbird_Failure_Detectio_DW.Integrator_DSTATE_c[2]) +
-        Hummingbird_Failure_Detection_B.Saturation4;
+        Hummingbird_Failure_Detection_B.Saturation1;
 
       // Saturate: '<S1109>/Saturation'
       if (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 >
@@ -11504,9 +11523,9 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //   MATLABSystem: '<S13>/Coordinate Transformation Conversion1'
       //
       Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 = cos
-        (static_cast<real_T>(Hummingbird_Failure_Detection_B.a_i));
+        (static_cast<real_T>(Hummingbird_Failure_Detection_B.a_j));
       Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 = sin
-        (static_cast<real_T>(Hummingbird_Failure_Detection_B.a_i));
+        (static_cast<real_T>(Hummingbird_Failure_Detection_B.a_j));
       Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 = asin
         ((-Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 *
           Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 +
@@ -11565,7 +11584,8 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       Hummingbird_Failure_Detection_B.BusAssignment_ov.pitch = static_cast<
         real32_T>(Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0);
       Hummingbird_Failure_Detection_B.BusAssignment_ov.yaw_rate =
-        static_cast<real32_T>(Hummingbird_Failure_Detection_B.CastToDouble25);
+        static_cast<real32_T>
+        (Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator);
       Hummingbird_Failure_Detection_B.BusAssignment_ov._padding0[0] =
         Hummingbird_Failure_Detection_P.Constant5_Value_d[0];
       Hummingbird_Failure_Detection_B.BusAssignment_ov._padding0[1] =
@@ -11588,12 +11608,12 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //
       Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 =
         Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 -
-        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3;
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1;
       Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 =
         Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 -
-        Hummingbird_Failure_Detection_B.b_o;
-      Hummingbird_Failure_Detection_B.CastToDouble25 -=
-        Hummingbird_Failure_Detection_B.a_i;
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_2;
+      Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator -=
+        Hummingbird_Failure_Detection_B.a_j;
       Hummin_ReadParameter1_b3rga
         (&Hummingbird_Failure_Detection_B.ReadParameter1_j,
          &Hummingbird_Failure_Detectio_DW.ReadParameter1_j);
@@ -11630,7 +11650,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
          Hummingbird_Failure_Detectio_DW.Filter_DSTATE_k[1]) *
         Hummingbird_Failure_Detection_P.Constant4_Value_e;
       Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 =
-        (Hummingbird_Failure_Detection_B.CastToDouble25 *
+        (Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator *
          Hummingbird_Failure_Detection_B.ReadParameter2_b3rgaenb3ayu5.ReadParameter2_o1
          - Hummingbird_Failure_Detectio_DW.Filter_DSTATE_k[2]) *
         Hummingbird_Failure_Detection_P.Constant4_Value_e;
@@ -11647,7 +11667,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         Hummingbird_Failure_Detection_B.ReadParameter_o.ReadParameter_o1 +
         Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1;
       Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2 =
-        Hummingbird_Failure_Detection_B.CastToDouble25 *
+        Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator *
         Hummingbird_Failure_Detection_B.ReadParameter2_b3rgaenb3ayu.ReadParameter2_o1
         + Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2;
 
@@ -11686,11 +11706,11 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //   Switch: '<S13>/Switch'
 
       Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 -=
-        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_0;
+        Hummingbird_Failure_Detection_B.In1_f.gyro_rad[0];
       Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 -=
-        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1;
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_0;
       Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2 -=
-        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_2;
+        Hummingbird_Failure_Detection_B.In1_f.gyro_rad[2];
 
       // BusAssignment: '<S844>/Bus Assignment' incorporates:
       //   Constant: '<S731>/Constant1'
@@ -11950,7 +11970,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
 
       Hummingbird_Failure_Detectio_DW.Filter_DSTATE_e[2] +=
         Hummingbird_Failure_Detection_P.Filter_gainval_lu *
-        Hummingbird_Failure_Detection_B.Saturation4;
+        Hummingbird_Failure_Detection_B.Saturation1;
 
       // Update for DiscreteIntegrator: '<S982>/Filter'
       Hummingbird_Failure_Detectio_DW.Filter_DSTATE_k[2] +=
@@ -12054,7 +12074,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //   Sum: '<S1357>/Sum'
       //
       Hummingbird_MATLABFunction2(static_cast<real_T>
-        (Hummingbird_Failure_Detection_B.a_i),
+        (Hummingbird_Failure_Detection_B.a_j),
         Hummingbird_Failure_Detection_P.Gain_Gain_j2 *
         (Hummingbird_Failure_Detection_P.Gain_Gain_j * (static_cast<real_T>
         (Hummingbird_Failure_Detection_B.BusCreator.Yaw) -
@@ -12276,10 +12296,10 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //
       Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 =
         Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_1 -
-        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3;
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1;
       Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1 =
         Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_0 -
-        Hummingbird_Failure_Detection_B.b_o;
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_2;
       Hummin_ReadParameter1_b3rga
         (&Hummingbird_Failure_Detection_B.ReadParameter1_ld,
          &Hummingbird_Failure_Detectio_DW.ReadParameter1_ld);
@@ -12362,12 +12382,12 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //   Switch: '<S13>/Switch'
 
       Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_0 -=
-        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_0;
+        Hummingbird_Failure_Detection_B.In1_f.gyro_rad[0];
       Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_1 -=
-        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1;
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_0;
       Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 =
         Hummingbird_Failure_Detection_B.CastToDouble11 -
-        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_2;
+        Hummingbird_Failure_Detection_B.In1_f.gyro_rad[2];
 
       // BusAssignment: '<S1183>/Bus Assignment' incorporates:
       //   Constant: '<S1122>/Constant1'
@@ -12546,7 +12566,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //
       Hummingbird_Failure_Detectio_DW.Filter_DSTATE_c[2] +=
         ((Hummingbird_Failure_Detection_B.CastToDouble11 -
-          Hummingbird_Failure_Detection_B.a_i) *
+          Hummingbird_Failure_Detection_B.a_j) *
          Hummingbird_Failure_Detection_B.ReadParameter2_o.ReadParameter2_o1 -
          Hummingbird_Failure_Detectio_DW.Filter_DSTATE_c[2]) *
         Hummingbird_Failure_Detection_P.Constant4_Value_ey *
@@ -12612,14 +12632,14 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
 
       Hummingbird_Failure_Detection_B.prev_lat[2] =
         Hummingbird_Failure_Detection_B.prev_altitude / 3.28084;
-      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[0] =
+      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[0] =
         Hummingbird_Failure_Detection_B.BusCreator2.Home.GPS.lat;
-      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[1] =
+      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[1] =
         Hummingbird_Failure_Detection_B.BusCreator2.Home.GPS.lon;
-      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[2] =
+      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[2] =
         Hummingbird_Failure_Detection_B.BusCreator2.Home.GPS.altitude / 3.28084;
       Hummingbird_Failure_Det_lla2ned(Hummingbird_Failure_Detection_B.prev_lat,
-        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c,
+        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k,
         Hummingbird_Failure_Detection_B.dv);
       Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_0 = 3.28084 *
         Hummingbird_Failure_Detection_B.dv[0] +
@@ -12640,11 +12660,11 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1 = 0.0;
         Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 = 0.0;
       } else {
-        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[0] =
+        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[0] =
           Hummingbird_Failure_Detection_B.BusCreator2.Setpoints.current.gps_pos.lat;
-        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[1] =
+        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[1] =
           Hummingbird_Failure_Detection_B.BusCreator2.Setpoints.current.gps_pos.lon;
-        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[2] =
+        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[2] =
           Hummingbird_Failure_Detection_B.BusCreator2.Setpoints.current.gps_pos.altitude
           / 3.28084;
         Hummingbird_Failure_Detection_B.prev_lat[0] =
@@ -12655,7 +12675,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
           Hummingbird_Failure_Detection_B.BusCreator2.Home.GPS.altitude /
           3.28084;
         Hummingbird_Failure_Det_lla2ned
-          (Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c,
+          (Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k,
            Hummingbird_Failure_Detection_B.prev_lat,
            Hummingbird_Failure_Detection_B.dv1);
         Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 = 3.28084 *
@@ -12682,11 +12702,11 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 = 1.0;
         Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2 = 0.0;
       } else {
-        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[0] =
+        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[0] =
           Hummingbird_Failure_Detection_B.BusCreator2.Setpoints.next.gps_pos.lat;
-        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[1] =
+        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[1] =
           Hummingbird_Failure_Detection_B.BusCreator2.Setpoints.next.gps_pos.lon;
-        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[2] =
+        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[2] =
           Hummingbird_Failure_Detection_B.BusCreator2.Setpoints.next.gps_pos.altitude
           / 3.28084;
         Hummingbird_Failure_Detection_B.prev_lat[0] =
@@ -12697,7 +12717,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
           Hummingbird_Failure_Detection_B.BusCreator2.Home.GPS.altitude /
           3.28084;
         Hummingbird_Failure_Det_lla2ned
-          (Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c,
+          (Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k,
            Hummingbird_Failure_Detection_B.prev_lat,
            Hummingbird_Failure_Detection_B.dv1);
         Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 = 3.28084 *
@@ -12721,7 +12741,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       Hummingbird_Failure_Detection_B.DProdOut_n[1] =
         Hummingbird_Failure_Detection_B.b_absxk;
       Hummingbird_Failure_Detection_B.DProdOut_n[2] =
-        Hummingbird_Failure_Detection_B.r_f;
+        Hummingbird_Failure_Detection_B.r_c;
 
       // MATLAB Function: '<S22>/MATLAB Function1' incorporates:
       //   BusCreator generated from: '<Root>/Chart'
@@ -12745,21 +12765,21 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
           Hummingbird_Failure_Detection_B.t;
       }
 
-      Hummingbird_Failure_Detection_B.Saturation4 = fabs
+      Hummingbird_Failure_Detection_B.Saturation1 = fabs
         (Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1);
-      if (Hummingbird_Failure_Detection_B.Saturation4 >
+      if (Hummingbird_Failure_Detection_B.Saturation1 >
           Hummingbird_Failure_Detection_B.prev_altitude) {
         Hummingbird_Failure_Detection_B.t =
           Hummingbird_Failure_Detection_B.prev_altitude /
-          Hummingbird_Failure_Detection_B.Saturation4;
+          Hummingbird_Failure_Detection_B.Saturation1;
         Hummingbird_Failure_Detection_B.V = Hummingbird_Failure_Detection_B.V *
           Hummingbird_Failure_Detection_B.t * Hummingbird_Failure_Detection_B.t
           + 1.0;
         Hummingbird_Failure_Detection_B.prev_altitude =
-          Hummingbird_Failure_Detection_B.Saturation4;
+          Hummingbird_Failure_Detection_B.Saturation1;
       } else {
         Hummingbird_Failure_Detection_B.t =
-          Hummingbird_Failure_Detection_B.Saturation4 /
+          Hummingbird_Failure_Detection_B.Saturation1 /
           Hummingbird_Failure_Detection_B.prev_altitude;
         Hummingbird_Failure_Detection_B.V += Hummingbird_Failure_Detection_B.t *
           Hummingbird_Failure_Detection_B.t;
@@ -12788,18 +12808,18 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       Hummingbird_Failure_Detection_B.V =
         Hummingbird_Failure_Detection_B.prev_altitude * sqrt
         (Hummingbird_Failure_Detection_B.V);
-      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[0] =
+      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[0] =
         Hummingbird_Failure_Detection_B.b_t -
         Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0;
-      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[1] =
+      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[1] =
         Hummingbird_Failure_Detection_B.b_absxk -
         Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1;
-      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[2] =
-        Hummingbird_Failure_Detection_B.r_f -
+      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[2] =
+        Hummingbird_Failure_Detection_B.r_c -
         Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2;
       Hummingbird_Failure_Detection_B.t = 1.0 / (exp
         ((Hummingbird_Failure_Detect_norm
-          (Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c) - 150.0) / 50.0) +
+          (Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k) - 150.0) / 50.0) +
         1.0) * 100.0;
       Hummingbird_Failure_Detection_B.absxk =
         Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 -
@@ -12822,7 +12842,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
          Hummingbird_Failure_Detection_B.b_gamma *
          Hummingbird_Failure_Detection_B.b_gamma) *
         Hummingbird_Failure_Detection_B.t;
-      Hummingbird_Failure_Detection_B.r_f =
+      Hummingbird_Failure_Detection_B.r_c =
         Hummingbird_Failure_Detection_B.b_absxk -
         (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1 -
          (Hummingbird_Failure_Detection_B.eta +
@@ -12833,7 +12853,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
           Hummingbird_Failure_Detection_B.rd) *
          Hummingbird_Failure_Detection_B.t);
       Hummingbird_Failure_Detection_B.theta = Hummingbird_Failu_rt_atan2d_snf
-        (Hummingbird_Failure_Detection_B.r_f,
+        (Hummingbird_Failure_Detection_B.r_c,
          Hummingbird_Failure_Detection_B.b_t);
       Hummingbird_Failure_Detection_B.prev_altitude = 3.3121686421112381E-170;
       Hummingbird_Failure_Detection_B.b_absxk = fabs
@@ -12851,7 +12871,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       }
 
       Hummingbird_Failure_Detection_B.b_absxk = fabs
-        (Hummingbird_Failure_Detection_B.r_f);
+        (Hummingbird_Failure_Detection_B.r_c);
       if (Hummingbird_Failure_Detection_B.b_absxk >
           Hummingbird_Failure_Detection_B.prev_altitude) {
         Hummingbird_Failure_Detection_B.b_t =
@@ -12872,7 +12892,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
           Hummingbird_Failure_Detection_B.b_t;
       }
 
-      Hummingbird_Failure_Detection_B.r_f =
+      Hummingbird_Failure_Detection_B.r_c =
         Hummingbird_Failure_Detection_B.prev_altitude * sqrt
         (Hummingbird_Failure_Detection_B.absx);
       Hummingbird_Failure_Detection_B.b_absxk = sin
@@ -12957,10 +12977,10 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         ((Hummingbird_Failure_Detection_B.theta - 150.0) / 50.0) + 1.0)) * 0.7 *
         Hummingbird_Failure_Detection_B.prev_altitude;
       Hummingbird_Failure_Detection_B.prev_altitude =
-        Hummingbird_Failure_Detection_B.r_f - Hummingbird_Failure_Detection_B.t;
+        Hummingbird_Failure_Detection_B.r_c - Hummingbird_Failure_Detection_B.t;
       Hummingbird_Failure_Detection_B.absxk =
         Hummingbird_Failure_Detection_B.b_gamma *
-        Hummingbird_Failure_Detection_B.r_f;
+        Hummingbird_Failure_Detection_B.r_c;
       Hummingbird_Failure_Detection_B.eta = sqrt
         (Hummingbird_Failure_Detection_B.prev_altitude *
          Hummingbird_Failure_Detection_B.prev_altitude +
@@ -12975,7 +12995,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       Hummingbird_Failure_Detection_B.absxk *=
         Hummingbird_Failure_Detection_B.rd;
       Hummingbird_Failure_Detection_B.V = ((Hummingbird_Failure_Detection_B.t -
-        Hummingbird_Failure_Detection_B.r_f) * Hummingbird_Failure_Detection_B.t
+        Hummingbird_Failure_Detection_B.r_c) * Hummingbird_Failure_Detection_B.t
         / (Hummingbird_Failure_Detection_B.V * Hummingbird_Failure_Detection_B.V
            * (Hummingbird_Failure_Detection_B.eta *
               Hummingbird_Failure_Detection_B.eta)) + 1.0) *
@@ -13133,16 +13153,16 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
           || rtIsNaN
           (Hummingbird_Failure_Detection_B.BusCreator2.Setpoints.previous.gps_pos.lon))
       {
-        Hummingbird_Failure_Detection_B.prev_lat_b[0] =
+        Hummingbird_Failure_Detection_B.prev_lat_c[0] =
           Hummingbird_Failure_Detectio_DW.mission_start[0];
-        Hummingbird_Failure_Detection_B.prev_lat_b[1] =
+        Hummingbird_Failure_Detection_B.prev_lat_c[1] =
           Hummingbird_Failure_Detectio_DW.mission_start[1];
         Hummingbird_Failure_Detection_B.prev_altitude =
           Hummingbird_Failure_Detectio_DW.mission_start[2];
       } else {
-        Hummingbird_Failure_Detection_B.prev_lat_b[0] =
+        Hummingbird_Failure_Detection_B.prev_lat_c[0] =
           Hummingbird_Failure_Detection_B.BusCreator2.Setpoints.previous.gps_pos.lat;
-        Hummingbird_Failure_Detection_B.prev_lat_b[1] =
+        Hummingbird_Failure_Detection_B.prev_lat_c[1] =
           Hummingbird_Failure_Detection_B.BusCreator2.Setpoints.previous.gps_pos.lon;
         Hummingbird_Failure_Detection_B.prev_altitude =
           Hummingbird_Failure_Detection_B.BusCreator2.Setpoints.previous.gps_pos.altitude;
@@ -13158,7 +13178,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 =
           Hummingbird_Failure_Detection_B.In1_a.lon;
         Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 =
-          Hummingbird_Failure_Detection_B.CastToDouble25;
+          Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator;
       } else {
         Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 =
           Hummingbird_Failure_Detection_B.BusCreator2.Setpoints.current.gps_pos.lat;
@@ -13172,24 +13192,24 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         -(Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 -
           Hummingbird_Failure_Detection_B.BusCreator2.Home.GPS.altitude);
       Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_1 =
-        -(Hummingbird_Failure_Detection_B.CastToDouble25 -
+        -(Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator -
           Hummingbird_Failure_Detection_B.BusCreator2.Home.GPS.altitude);
-      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[0] =
+      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[0] =
         Hummingbird_Failure_Detection_B.In1_a.lat;
-      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[1] =
+      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[1] =
         Hummingbird_Failure_Detection_B.In1_a.lon;
-      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[2] =
-        Hummingbird_Failure_Detection_B.CastToDouble25 / 3.28084;
+      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[2] =
+        Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator / 3.28084;
       Hummingbird_Failure_Detection_B.DProdOut_n[0] =
         Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0;
       Hummingbird_Failure_Detection_B.DProdOut_n[1] =
         Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1;
-      Hummingbird_Failure_Detection_B.CastToDouble25 =
+      Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator =
         Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 / 3.28084;
       Hummingbird_Failure_Detection_B.DProdOut_n[2] =
-        Hummingbird_Failure_Detection_B.CastToDouble25;
+        Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator;
       Hummingbird_Failure_D_lla2ned_f
-        (Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c,
+        (Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k,
          Hummingbird_Failure_Detection_B.DProdOut_n,
          Hummingbird_Failure_Detection_B.dv);
       Hummingbird_Failure_Detection_B.DProdOut_n[0] =
@@ -13208,23 +13228,23 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 = atan
         (Hummingbird_Failure_Detection_B.dv[2] * 3.28084 /
          Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2);
-      Hummingbird_Failure_Detection_B.prev_lat_b[2] =
+      Hummingbird_Failure_Detection_B.prev_lat_c[2] =
         Hummingbird_Failure_Detection_B.prev_altitude / 3.28084;
       Hummingbird_Failure_Detection_B.DProdOut_n[0] =
         Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0;
       Hummingbird_Failure_Detection_B.DProdOut_n[1] =
         Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1;
       Hummingbird_Failure_Detection_B.DProdOut_n[2] =
-        Hummingbird_Failure_Detection_B.CastToDouble25;
-      Hummingbird_Failure_D_lla2ned_f(Hummingbird_Failure_Detection_B.prev_lat_b,
+        Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator;
+      Hummingbird_Failure_D_lla2ned_f(Hummingbird_Failure_Detection_B.prev_lat_c,
         Hummingbird_Failure_Detection_B.DProdOut_n,
-        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c);
+        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k);
       Hummingbird_Failure_Detection_B.DProdOut_n[0] =
-        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[0] * 3.28084;
+        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[0] * 3.28084;
       Hummingbird_Failure_Detection_B.DProdOut_n[1] =
-        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[1] * 3.28084;
+        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[1] * 3.28084;
       Hummingbird_Failure_Detection_B.DProdOut_n[2] =
-        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[2] * 3.28084;
+        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[2] * 3.28084;
       Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 = sqrt
         (Hummingbird_Failure_Detection_B.DProdOut_n[0] *
          Hummingbird_Failure_Detection_B.DProdOut_n[0] +
@@ -13239,11 +13259,11 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
          Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0);
 
       // MATLABSystem: '<S23>/Read Parameter'
-      b_varargout_1 = MW_ParamRead_Step
+      Hummingbird_Failure_Detection_B.b_varargout_1 = MW_ParamRead_Step
         (Hummingbird_Failure_Detectio_DW.obj_lp.MW_PARAMHANDLE, MW_SINGLE,
-         &Hummingbird_Failure_Detection_B.ParamStep);
-      if (b_varargout_1) {
-        Hummingbird_Failure_Detection_B.ParamStep = 0.0F;
+         &Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3);
+      if (Hummingbird_Failure_Detection_B.b_varargout_1) {
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3 = 0.0F;
       }
 
       // Gain: '<S23>/Gain' incorporates:
@@ -13251,7 +13271,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //
       Hummingbird_Failure_Detection_B.Gain_ny =
         Hummingbird_Failure_Detection_P.Gain_Gain_h *
-        Hummingbird_Failure_Detection_B.ParamStep;
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3;
 
       // BusAssignment: '<S33>/Bus Assignment' incorporates:
       //   BusCreator generated from: '<Root>/Chart'
@@ -13324,20 +13344,20 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
           Hummingbird_Failure_Detection_B.t * Hummingbird_Failure_Detection_B.t;
       }
 
-      if (Hummingbird_Failure_Detection_B.Saturation4 >
+      if (Hummingbird_Failure_Detection_B.Saturation1 >
           Hummingbird_Failure_Detection_B.prev_altitude) {
         Hummingbird_Failure_Detection_B.t =
           Hummingbird_Failure_Detection_B.prev_altitude /
-          Hummingbird_Failure_Detection_B.Saturation4;
+          Hummingbird_Failure_Detection_B.Saturation1;
         Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 =
           Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 *
           Hummingbird_Failure_Detection_B.t * Hummingbird_Failure_Detection_B.t
           + 1.0;
         Hummingbird_Failure_Detection_B.prev_altitude =
-          Hummingbird_Failure_Detection_B.Saturation4;
+          Hummingbird_Failure_Detection_B.Saturation1;
       } else {
         Hummingbird_Failure_Detection_B.t =
-          Hummingbird_Failure_Detection_B.Saturation4 /
+          Hummingbird_Failure_Detection_B.Saturation1 /
           Hummingbird_Failure_Detection_B.prev_altitude;
         Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 +=
           Hummingbird_Failure_Detection_B.t * Hummingbird_Failure_Detection_B.t;
@@ -13413,7 +13433,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         -Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1 -
         Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 * tan
         (Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1);
-      Hummingbird_Failure_Detection_B.ParamStep =
+      Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3 =
         Hummingbird_Failure_Detection_B.Gain_ny *
         Hummingbird_Failure_Detection_B.Gain_ny * 0.621118F +
         static_cast<real32_T>(Hummingbird_Failure_Detection_B.CastToDouble11 *
@@ -13451,7 +13471,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       Hummingbird_Failure_Detection_B.BusAssignment_k.energy =
         static_cast<real32_T>(Hummingbird_Failure_Detection_B.CastToDouble10);
       Hummingbird_Failure_Detection_B.BusAssignment_k.energy_setpoint =
-        Hummingbird_Failure_Detection_B.ParamStep;
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3;
       Hummingbird_Failure_Detection_B.BusAssignment_k.energy_setpoint_dot =
         static_cast<real32_T>(Hummingbird_Failure_Detection_P.Constant_Value_hn /
         32.2 + sin(Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0));
@@ -13505,23 +13525,23 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
 
       // Sum: '<S23>/Sum'
       Hummingbird_Failure_Detection_B.CastToDouble10 =
-        Hummingbird_Failure_Detection_B.ParamStep -
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3 -
         Hummingbird_Failure_Detection_B.CastToDouble10;
 
       // MATLABSystem: '<S35>/Read Parameter2'
-      b_varargout_1 = MW_ParamRead_Step
+      Hummingbird_Failure_Detection_B.b_varargout_1 = MW_ParamRead_Step
         (Hummingbird_Failure_Detectio_DW.obj_i5.MW_PARAMHANDLE, MW_SINGLE,
-         &Hummingbird_Failure_Detection_B.ParamStep);
-      if (b_varargout_1) {
-        Hummingbird_Failure_Detection_B.ParamStep = 0.0F;
+         &Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3);
+      if (Hummingbird_Failure_Detection_B.b_varargout_1) {
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3 = 0.0F;
       }
 
       // MATLABSystem: '<S35>/Read Parameter1'
-      b_varargout_1 = MW_ParamRead_Step
+      Hummingbird_Failure_Detection_B.b_varargout_1 = MW_ParamRead_Step
         (Hummingbird_Failure_Detectio_DW.obj_mw.MW_PARAMHANDLE, MW_SINGLE,
-         &Hummingbird_Failure_Detection_B.ParamStep_n);
-      if (b_varargout_1) {
-        Hummingbird_Failure_Detection_B.ParamStep_n = 0.0F;
+         &Hummingbird_Failure_Detection_B.ParamStep);
+      if (Hummingbird_Failure_Detection_B.b_varargout_1) {
+        Hummingbird_Failure_Detection_B.ParamStep = 0.0F;
       }
 
       // Product: '<S74>/NProd Out' incorporates:
@@ -13533,16 +13553,16 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //
       Hummingbird_Failure_Detection_B.CastToDouble11 =
         (Hummingbird_Failure_Detection_B.CastToDouble10 *
-         Hummingbird_Failure_Detection_B.ParamStep -
+         Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3 -
          Hummingbird_Failure_Detectio_DW.Filter_DSTATE_ef) *
         Hummingbird_Failure_Detection_P.Constant2_Value;
 
       // MATLABSystem: '<S35>/Read Parameter'
-      b_varargout_1 = MW_ParamRead_Step
+      Hummingbird_Failure_Detection_B.b_varargout_1 = MW_ParamRead_Step
         (Hummingbird_Failure_Detectio_DW.obj_a1.MW_PARAMHANDLE, MW_SINGLE,
-         &Hummingbird_Failure_Detection_B.ParamStep);
-      if (b_varargout_1) {
-        Hummingbird_Failure_Detection_B.ParamStep = 0.0F;
+         &Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3);
+      if (Hummingbird_Failure_Detection_B.b_varargout_1) {
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3 = 0.0F;
       }
 
       // Sum: '<S80>/Sum' incorporates:
@@ -13552,7 +13572,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //
       Hummingbird_Failure_Detection_B.dtFW =
         (Hummingbird_Failure_Detection_B.CastToDouble10 *
-         Hummingbird_Failure_Detection_B.ParamStep +
+         Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3 +
          Hummingbird_Failure_Detectio_DW.Integrator_DSTATE_d) +
         Hummingbird_Failure_Detection_B.CastToDouble11;
 
@@ -13580,18 +13600,18 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_1;
 
       // MATLABSystem: '<S36>/Read Parameter2'
-      b_varargout_1 = MW_ParamRead_Step
+      Hummingbird_Failure_Detection_B.b_varargout_1 = MW_ParamRead_Step
         (Hummingbird_Failure_Detectio_DW.obj_ou.MW_PARAMHANDLE, MW_SINGLE,
-         &Hummingbird_Failure_Detection_B.ParamStep);
-      if (b_varargout_1) {
-        Hummingbird_Failure_Detection_B.ParamStep = 0.0F;
+         &Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3);
+      if (Hummingbird_Failure_Detection_B.b_varargout_1) {
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3 = 0.0F;
       }
 
       // MATLABSystem: '<S36>/Read Parameter1'
-      b_varargout_1 = MW_ParamRead_Step
+      Hummingbird_Failure_Detection_B.b_varargout_1 = MW_ParamRead_Step
         (Hummingbird_Failure_Detectio_DW.obj_de.MW_PARAMHANDLE, MW_SINGLE,
          &Hummingbird_Failure_Detection_B.Gain_ny);
-      if (b_varargout_1) {
+      if (Hummingbird_Failure_Detection_B.b_varargout_1) {
         Hummingbird_Failure_Detection_B.Gain_ny = 0.0F;
       }
 
@@ -13611,16 +13631,16 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //
       Hummingbird_Failure_Detection_B.CastToDouble9 =
         (Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_1 *
-         Hummingbird_Failure_Detection_B.ParamStep -
+         Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3 -
          Hummingbird_Failure_Detectio_DW.Filter_DSTATE_f1) *
         Hummingbird_Failure_Detection_P.Constant2_Value_b;
 
       // MATLABSystem: '<S36>/Read Parameter'
-      b_varargout_1 = MW_ParamRead_Step
+      Hummingbird_Failure_Detection_B.b_varargout_1 = MW_ParamRead_Step
         (Hummingbird_Failure_Detectio_DW.obj_io.MW_PARAMHANDLE, MW_SINGLE,
-         &Hummingbird_Failure_Detection_B.ParamStep);
-      if (b_varargout_1) {
-        Hummingbird_Failure_Detection_B.ParamStep = 0.0F;
+         &Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3);
+      if (Hummingbird_Failure_Detection_B.b_varargout_1) {
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3 = 0.0F;
       }
 
       // Sum: '<S132>/Sum' incorporates:
@@ -13630,7 +13650,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //
       Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 =
         (Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_1 *
-         Hummingbird_Failure_Detection_B.ParamStep +
+         Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3 +
          Hummingbird_Failure_Detectio_DW.Integrator_DSTATE_cp) +
         Hummingbird_Failure_Detection_B.CastToDouble9;
 
@@ -13721,13 +13741,13 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //
       Hummingbird_Failure_Detection_B.DProdOut_n[0] =
         Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_0 -
-        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3;
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1;
       Hummingbird_Failure_Detection_B.DProdOut_n[1] =
         Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 -
-        Hummingbird_Failure_Detection_B.b_o;
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_2;
       Hummingbird_Failure_Detection_B.DProdOut_n[2] =
         Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_1 -
-        Hummingbird_Failure_Detection_B.a_i;
+        Hummingbird_Failure_Detection_B.a_j;
       Hummingbird__ReadParameter1
         (&Hummingbird_Failure_Detection_B.ReadParameter1_b3r,
          &Hummingbird_Failure_Detectio_DW.ReadParameter1_b3r);
@@ -13824,13 +13844,13 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
 
       Hummingbird_Failure_Detection_B.Filter_os[0] =
         Hummingbird_Failure_Detection_B.DProdOut_n[0] -
-        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_0;
+        Hummingbird_Failure_Detection_B.In1_f.gyro_rad[0];
       Hummingbird_Failure_Detection_B.Filter_os[1] =
         Hummingbird_Failure_Detection_B.DProdOut_n[1] -
-        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1;
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_0;
       Hummingbird_Failure_Detection_B.Filter_os[2] =
         Hummingbird_Failure_Detection_B.DProdOut_n[2] -
-        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_2;
+        Hummingbird_Failure_Detection_B.In1_f.gyro_rad[2];
       Hummingbi_ReadParameter1_b3
         (&Hummingbird_Failure_Detection_B.ReadParameter1_b3rga,
          &Hummingbird_Failure_Detectio_DW.ReadParameter1_b3rga);
@@ -13895,24 +13915,24 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //   DataTypeConversion: '<S21>/Cast To Single5'
       //   MATLABSystem: '<S151>/PX4 Timestamp'
 
-      Hummingbird_Failure_Detection_B.BusAssignment_b.timestamp =
+      Hummingbird_Failure_Detection_B.BusAssignment_b0.timestamp =
         Hummingbird_Failure_Detection_B.PX4Timestamp_b.PX4Timestamp;
-      Hummingbird_Failure_Detection_B.BusAssignment_b.roll_rate_error =
+      Hummingbird_Failure_Detection_B.BusAssignment_b0.roll_rate_error =
         static_cast<real32_T>(Hummingbird_Failure_Detection_B.DProdOut_n[0]);
-      Hummingbird_Failure_Detection_B.BusAssignment_b.pitch_rate_error =
+      Hummingbird_Failure_Detection_B.BusAssignment_b0.pitch_rate_error =
         static_cast<real32_T>(Hummingbird_Failure_Detection_B.DProdOut_n[1]);
-      Hummingbird_Failure_Detection_B.BusAssignment_b.yaw_rate_error =
+      Hummingbird_Failure_Detection_B.BusAssignment_b0.yaw_rate_error =
         static_cast<real32_T>(Hummingbird_Failure_Detection_B.DProdOut_n[2]);
-      Hummingbird_Failure_Detection_B.BusAssignment_b._padding0[0] =
+      Hummingbird_Failure_Detection_B.BusAssignment_b0._padding0[0] =
         Hummingbird_Failure_Detection_P.Constant_Value_e4[0];
-      Hummingbird_Failure_Detection_B.BusAssignment_b._padding0[1] =
+      Hummingbird_Failure_Detection_B.BusAssignment_b0._padding0[1] =
         Hummingbird_Failure_Detection_P.Constant_Value_e4[1];
-      Hummingbird_Failure_Detection_B.BusAssignment_b._padding0[2] =
+      Hummingbird_Failure_Detection_B.BusAssignment_b0._padding0[2] =
         Hummingbird_Failure_Detection_P.Constant_Value_e4[2];
-      Hummingbird_Failure_Detection_B.BusAssignment_b._padding0[3] =
+      Hummingbird_Failure_Detection_B.BusAssignment_b0._padding0[3] =
         Hummingbird_Failure_Detection_P.Constant_Value_e4[3];
       Hummingbird_Fai_SinkBlock_j
-        (&Hummingbird_Failure_Detection_B.BusAssignment_b,
+        (&Hummingbird_Failure_Detection_B.BusAssignment_b0,
          &Hummingbird_Failure_Detectio_DW.SinkBlock_j);
 
       // Sum: '<S21>/Sum3'
@@ -13969,7 +13989,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //
       Hummingbird_Failure_Detectio_DW.Integrator_DSTATE_d +=
         Hummingbird_Failure_Detection_B.CastToDouble10 *
-        Hummingbird_Failure_Detection_B.ParamStep_n *
+        Hummingbird_Failure_Detection_B.ParamStep *
         Hummingbird_Failure_Detection_P.Integrator_gainval;
       if (Hummingbird_Failure_Detectio_DW.Integrator_DSTATE_d >
           Hummingbird_Failure_Detection_P.PIDController_UpperIntegratorSa) {
@@ -14037,34 +14057,34 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
 
   // End of Chart: '<Root>/Chart'
 
-  // MATLABSystem: '<S1464>/SourceBlock'
-  b_varargout_1 = uORB_read_step
+  // MATLABSystem: '<S1470>/SourceBlock'
+  Hummingbird_Failure_Detection_B.b_varargout_1 = uORB_read_step
     (Hummingbird_Failure_Detectio_DW.obj_im.orbMetadataObj,
      &Hummingbird_Failure_Detectio_DW.obj_im.eventStructObj,
      &Hummingbird_Failure_Detection_B.r4, false, 1.0);
 
-  // Outputs for Enabled SubSystem: '<S1464>/Enabled Subsystem' incorporates:
-  //   EnablePort: '<S1540>/Enable'
+  // Outputs for Enabled SubSystem: '<S1470>/Enabled Subsystem' incorporates:
+  //   EnablePort: '<S1551>/Enable'
 
-  // Start for MATLABSystem: '<S1464>/SourceBlock'
-  if (b_varargout_1) {
-    // SignalConversion generated from: '<S1540>/In1'
+  // Start for MATLABSystem: '<S1470>/SourceBlock'
+  if (Hummingbird_Failure_Detection_B.b_varargout_1) {
+    // SignalConversion generated from: '<S1551>/In1'
     Hummingbird_Failure_Detection_B.In1_m = Hummingbird_Failure_Detection_B.r4;
   }
 
-  // End of Outputs for SubSystem: '<S1464>/Enabled Subsystem'
+  // End of Outputs for SubSystem: '<S1470>/Enabled Subsystem'
 
   // Math: '<Root>/Square' incorporates:
   //   SignalConversion generated from: '<S2>/ SFunction '
 
   for (Hummingbird_Failure_Detection_B.i = 0; Hummingbird_Failure_Detection_B.i <
        8; Hummingbird_Failure_Detection_B.i++) {
-    Hummingbird_Failure_Detection_B.a_i =
+    Hummingbird_Failure_Detection_B.a_j =
       Hummingbird_Failure_Detection_B.In1_m.positions[Hummingbird_Failure_Detection_B.i
       + 4];
     Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunct[Hummingbird_Failure_Detection_B.i]
-      = Hummingbird_Failure_Detection_B.a_i *
-      Hummingbird_Failure_Detection_B.a_i;
+      = Hummingbird_Failure_Detection_B.a_j *
+      Hummingbird_Failure_Detection_B.a_j;
   }
 
   // End of Math: '<Root>/Square'
@@ -14080,17 +14100,17 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
     Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunct[3];
 
   // Gain: '<S12>/Gain3'
-  Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3 =
+  Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1 =
     Hummingbird_Failure_Detection_P.Gain3_Gain_c0 *
     Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunct[4];
 
   // Gain: '<S12>/Gain9'
-  Hummingbird_Failure_Detection_B.b_o =
+  Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_2 =
     Hummingbird_Failure_Detection_P.Gain9_Gain_g *
     Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunct[5];
 
   // Gain: '<S12>/Gain10'
-  Hummingbird_Failure_Detection_B.ParamStep =
+  Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3 =
     Hummingbird_Failure_Detection_P.Gain10_Gain_l *
     Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunct[6];
 
@@ -14110,17 +14130,17 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
     Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunct[0] +
     Hummingbird_Failure_Detection_P.Gain8_Gain_d *
     Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunct[1];
-  Hummingbird_Failure_Detection_B.ParamStep_n =
+  Hummingbird_Failure_Detection_B.ParamStep =
     (Hummingbird_Failure_Detection_B.Add_tmp +
      Hummingbird_Failure_Detection_B.Gain14_h) +
     Hummingbird_Failure_Detection_B.Gain6_h;
 
   // Sum: '<S12>/Add'
-  Hummingbird_Failure_Detection_B.a_i =
-    (((Hummingbird_Failure_Detection_B.ParamStep_n +
-       Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3) +
-      Hummingbird_Failure_Detection_B.b_o) +
-     Hummingbird_Failure_Detection_B.ParamStep) +
+  Hummingbird_Failure_Detection_B.a_j =
+    (((Hummingbird_Failure_Detection_B.ParamStep +
+       Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1) +
+      Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_2) +
+     Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3) +
     Hummingbird_Failure_Detection_B.Gain_ny;
 
   // Product: '<S12>/Product1' incorporates:
@@ -14131,9 +14151,9 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
     ((((((Hummingbird_Failure_Detection_B.Add_tmp -
           Hummingbird_Failure_Detection_B.Gain14_h) -
          Hummingbird_Failure_Detection_B.Gain6_h) -
-        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3) -
-       Hummingbird_Failure_Detection_B.b_o) +
-      Hummingbird_Failure_Detection_B.ParamStep) +
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1) -
+       Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_2) +
+      Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3) +
      Hummingbird_Failure_Detection_B.Gain_ny) *
     Hummingbird_Failure_Detection_P.Constant2_Value_c;
 
@@ -14141,13 +14161,13 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
   //   Constant: '<S12>/Constant1'
   //   Sum: '<S12>/Add2'
 
-  Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3 =
-    ((((Hummingbird_Failure_Detection_B.ParamStep_n -
-        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3) -
-       Hummingbird_Failure_Detection_B.b_o) -
-      Hummingbird_Failure_Detection_B.ParamStep) -
+  Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1 =
+    ((((Hummingbird_Failure_Detection_B.ParamStep -
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1) -
+       Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_2) -
+      Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3) -
      Hummingbird_Failure_Detection_B.Gain_ny) *
-    Hummingbird_Failure_Detection_P.Constant1_Value_h;
+    Hummingbird_Failure_Detection_P.Constant1_Value_hl;
 
   // Sum: '<S12>/Add1' incorporates:
   //   Gain: '<S12>/Gain12'
@@ -14159,7 +14179,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
   //   Gain: '<S12>/Gain6'
   //   Gain: '<S12>/Gain7'
 
-  Hummingbird_Failure_Detection_B.b_o =
+  Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_2 =
     ((((((Hummingbird_Failure_Detection_P.Gain4_Gain_o *
           Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunct[0] -
           Hummingbird_Failure_Detection_P.Gain12_Gain_j *
@@ -14472,22 +14492,22 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunct[3] =
         Hummingbird_Failure_Detection_B.In1_m.positions[3];
       Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunct[4] =
-        Hummingbird_Failure_Detection_B.a_i;
+        Hummingbird_Failure_Detection_B.a_j;
       Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunct[5] =
         Hummingbird_Failure_Detection_B.Gain14_h;
       Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunct[6] =
-        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3;
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1;
       Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunct[7] =
-        Hummingbird_Failure_Detection_B.b_o;
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_2;
 
       // SignalConversion generated from: '<S1413>/ SFunction ' incorporates:
       //   Chart: '<S1410>/Chart'
 
-      Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunctionI[0] =
+      Hummingbird_Failure_Detection_B.Sum_e[0] =
         Hummingbird_Failure_Detection_B.MovingAverage.MovingAverage;
-      Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunctionI[1] =
+      Hummingbird_Failure_Detection_B.Sum_e[1] =
         Hummingbird_Failure_Detection_B.MovingAverage1.MovingAverage;
-      Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunctionI[2] =
+      Hummingbird_Failure_Detection_B.Sum_e[2] =
         Hummingbird_Failure_Detection_B.MovingAverage2.MovingAverage;
 
       // Chart: '<S1410>/Chart' incorporates:
@@ -14509,30 +14529,13 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         Hummingbird_Failure_Detectio_DW.RC_Flight_Mode_start_d =
           Hummingbird_Failure_Detection_B.BusCreator.Flight_Mode;
         Hummingbird_Failure_Detectio_DW.is_active_c9_Hummingbird_Failur = 1U;
-        if (Hummingbird_Failure_Detection_B.BusCreator.VTOL_Mode < 1200) {
-          Hummingbird_Failure_Detectio_DW.is_Mixer_Control =
-            Hummingbird_Failure_Detec_IN_FW;
-          Hummingbird_Fai_enter_atomic_FW
-            (Hummingbird_Failure_Detectio_DW.Memory1_PreviousInput,
-             &Hummingbird_Failure_Detection_B.CastToDouble11,
-             &Hummingbird_Failure_Detection_B.CastToDouble10);
-        } else if (Hummingbird_Failure_Detection_B.BusCreator.VTOL_Mode < 1700)
-        {
-          Hummingbird_Failure_Detectio_DW.is_Mixer_Control =
-            Hummingbird__IN_Mixed_MR_Assist;
-          Hu_enter_atomic_Mixed_MR_Assist
-            (&Hummingbird_Failure_Detection_B.CastToDouble11,
-             &Hummingbird_Failure_Detection_B.CastToDouble10,
-             Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunct);
-        } else {
-          Hummingbird_Failure_Detectio_DW.is_Mixer_Control =
-            Hummingbird_Failure_Detec_IN_MR;
-          Hummingbird_Failure_Detection_B.mixer[0] = 0.0;
-          Hummingbird_Failure_Detection_B.mixer[1] = 0.0;
-          Hummingbird_Failure_Detection_B.mixer[2] = 0.0;
-          Hummingbird_Failure_Detection_B.CastToDouble11 = 0.0;
-          Hummingbird_Failure_Detection_B.CastToDouble10 = 0.0;
-        }
+        Hummingbird_Failure_Detectio_DW.is_Mixer_Control =
+          Hummingbird_Failure_Det_IN_Init;
+        Hummingbird_Failure_Detection_B.assist = 0.0;
+        Hummingbird_Failure_Detection_B.arms_pos = 1.0;
+        Hummingbird_Failure_Detection_B.mixer[0] = 1.0;
+        Hummingbird_Failure_Detection_B.mixer[1] = 1.0;
+        Hummingbird_Failure_Detection_B.mixer[2] = 1.0;
       } else if ((Hummingbird_Failure_Detection_B.RC_Flight_Mode_prev_f !=
                   Hummingbird_Failure_Detectio_DW.RC_VTOL_Mode_start_b) ||
                  (Hummingbird_Failure_Detection_B.RC_VTOL_Mode_prev_o !=
@@ -14542,76 +14545,90 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
             Hummingbird_Failure_Detec_IN_FW;
           Hummingbird_Fai_enter_atomic_FW
             (Hummingbird_Failure_Detectio_DW.Memory1_PreviousInput,
-             &Hummingbird_Failure_Detection_B.CastToDouble11,
-             &Hummingbird_Failure_Detection_B.CastToDouble10);
+             Hummingbird_Failure_Detection_B.Sum_e);
         } else if (Hummingbird_Failure_Detection_B.BusCreator.VTOL_Mode < 1700)
         {
           Hummingbird_Failure_Detectio_DW.is_Mixer_Control =
             Hummingbird__IN_Mixed_MR_Assist;
           Hu_enter_atomic_Mixed_MR_Assist
-            (&Hummingbird_Failure_Detection_B.CastToDouble11,
-             &Hummingbird_Failure_Detection_B.CastToDouble10,
-             Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunct);
+            (Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunct);
         } else {
           Hummingbird_Failure_Detectio_DW.is_Mixer_Control =
             Hummingbird_Failure_Detec_IN_MR;
           Hummingbird_Failure_Detection_B.mixer[0] = 0.0;
           Hummingbird_Failure_Detection_B.mixer[1] = 0.0;
           Hummingbird_Failure_Detection_B.mixer[2] = 0.0;
-          Hummingbird_Failure_Detection_B.CastToDouble11 = 0.0;
-          Hummingbird_Failure_Detection_B.CastToDouble10 = 0.0;
+          Hummingbird_Failure_Detection_B.assist = 0.0;
+          Hummingbird_Failure_Detection_B.arms_pos = 0.0;
         }
       } else {
         switch (Hummingbird_Failure_Detectio_DW.is_Mixer_Control) {
          case Hummingbird_Failure_Detec_IN_FW:
-          Hummingbird_Failure_Detection_B.mixer[0] = 1.0;
           Hummingbird_Failure_Detection_B.y[0] = fabs
-            (Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunctionI[0]);
-          Hummingbird_Failure_Detection_B.mixer[1] = 1.0;
+            (Hummingbird_Failure_Detection_B.MovingAverage.MovingAverage);
           Hummingbird_Failure_Detection_B.y[1] = fabs
-            (Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunctionI[1]);
-          Hummingbird_Failure_Detection_B.mixer[2] = 1.0;
+            (Hummingbird_Failure_Detection_B.MovingAverage1.MovingAverage);
           Hummingbird_Failure_Detection_B.y[2] = fabs
-            (Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunctionI[2]);
-          b_varargout_1 = true;
+            (Hummingbird_Failure_Detection_B.MovingAverage2.MovingAverage);
+          Hummingbird_Failure_Detection_B.b_varargout_1 = false;
           Hummingbird_Failure_Detection_B.i = 0;
           exitg1 = false;
           while ((!exitg1) && (Hummingbird_Failure_Detection_B.i < 3)) {
-            if (!(Hummingbird_Failure_Detection_B.y[Hummingbird_Failure_Detection_B.i]
-                  < 4.0)) {
-              b_varargout_1 = false;
+            if (Hummingbird_Failure_Detection_B.y[Hummingbird_Failure_Detection_B.i]
+                > 4.0) {
+              Hummingbird_Failure_Detection_B.b_varargout_1 = true;
               exitg1 = true;
             } else {
               Hummingbird_Failure_Detection_B.i++;
             }
           }
 
-          if (b_varargout_1) {
-            Hummingbird_Failure_Detection_B.CastToDouble11 = 0.0;
-            Hummingbird_Failure_Detection_B.CastToDouble10 = 1.0;
-          } else {
-            Hummingbird_Failure_Detection_B.CastToDouble10 = 0.0;
-            Hummingbird_Failure_Detection_B.CastToDouble11 = 1.0;
-            if (fabs
-                (Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunctionI[
-                 0]) > 4.0 *
-                Hummingbird_Failure_Detectio_DW.Memory1_PreviousInput[0]) {
+          if (Hummingbird_Failure_Detection_B.b_varargout_1) {
+            Hummingbird_Failure_Detection_B.arms_pos = 0.0;
+            Hummingbird_Failure_Detection_B.assist = 1.0;
+            if (fabs(Hummingbird_Failure_Detection_B.MovingAverage.MovingAverage)
+                > 4.0 * Hummingbird_Failure_Detectio_DW.Memory1_PreviousInput[0])
+            {
               Hummingbird_Failure_Detection_B.mixer[0] = 0.2;
             }
 
             if (fabs
-                (Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunctionI[
-                 1]) > 4.0 *
-                Hummingbird_Failure_Detectio_DW.Memory1_PreviousInput[1]) {
+                (Hummingbird_Failure_Detection_B.MovingAverage1.MovingAverage) >
+                4.0 * Hummingbird_Failure_Detectio_DW.Memory1_PreviousInput[1])
+            {
               Hummingbird_Failure_Detection_B.mixer[1] = 0.2;
             }
 
             if (fabs
-                (Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunctionI[
-                 2]) > 2.0 *
-                Hummingbird_Failure_Detectio_DW.Memory1_PreviousInput[2]) {
+                (Hummingbird_Failure_Detection_B.MovingAverage2.MovingAverage) >
+                2.0 * Hummingbird_Failure_Detectio_DW.Memory1_PreviousInput[2])
+            {
               Hummingbird_Failure_Detection_B.mixer[2] = 0.2;
             }
+          }
+          break;
+
+         case Hummingbird_Failure_Det_IN_Init:
+          if (Hummingbird_Failure_Detection_B.BusCreator.VTOL_Mode < 1200) {
+            Hummingbird_Failure_Detectio_DW.is_Mixer_Control =
+              Hummingbird_Failure_Detec_IN_FW;
+            Hummingbird_Fai_enter_atomic_FW
+              (Hummingbird_Failure_Detectio_DW.Memory1_PreviousInput,
+               Hummingbird_Failure_Detection_B.Sum_e);
+          } else if (Hummingbird_Failure_Detection_B.BusCreator.VTOL_Mode < 1700)
+          {
+            Hummingbird_Failure_Detectio_DW.is_Mixer_Control =
+              Hummingbird__IN_Mixed_MR_Assist;
+            Hu_enter_atomic_Mixed_MR_Assist
+              (Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunct);
+          } else {
+            Hummingbird_Failure_Detectio_DW.is_Mixer_Control =
+              Hummingbird_Failure_Detec_IN_MR;
+            Hummingbird_Failure_Detection_B.mixer[0] = 0.0;
+            Hummingbird_Failure_Detection_B.mixer[1] = 0.0;
+            Hummingbird_Failure_Detection_B.mixer[2] = 0.0;
+            Hummingbird_Failure_Detection_B.assist = 0.0;
+            Hummingbird_Failure_Detection_B.arms_pos = 0.0;
           }
           break;
 
@@ -14619,8 +14636,8 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
           Hummingbird_Failure_Detection_B.mixer[0] = 0.0;
           Hummingbird_Failure_Detection_B.mixer[1] = 0.0;
           Hummingbird_Failure_Detection_B.mixer[2] = 0.0;
-          Hummingbird_Failure_Detection_B.CastToDouble11 = 0.0;
-          Hummingbird_Failure_Detection_B.CastToDouble10 = 0.0;
+          Hummingbird_Failure_Detection_B.assist = 0.0;
+          Hummingbird_Failure_Detection_B.arms_pos = 0.0;
           break;
 
          default:
@@ -14680,8 +14697,8 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
             Hummingbird_Failure_Detection_B.mixer[2] = 1.0;
           }
 
-          Hummingbird_Failure_Detection_B.CastToDouble11 = 1.0;
-          Hummingbird_Failure_Detection_B.CastToDouble10 = 0.0;
+          Hummingbird_Failure_Detection_B.assist = 1.0;
+          Hummingbird_Failure_Detection_B.arms_pos = 0.0;
           break;
         }
       }
@@ -14774,156 +14791,156 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       }
 
       Hummingbird_Failure_Detection_B.i = 0;
-      Hummingbird_Failure_Detection_B.r2_m = 1;
-      Hummingbird_Failure_Detection_B.r3_c = 2;
+      Hummingbird_Failure_Detection_B.r2_o = 1;
+      Hummingbird_Failure_Detection_B.r3_n = 2;
       if (fabs(Hummingbird_Failure_Detection_B.x[2]) >
           Hummingbird_Failure_Detection_B.x[0]) {
         Hummingbird_Failure_Detection_B.i = 2;
-        Hummingbird_Failure_Detection_B.r3_c = 0;
+        Hummingbird_Failure_Detection_B.r3_n = 0;
       }
 
       Hummingbird_Failure_Detection_B.x[1] /=
         Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i];
-      Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c] /=
+      Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n] /=
         Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i];
       Hummingbird_Failure_Detection_B.x[4] -=
         Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i + 3]
         * Hummingbird_Failure_Detection_B.x[1];
-      Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c + 3]
+      Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n + 3]
         -= Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i +
         3] *
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c];
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n];
       Hummingbird_Failure_Detection_B.x[7] -=
         Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i + 6]
         * Hummingbird_Failure_Detection_B.x[1];
-      Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c + 6]
+      Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n + 6]
         -= Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i +
         6] *
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c];
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n];
       if (fabs
-          (Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c
+          (Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n
            + 3]) > fabs(Hummingbird_Failure_Detection_B.x[4])) {
-        Hummingbird_Failure_Detection_B.r2_m =
-          Hummingbird_Failure_Detection_B.r3_c;
-        Hummingbird_Failure_Detection_B.r3_c = 1;
+        Hummingbird_Failure_Detection_B.r2_o =
+          Hummingbird_Failure_Detection_B.r3_n;
+        Hummingbird_Failure_Detection_B.r3_n = 1;
       }
 
-      Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c + 3]
+      Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n + 3]
         /=
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_m +
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_o +
         3];
-      Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c + 6]
+      Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n + 6]
         -=
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c +
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n +
         3] *
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_m +
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_o +
         6];
       Hummingbird_Failure_Detection_B.prev_altitude =
         Hummingbird_Failure_Detection_P.Constant2_Value_n[Hummingbird_Failure_Detection_B.i];
-      Hummingbird_Failure_Detection_B.IntegralGain_e =
-        Hummingbird_Failure_Detection_P.Constant2_Value_n[Hummingbird_Failure_Detection_B.r2_m]
+      Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 =
+        Hummingbird_Failure_Detection_P.Constant2_Value_n[Hummingbird_Failure_Detection_B.r2_o]
         - Hummingbird_Failure_Detection_B.prev_altitude *
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_m];
-      Hummingbird_Failure_Detection_B.Saturation4 =
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c +
-        3];
-      Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 =
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c +
-        6];
-      Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 =
-        ((Hummingbird_Failure_Detection_P.Constant2_Value_n[Hummingbird_Failure_Detection_B.r3_c]
-          - Hummingbird_Failure_Detection_B.prev_altitude *
-          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c])
-         - Hummingbird_Failure_Detection_B.Saturation4 *
-         Hummingbird_Failure_Detection_B.IntegralGain_e) /
-        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0;
-      Hummingbird_Failure_Detection_B.a[2] =
-        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1;
-      Hummingbird_Failure_Detection_B.CastToDouble25 =
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_m +
-        6];
-      Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 =
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_m +
-        3];
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_o];
       Hummingbird_Failure_Detection_B.IntegralGain_e =
-        (Hummingbird_Failure_Detection_B.IntegralGain_e -
-         Hummingbird_Failure_Detection_B.CastToDouble25 *
-         Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1) /
-        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0;
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n +
+        3];
+      Hummingbird_Failure_Detection_B.Saturation1 =
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n +
+        6];
+      Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 =
+        ((Hummingbird_Failure_Detection_P.Constant2_Value_n[Hummingbird_Failure_Detection_B.r3_n]
+          - Hummingbird_Failure_Detection_B.prev_altitude *
+          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n])
+         - Hummingbird_Failure_Detection_B.IntegralGain_e *
+         Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2) /
+        Hummingbird_Failure_Detection_B.Saturation1;
+      Hummingbird_Failure_Detection_B.a[2] =
+        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0;
+      Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 =
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_o +
+        6];
+      Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator =
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_o +
+        3];
+      Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 =
+        (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 -
+         Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 *
+         Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0) /
+        Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator;
       Hummingbird_Failure_Detection_B.a[1] =
-        Hummingbird_Failure_Detection_B.IntegralGain_e;
-      Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 =
+        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2;
+      Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 =
         Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i + 6];
-      Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2 =
+      Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 =
         Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i + 3];
       Hummingbird_Failure_Detection_B.a[0] =
         ((Hummingbird_Failure_Detection_B.prev_altitude -
-          Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 *
-          Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1) -
-         Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2 *
-         Hummingbird_Failure_Detection_B.IntegralGain_e) /
+          Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 *
+          Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0) -
+         Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 *
+         Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2) /
         Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i];
       Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_1 = 0.0;
       Hummingbird_Failure_Detection_B.prev_altitude =
         Hummingbird_Failure_Detection_P.Constant2_Value_n[Hummingbird_Failure_Detection_B.i
         + 3];
-      Hummingbird_Failure_Detection_B.IntegralGain_e =
-        Hummingbird_Failure_Detection_P.Constant2_Value_n[Hummingbird_Failure_Detection_B.r2_m
+      Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 =
+        Hummingbird_Failure_Detection_P.Constant2_Value_n[Hummingbird_Failure_Detection_B.r2_o
         + 3] - Hummingbird_Failure_Detection_B.prev_altitude *
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_m];
-      Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 =
-        ((Hummingbird_Failure_Detection_P.Constant2_Value_n[Hummingbird_Failure_Detection_B.r3_c
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_o];
+      Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 =
+        ((Hummingbird_Failure_Detection_P.Constant2_Value_n[Hummingbird_Failure_Detection_B.r3_n
           + 3] - Hummingbird_Failure_Detection_B.prev_altitude *
-          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c])
-         - Hummingbird_Failure_Detection_B.Saturation4 *
-         Hummingbird_Failure_Detection_B.IntegralGain_e) /
-        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0;
+          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n])
+         - Hummingbird_Failure_Detection_B.IntegralGain_e *
+         Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2) /
+        Hummingbird_Failure_Detection_B.Saturation1;
       Hummingbird_Failure_Detection_B.a[5] =
-        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1;
-      Hummingbird_Failure_Detection_B.IntegralGain_e =
-        (Hummingbird_Failure_Detection_B.IntegralGain_e -
-         Hummingbird_Failure_Detection_B.CastToDouble25 *
-         Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1) /
-        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0;
+        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0;
+      Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 =
+        (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 -
+         Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 *
+         Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0) /
+        Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator;
       Hummingbird_Failure_Detection_B.a[4] =
-        Hummingbird_Failure_Detection_B.IntegralGain_e;
+        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2;
       Hummingbird_Failure_Detection_B.a[3] =
         ((Hummingbird_Failure_Detection_B.prev_altitude -
-          Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 *
-          Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1) -
-         Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2 *
-         Hummingbird_Failure_Detection_B.IntegralGain_e) /
+          Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 *
+          Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0) -
+         Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 *
+         Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2) /
         Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i];
       Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 = 0.0;
       Hummingbird_Failure_Detection_B.prev_altitude =
         Hummingbird_Failure_Detection_P.Constant2_Value_n[Hummingbird_Failure_Detection_B.i
         + 6];
-      Hummingbird_Failure_Detection_B.IntegralGain_e =
-        Hummingbird_Failure_Detection_P.Constant2_Value_n[Hummingbird_Failure_Detection_B.r2_m
+      Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 =
+        Hummingbird_Failure_Detection_P.Constant2_Value_n[Hummingbird_Failure_Detection_B.r2_o
         + 6] - Hummingbird_Failure_Detection_B.prev_altitude *
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_m];
-      Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 =
-        ((Hummingbird_Failure_Detection_P.Constant2_Value_n[Hummingbird_Failure_Detection_B.r3_c
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_o];
+      Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 =
+        ((Hummingbird_Failure_Detection_P.Constant2_Value_n[Hummingbird_Failure_Detection_B.r3_n
           + 6] - Hummingbird_Failure_Detection_B.prev_altitude *
-          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c])
-         - Hummingbird_Failure_Detection_B.Saturation4 *
-         Hummingbird_Failure_Detection_B.IntegralGain_e) /
-        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0;
+          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n])
+         - Hummingbird_Failure_Detection_B.IntegralGain_e *
+         Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2) /
+        Hummingbird_Failure_Detection_B.Saturation1;
       Hummingbird_Failure_Detection_B.a[8] =
-        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1;
-      Hummingbird_Failure_Detection_B.IntegralGain_e =
-        (Hummingbird_Failure_Detection_B.IntegralGain_e -
-         Hummingbird_Failure_Detection_B.CastToDouble25 *
-         Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1) /
-        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0;
+        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0;
+      Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 =
+        (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 -
+         Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 *
+         Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0) /
+        Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator;
       Hummingbird_Failure_Detection_B.a[7] =
-        Hummingbird_Failure_Detection_B.IntegralGain_e;
+        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2;
       Hummingbird_Failure_Detection_B.a[6] =
         ((Hummingbird_Failure_Detection_B.prev_altitude -
-          Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 *
-          Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1) -
-         Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2 *
-         Hummingbird_Failure_Detection_B.IntegralGain_e) /
+          Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 *
+          Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0) -
+         Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 *
+         Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2) /
         Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i];
       Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_0 = 0.0;
       for (Hummingbird_Failure_Detection_B.i = 0;
@@ -14960,10 +14977,10 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //   RelationalOperator: '<S1410>/IsNaN3'
 
       if (rtIsNaN(Hummingbird_Failure_Detection_B.dtFW)) {
-        Hummingbird_Failure_Detection_B.CastToDouble8 =
+        Hummingbird_Failure_Detection_B.CastToDouble10 =
           Hummingbird_Failure_Detection_P.Constant4_Value_g;
       } else {
-        Hummingbird_Failure_Detection_B.CastToDouble8 =
+        Hummingbird_Failure_Detection_B.CastToDouble10 =
           Hummingbird_Failure_Detection_B.dtFW;
       }
 
@@ -14994,7 +15011,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       Hummingbird_Failure_Detection_B.BusAssignment_c.de = static_cast<real32_T>
         (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0);
       Hummingbird_Failure_Detection_B.BusAssignment_c.dt = static_cast<real32_T>
-        (Hummingbird_Failure_Detection_B.CastToDouble8);
+        (Hummingbird_Failure_Detection_B.CastToDouble10);
       Hummingbird_Failure_Detection_B.BusAssignment_c.da = static_cast<real32_T>
         (Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_1);
       Hummingbird_Failure_Detection_B.BusAssignment_c.dr = static_cast<real32_T>
@@ -15016,23 +15033,23 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       if (((Hummingbird_Failure_Detection_B.mixer[0] == 0.0) &&
            (Hummingbird_Failure_Detection_B.mixer[1] == 0.0) &&
            (Hummingbird_Failure_Detection_B.mixer[2] == 0.0)) ||
-          (Hummingbird_Failure_Detection_B.CastToDouble11 == 1.0)) {
-        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1 =
+          (Hummingbird_Failure_Detection_B.assist == 1.0)) {
+        Hummingbird_Failure_Detection_B.CastToDouble11 =
           Hummingbird_Failure_Detection_P.Constant1_Value_n;
       } else {
-        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1 =
+        Hummingbird_Failure_Detection_B.CastToDouble11 =
           Hummingbird_Failure_Detection_B.dtMR +
-          Hummingbird_Failure_Detection_B.a_i;
+          Hummingbird_Failure_Detection_B.a_j;
       }
 
       // Saturate: '<S1412>/Saturation3'
-      if (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1 >
+      if (Hummingbird_Failure_Detection_B.CastToDouble11 >
           Hummingbird_Failure_Detection_P.Saturation3_UpperSat) {
-        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1 =
+        Hummingbird_Failure_Detection_B.CastToDouble11 =
           Hummingbird_Failure_Detection_P.Saturation3_UpperSat;
-      } else if (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1 <
+      } else if (Hummingbird_Failure_Detection_B.CastToDouble11 <
                  Hummingbird_Failure_Detection_P.Saturation3_LowerSat) {
-        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1 =
+        Hummingbird_Failure_Detection_B.CastToDouble11 =
           Hummingbird_Failure_Detection_P.Saturation3_LowerSat;
       }
 
@@ -15040,8 +15057,8 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //   Constant: '<S1423>/Constant'
       //   Product: '<S1423>/Divide'
 
-      Hummingbird_Failure_Detection_B.CastToDouble11 =
-        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1 /
+      Hummingbird_Failure_Detection_B.CastToDouble8 =
+        Hummingbird_Failure_Detection_B.CastToDouble11 /
         Hummingbird_Failure_Detection_P.Constant_Value_li *
         Hummingbird_Failure_Detection_P.Gain_Gain_b;
 
@@ -15049,222 +15066,225 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //   Constant: '<S1410>/Constant12'
       //   Constant: '<S1410>/Constant13'
 
-      memcpy(&Hummingbird_Failure_Detection_B.x[0],
-             &Hummingbird_Failure_Detection_P.Constant12_Value[0], 9U * sizeof
-             (real_T));
+      for (Hummingbird_Failure_Detection_B.i = 0;
+           Hummingbird_Failure_Detection_B.i < 9;
+           Hummingbird_Failure_Detection_B.i++) {
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i] =
+          Hummingbird_Failure_Detection_P.Constant12_Value[Hummingbird_Failure_Detection_B.i];
+        Hummingbird_Failure_Detection_B.B[Hummingbird_Failure_Detection_B.i] =
+          Hummingbird_Failure_Detection_P.IB[Hummingbird_Failure_Detection_B.i]
+          - b[Hummingbird_Failure_Detection_B.i];
+      }
+
       Hummingbird_Failure_Detection_B.i = 0;
-      Hummingbird_Failure_Detection_B.r2_m = 1;
-      Hummingbird_Failure_Detection_B.r3_c = 2;
-      Hummingbird_Failure_Detection_B.CastToDouble9 = fabs
+      Hummingbird_Failure_Detection_B.r2_o = 1;
+      Hummingbird_Failure_Detection_B.r3_n = 2;
+      Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1 = fabs
         (Hummingbird_Failure_Detection_P.Constant12_Value[0]);
-      Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 = fabs
+      Hummingbird_Failure_Detection_B.CastToDouble9 = fabs
         (Hummingbird_Failure_Detection_P.Constant12_Value[1]);
-      if (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 >
-          Hummingbird_Failure_Detection_B.CastToDouble9) {
-        Hummingbird_Failure_Detection_B.CastToDouble9 =
-          Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2;
+      if (Hummingbird_Failure_Detection_B.CastToDouble9 >
+          Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1) {
+        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1 =
+          Hummingbird_Failure_Detection_B.CastToDouble9;
         Hummingbird_Failure_Detection_B.i = 1;
-        Hummingbird_Failure_Detection_B.r2_m = 0;
+        Hummingbird_Failure_Detection_B.r2_o = 0;
       }
 
       if (fabs(Hummingbird_Failure_Detection_P.Constant12_Value[2]) >
-          Hummingbird_Failure_Detection_B.CastToDouble9) {
+          Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1) {
         Hummingbird_Failure_Detection_B.i = 2;
-        Hummingbird_Failure_Detection_B.r2_m = 1;
-        Hummingbird_Failure_Detection_B.r3_c = 0;
+        Hummingbird_Failure_Detection_B.r2_o = 1;
+        Hummingbird_Failure_Detection_B.r3_n = 0;
       }
 
-      Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_m] =
-        Hummingbird_Failure_Detection_P.Constant12_Value[Hummingbird_Failure_Detection_B.r2_m]
+      Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_o] =
+        Hummingbird_Failure_Detection_P.Constant12_Value[Hummingbird_Failure_Detection_B.r2_o]
         /
         Hummingbird_Failure_Detection_P.Constant12_Value[Hummingbird_Failure_Detection_B.i];
-      Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c] /=
+      Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n] /=
         Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i];
-      Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_m + 3]
+      Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_o + 3]
         -= Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i +
         3] *
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_m];
-      Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c + 3]
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_o];
+      Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n + 3]
         -= Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i +
         3] *
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c];
-      Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_m + 6]
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n];
+      Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_o + 6]
         -= Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i +
         6] *
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_m];
-      Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c + 6]
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_o];
+      Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n + 6]
         -= Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i +
         6] *
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c];
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n];
       if (fabs
-          (Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c
+          (Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n
            + 3]) > fabs
-          (Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_m
+          (Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_o
            + 3])) {
         Hummingbird_Failure_Detection_B.rtemp =
-          Hummingbird_Failure_Detection_B.r2_m;
-        Hummingbird_Failure_Detection_B.r2_m =
-          Hummingbird_Failure_Detection_B.r3_c;
-        Hummingbird_Failure_Detection_B.r3_c =
+          Hummingbird_Failure_Detection_B.r2_o;
+        Hummingbird_Failure_Detection_B.r2_o =
+          Hummingbird_Failure_Detection_B.r3_n;
+        Hummingbird_Failure_Detection_B.r3_n =
           Hummingbird_Failure_Detection_B.rtemp;
       }
 
-      Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c + 3]
+      Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n + 3]
         /=
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_m +
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_o +
         3];
-      Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c + 6]
+      Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n + 6]
         -=
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c +
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n +
         3] *
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_m +
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_o +
         6];
       Hummingbird_Failure_Detection_B.prev_altitude =
-        Hummingbird_Failure_Detection_P.IB[Hummingbird_Failure_Detection_B.i];
-      Hummingbird_Failure_Detection_B.IntegralGain_e =
-        Hummingbird_Failure_Detection_P.IB[Hummingbird_Failure_Detection_B.r2_m]
+        Hummingbird_Failure_Detection_B.B[Hummingbird_Failure_Detection_B.i];
+      Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 =
+        Hummingbird_Failure_Detection_B.B[Hummingbird_Failure_Detection_B.r2_o]
         - Hummingbird_Failure_Detection_B.prev_altitude *
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_m];
-      Hummingbird_Failure_Detection_B.Saturation4 =
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c +
-        3];
-      Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 =
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c +
-        6];
-      Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 =
-        ((Hummingbird_Failure_Detection_P.IB[Hummingbird_Failure_Detection_B.r3_c]
-          - Hummingbird_Failure_Detection_B.prev_altitude *
-          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c])
-         - Hummingbird_Failure_Detection_B.Saturation4 *
-         Hummingbird_Failure_Detection_B.IntegralGain_e) /
-        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0;
-      Hummingbird_Failure_Detection_B.a_m[2] =
-        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1;
-      Hummingbird_Failure_Detection_B.CastToDouble25 =
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_m +
-        6];
-      Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 =
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_m +
-        3];
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_o];
       Hummingbird_Failure_Detection_B.IntegralGain_e =
-        (Hummingbird_Failure_Detection_B.IntegralGain_e -
-         Hummingbird_Failure_Detection_B.CastToDouble25 *
-         Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1) /
-        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0;
-      Hummingbird_Failure_Detection_B.a_m[1] =
-        Hummingbird_Failure_Detection_B.IntegralGain_e;
-      Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 =
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n +
+        3];
+      Hummingbird_Failure_Detection_B.Saturation1 =
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n +
+        6];
+      Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 =
+        ((Hummingbird_Failure_Detection_B.B[Hummingbird_Failure_Detection_B.r3_n]
+          - Hummingbird_Failure_Detection_B.prev_altitude *
+          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n])
+         - Hummingbird_Failure_Detection_B.IntegralGain_e *
+         Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2) /
+        Hummingbird_Failure_Detection_B.Saturation1;
+      Hummingbird_Failure_Detection_B.a[2] =
+        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0;
+      Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 =
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_o +
+        6];
+      Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator =
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_o +
+        3];
+      Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 =
+        (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 -
+         Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 *
+         Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0) /
+        Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator;
+      Hummingbird_Failure_Detection_B.a[1] =
+        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2;
+      Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 =
         Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i + 6];
-      Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2 =
+      Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 =
         Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i + 3];
-      Hummingbird_Failure_Detection_B.a_m[0] =
+      Hummingbird_Failure_Detection_B.a[0] =
         ((Hummingbird_Failure_Detection_B.prev_altitude -
-          Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 *
-          Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1) -
-         Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2 *
-         Hummingbird_Failure_Detection_B.IntegralGain_e) /
+          Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 *
+          Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0) -
+         Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 *
+         Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2) /
         Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i];
 
       // Sum: '<S1410>/Sum8'
-      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[0] =
+      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[0] =
         Hummingbird_Failure_Detection_B.dM[0] -
         Hummingbird_Failure_Detection_B.Sum_e[0];
 
-      // MATLAB Function: '<S1410>/Control input Calculation1' incorporates:
-      //   Constant: '<S1410>/Constant13'
-
-      Hummingbird_Failure_Detection_B.CastToDouble9 = 0.0;
+      // MATLAB Function: '<S1410>/Control input Calculation1'
+      Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1 = 0.0;
       Hummingbird_Failure_Detection_B.prev_altitude =
-        Hummingbird_Failure_Detection_P.IB[Hummingbird_Failure_Detection_B.i + 3];
-      Hummingbird_Failure_Detection_B.IntegralGain_e =
-        Hummingbird_Failure_Detection_P.IB[Hummingbird_Failure_Detection_B.r2_m
-        + 3] - Hummingbird_Failure_Detection_B.prev_altitude *
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_m];
-      Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 =
-        ((Hummingbird_Failure_Detection_P.IB[Hummingbird_Failure_Detection_B.r3_c
+        Hummingbird_Failure_Detection_B.B[Hummingbird_Failure_Detection_B.i + 3];
+      Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 =
+        Hummingbird_Failure_Detection_B.B[Hummingbird_Failure_Detection_B.r2_o +
+        3] - Hummingbird_Failure_Detection_B.prev_altitude *
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_o];
+      Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 =
+        ((Hummingbird_Failure_Detection_B.B[Hummingbird_Failure_Detection_B.r3_n
           + 3] - Hummingbird_Failure_Detection_B.prev_altitude *
-          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c])
-         - Hummingbird_Failure_Detection_B.Saturation4 *
-         Hummingbird_Failure_Detection_B.IntegralGain_e) /
+          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n])
+         - Hummingbird_Failure_Detection_B.IntegralGain_e *
+         Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2) /
+        Hummingbird_Failure_Detection_B.Saturation1;
+      Hummingbird_Failure_Detection_B.a[5] =
         Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0;
-      Hummingbird_Failure_Detection_B.a_m[5] =
-        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1;
-      Hummingbird_Failure_Detection_B.IntegralGain_e =
-        (Hummingbird_Failure_Detection_B.IntegralGain_e -
-         Hummingbird_Failure_Detection_B.CastToDouble25 *
-         Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1) /
-        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0;
-      Hummingbird_Failure_Detection_B.a_m[4] =
-        Hummingbird_Failure_Detection_B.IntegralGain_e;
-      Hummingbird_Failure_Detection_B.a_m[3] =
+      Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 =
+        (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 -
+         Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 *
+         Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0) /
+        Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator;
+      Hummingbird_Failure_Detection_B.a[4] =
+        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2;
+      Hummingbird_Failure_Detection_B.a[3] =
         ((Hummingbird_Failure_Detection_B.prev_altitude -
-          Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 *
-          Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1) -
-         Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2 *
-         Hummingbird_Failure_Detection_B.IntegralGain_e) /
+          Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 *
+          Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0) -
+         Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 *
+         Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2) /
         Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i];
 
       // Sum: '<S1410>/Sum8'
-      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[1] =
+      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[1] =
         Hummingbird_Failure_Detection_B.dM[1] -
         Hummingbird_Failure_Detection_B.Sum_e[1];
 
-      // MATLAB Function: '<S1410>/Control input Calculation1' incorporates:
-      //   Constant: '<S1410>/Constant13'
-
-      Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 = 0.0;
+      // MATLAB Function: '<S1410>/Control input Calculation1'
+      Hummingbird_Failure_Detection_B.CastToDouble9 = 0.0;
       Hummingbird_Failure_Detection_B.prev_altitude =
-        Hummingbird_Failure_Detection_P.IB[Hummingbird_Failure_Detection_B.i + 6];
-      Hummingbird_Failure_Detection_B.IntegralGain_e =
-        Hummingbird_Failure_Detection_P.IB[Hummingbird_Failure_Detection_B.r2_m
-        + 6] - Hummingbird_Failure_Detection_B.prev_altitude *
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_m];
-      Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 =
-        ((Hummingbird_Failure_Detection_P.IB[Hummingbird_Failure_Detection_B.r3_c
+        Hummingbird_Failure_Detection_B.B[Hummingbird_Failure_Detection_B.i + 6];
+      Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 =
+        Hummingbird_Failure_Detection_B.B[Hummingbird_Failure_Detection_B.r2_o +
+        6] - Hummingbird_Failure_Detection_B.prev_altitude *
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_o];
+      Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 =
+        ((Hummingbird_Failure_Detection_B.B[Hummingbird_Failure_Detection_B.r3_n
           + 6] - Hummingbird_Failure_Detection_B.prev_altitude *
-          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c])
-         - Hummingbird_Failure_Detection_B.Saturation4 *
-         Hummingbird_Failure_Detection_B.IntegralGain_e) /
+          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n])
+         - Hummingbird_Failure_Detection_B.IntegralGain_e *
+         Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2) /
+        Hummingbird_Failure_Detection_B.Saturation1;
+      Hummingbird_Failure_Detection_B.a[8] =
         Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0;
-      Hummingbird_Failure_Detection_B.a_m[8] =
-        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1;
-      Hummingbird_Failure_Detection_B.IntegralGain_e =
-        (Hummingbird_Failure_Detection_B.IntegralGain_e -
-         Hummingbird_Failure_Detection_B.CastToDouble25 *
-         Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1) /
-        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0;
-      Hummingbird_Failure_Detection_B.a_m[7] =
-        Hummingbird_Failure_Detection_B.IntegralGain_e;
-      Hummingbird_Failure_Detection_B.a_m[6] =
+      Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 =
+        (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 -
+         Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 *
+         Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0) /
+        Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator;
+      Hummingbird_Failure_Detection_B.a[7] =
+        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2;
+      Hummingbird_Failure_Detection_B.a[6] =
         ((Hummingbird_Failure_Detection_B.prev_altitude -
-          Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 *
-          Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1) -
-         Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2 *
-         Hummingbird_Failure_Detection_B.IntegralGain_e) /
+          Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 *
+          Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0) -
+         Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 *
+         Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2) /
         Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i];
 
       // Sum: '<S1410>/Sum8'
-      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[2] =
+      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[2] =
         Hummingbird_Failure_Detection_B.dM[2] -
         Hummingbird_Failure_Detection_B.Sum_e[2];
 
       // MATLAB Function: '<S1410>/Control input Calculation1'
-      Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2 = 0.0;
+      Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 = 0.0;
       for (Hummingbird_Failure_Detection_B.i = 0;
            Hummingbird_Failure_Detection_B.i < 3;
            Hummingbird_Failure_Detection_B.i++) {
         Hummingbird_Failure_Detection_B.prev_altitude =
-          Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[Hummingbird_Failure_Detection_B.i];
-        Hummingbird_Failure_Detection_B.CastToDouble9 +=
-          Hummingbird_Failure_Detection_B.a_m[3 *
+          Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[Hummingbird_Failure_Detection_B.i];
+        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1 +=
+          Hummingbird_Failure_Detection_B.a[3 *
           Hummingbird_Failure_Detection_B.i] *
           Hummingbird_Failure_Detection_B.prev_altitude;
-        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 +=
-          Hummingbird_Failure_Detection_B.a_m[3 *
+        Hummingbird_Failure_Detection_B.CastToDouble9 +=
+          Hummingbird_Failure_Detection_B.a[3 *
           Hummingbird_Failure_Detection_B.i + 1] *
           Hummingbird_Failure_Detection_B.prev_altitude;
-        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2 +=
-          Hummingbird_Failure_Detection_B.a_m[3 *
+        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 +=
+          Hummingbird_Failure_Detection_B.a[3 *
           Hummingbird_Failure_Detection_B.i + 2] *
           Hummingbird_Failure_Detection_B.prev_altitude;
       }
@@ -15276,12 +15296,8 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         // Outputs for IfAction SubSystem: '<S1421>/If Action Subsystem1' incorporates:
         //   ActionPort: '<S1425>/Action Port'
 
-        // Outputs for IfAction SubSystem: '<S1421>/If Action Subsystem' incorporates:
-        //   ActionPort: '<S1424>/Action Port'
-
         // SignalConversion generated from: '<S1425>/In1' incorporates:
         //   Constant: '<S1421>/Constant1'
-        //   Merge: '<S1421>/Merge'
 
         Hummingbird_Failure_Detection_B.Sum_e[0] =
           Hummingbird_Failure_Detection_P.Constant1_Value_a[0];
@@ -15290,132 +15306,93 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         Hummingbird_Failure_Detection_B.Sum_e[2] =
           Hummingbird_Failure_Detection_P.Constant1_Value_a[2];
 
-        // End of Outputs for SubSystem: '<S1421>/If Action Subsystem'
         // End of Outputs for SubSystem: '<S1421>/If Action Subsystem1'
       } else {
         // Outputs for IfAction SubSystem: '<S1421>/If Action Subsystem' incorporates:
         //   ActionPort: '<S1424>/Action Port'
 
-        // Outputs for IfAction SubSystem: '<S1421>/If Action Subsystem1' incorporates:
-        //   ActionPort: '<S1425>/Action Port'
+        // Sum: '<S1424>/Sum' incorporates:
+        //   Constant: '<S1424>/Constant'
 
-        // SignalConversion generated from: '<S1424>/In1' incorporates:
+        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 =
+          Hummingbird_Failure_Detection_B.assist +
+          Hummingbird_Failure_Detection_P.Constant_Value_ni;
+
+        // Product: '<S1424>/Product' incorporates:
         //   MATLAB Function: '<S1410>/Control input Calculation1'
-        //   Merge: '<S1421>/Merge'
+        //   Product: '<S1412>/Divide'
         //   Sum: '<S1412>/Sum10'
 
         Hummingbird_Failure_Detection_B.Sum_e[0] =
-          Hummingbird_Failure_Detection_B.Gain14_h +
-          Hummingbird_Failure_Detection_B.CastToDouble9;
+          (Hummingbird_Failure_Detection_B.Gain14_h +
+           Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1) *
+          Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2;
         Hummingbird_Failure_Detection_B.Sum_e[1] =
-          Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3 +
+          (Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1 +
+           Hummingbird_Failure_Detection_B.CastToDouble9) *
           Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2;
         Hummingbird_Failure_Detection_B.Sum_e[2] =
-          Hummingbird_Failure_Detection_B.b_o +
-          Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2;
+          (Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_2 +
+           Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1) *
+          Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2;
 
-        // End of Outputs for SubSystem: '<S1421>/If Action Subsystem1'
         // End of Outputs for SubSystem: '<S1421>/If Action Subsystem'
-      }
-
-      // Saturate: '<S1423>/Saturation9'
-      if (Hummingbird_Failure_Detection_B.Sum_e[0] >
-          Hummingbird_Failure_Detection_P.Saturation9_UpperSat) {
-        Hummingbird_Failure_Detection_B.prev_altitude =
-          Hummingbird_Failure_Detection_P.Saturation9_UpperSat;
-      } else if (Hummingbird_Failure_Detection_B.Sum_e[0] <
-                 Hummingbird_Failure_Detection_P.Saturation9_LowerSat) {
-        Hummingbird_Failure_Detection_B.prev_altitude =
-          Hummingbird_Failure_Detection_P.Saturation9_LowerSat;
-      } else {
-        Hummingbird_Failure_Detection_B.prev_altitude =
-          Hummingbird_Failure_Detection_B.Sum_e[0];
       }
 
       // Product: '<S1423>/Divide3' incorporates:
       //   Constant: '<S1423>/Constant2'
-      //   Saturate: '<S1423>/Saturation9'
 
-      Hummingbird_Failure_Detection_B.V =
-        Hummingbird_Failure_Detection_B.prev_altitude /
+      Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2 =
+        Hummingbird_Failure_Detection_B.Sum_e[0] /
         Hummingbird_Failure_Detection_P.Constant2_Value_a;
-
-      // Saturate: '<S1423>/Saturation8'
-      if (Hummingbird_Failure_Detection_B.Sum_e[1] >
-          Hummingbird_Failure_Detection_P.Saturation8_UpperSat) {
-        Hummingbird_Failure_Detection_B.prev_altitude =
-          Hummingbird_Failure_Detection_P.Saturation8_UpperSat;
-      } else if (Hummingbird_Failure_Detection_B.Sum_e[1] <
-                 Hummingbird_Failure_Detection_P.Saturation8_LowerSat) {
-        Hummingbird_Failure_Detection_B.prev_altitude =
-          Hummingbird_Failure_Detection_P.Saturation8_LowerSat;
-      } else {
-        Hummingbird_Failure_Detection_B.prev_altitude =
-          Hummingbird_Failure_Detection_B.Sum_e[1];
-      }
 
       // Product: '<S1423>/Divide2' incorporates:
       //   Constant: '<S1423>/Constant1'
-      //   Saturate: '<S1423>/Saturation8'
 
-      Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 =
-        Hummingbird_Failure_Detection_B.prev_altitude /
+      Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 =
+        Hummingbird_Failure_Detection_B.Sum_e[1] /
         Hummingbird_Failure_Detection_P.Constant1_Value_p;
-
-      // Saturate: '<S1423>/Saturation10'
-      if (Hummingbird_Failure_Detection_B.Sum_e[2] >
-          Hummingbird_Failure_Detection_P.Saturation10_UpperSat) {
-        Hummingbird_Failure_Detection_B.prev_altitude =
-          Hummingbird_Failure_Detection_P.Saturation10_UpperSat;
-      } else if (Hummingbird_Failure_Detection_B.Sum_e[2] <
-                 Hummingbird_Failure_Detection_P.Saturation10_LowerSat) {
-        Hummingbird_Failure_Detection_B.prev_altitude =
-          Hummingbird_Failure_Detection_P.Saturation10_LowerSat;
-      } else {
-        Hummingbird_Failure_Detection_B.prev_altitude =
-          Hummingbird_Failure_Detection_B.Sum_e[2];
-      }
 
       // Product: '<S1423>/Divide1' incorporates:
       //   Constant: '<S1423>/Constant3'
-      //   Saturate: '<S1423>/Saturation10'
 
-      Hummingbird_Failure_Detection_B.prev_altitude /=
+      Hummingbird_Failure_Detection_B.prev_altitude =
+        Hummingbird_Failure_Detection_B.Sum_e[2] /
         Hummingbird_Failure_Detection_P.Constant3_Value_k;
 
       // Sum: '<S1423>/Add'
-      Hummingbird_Failure_Detection_B.IntegralGain_e =
+      Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 =
         ((Hummingbird_Failure_Detection_B.prev_altitude -
-          Hummingbird_Failure_Detection_B.CastToDouble11) -
-         Hummingbird_Failure_Detection_B.V) -
-        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1;
+          Hummingbird_Failure_Detection_B.CastToDouble8) -
+         Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2) -
+        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0;
 
       // Saturate: '<S1423>/Saturation'
-      if (Hummingbird_Failure_Detection_B.IntegralGain_e >
+      if (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 >
           Hummingbird_Failure_Detection_P.Saturation_UpperSat_o) {
-        Hummingbird_Failure_Detection_B.IntegralGain_e =
+        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 =
           Hummingbird_Failure_Detection_P.Saturation_UpperSat_o;
-      } else if (Hummingbird_Failure_Detection_B.IntegralGain_e <
+      } else if (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 <
                  Hummingbird_Failure_Detection_P.Saturation_LowerSat_n) {
-        Hummingbird_Failure_Detection_B.IntegralGain_e =
+        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 =
           Hummingbird_Failure_Detection_P.Saturation_LowerSat_n;
       }
 
       // Sum: '<S1423>/Add4'
-      Hummingbird_Failure_Detection_B.Saturation4 = (((0.0 -
-        Hummingbird_Failure_Detection_B.CastToDouble11) -
-        Hummingbird_Failure_Detection_B.V) -
-        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1) -
+      Hummingbird_Failure_Detection_B.IntegralGain_e = (((0.0 -
+        Hummingbird_Failure_Detection_B.CastToDouble8) -
+        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2) -
+        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0) -
         Hummingbird_Failure_Detection_B.prev_altitude;
 
       // Saturate: '<S1423>/Saturation4'
-      if (Hummingbird_Failure_Detection_B.Saturation4 >
+      if (Hummingbird_Failure_Detection_B.IntegralGain_e >
           Hummingbird_Failure_Detection_P.Saturation4_UpperSat) {
-        Hummingbird_Failure_Detection_B.Saturation4 =
+        Hummingbird_Failure_Detection_B.IntegralGain_e =
           Hummingbird_Failure_Detection_P.Saturation4_UpperSat;
-      } else if (Hummingbird_Failure_Detection_B.Saturation4 <
+      } else if (Hummingbird_Failure_Detection_B.IntegralGain_e <
                  Hummingbird_Failure_Detection_P.Saturation4_LowerSat) {
-        Hummingbird_Failure_Detection_B.Saturation4 =
+        Hummingbird_Failure_Detection_B.IntegralGain_e =
           Hummingbird_Failure_Detection_P.Saturation4_LowerSat;
       }
 
@@ -15423,147 +15400,153 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //   Sum: '<S1423>/Add2'
       //   Sum: '<S1423>/Add5'
 
-      Hummingbird_Failure_Detection_B.CastToDouble25 =
+      Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 =
+        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2 -
+        Hummingbird_Failure_Detection_B.CastToDouble8;
+      Hummingbird_Failure_Detection_B.V =
+        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 -
+        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0;
+      Hummingbird_Failure_Detection_B.Saturation1 =
         Hummingbird_Failure_Detection_B.V -
-        Hummingbird_Failure_Detection_B.CastToDouble11;
-      Hummingbird_Failure_Detection_B.course =
-        Hummingbird_Failure_Detection_B.CastToDouble25 -
-        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1;
-      Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 =
-        Hummingbird_Failure_Detection_B.course -
         Hummingbird_Failure_Detection_B.prev_altitude;
 
       // Saturate: '<S1423>/Saturation1'
-      if (Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 >
+      if (Hummingbird_Failure_Detection_B.Saturation1 >
           Hummingbird_Failure_Detection_P.Saturation1_UpperSat_e) {
-        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 =
+        Hummingbird_Failure_Detection_B.Saturation1 =
           Hummingbird_Failure_Detection_P.Saturation1_UpperSat_e;
-      } else if (Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 <
+      } else if (Hummingbird_Failure_Detection_B.Saturation1 <
                  Hummingbird_Failure_Detection_P.Saturation1_LowerSat_b) {
-        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 =
+        Hummingbird_Failure_Detection_B.Saturation1 =
           Hummingbird_Failure_Detection_P.Saturation1_LowerSat_b;
       }
 
       // Sum: '<S1423>/Add5'
-      Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 =
-        Hummingbird_Failure_Detection_B.course +
+      Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 =
+        Hummingbird_Failure_Detection_B.V +
         Hummingbird_Failure_Detection_B.prev_altitude;
 
       // Saturate: '<S1423>/Saturation5'
-      if (Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 >
+      if (Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 >
           Hummingbird_Failure_Detection_P.Saturation5_UpperSat) {
-        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 =
+        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 =
           Hummingbird_Failure_Detection_P.Saturation5_UpperSat;
-      } else if (Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 <
+      } else if (Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 <
                  Hummingbird_Failure_Detection_P.Saturation5_LowerSat) {
-        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 =
+        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 =
           Hummingbird_Failure_Detection_P.Saturation5_LowerSat;
       }
 
       // Sum: '<S1423>/Add2' incorporates:
       //   Sum: '<S1423>/Add6'
 
-      Hummingbird_Failure_Detection_B.course =
-        Hummingbird_Failure_Detection_B.CastToDouble25 +
-        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1;
-      Hummingbird_Failure_Detection_B.CastToDouble25 =
-        Hummingbird_Failure_Detection_B.course +
+      Hummingbird_Failure_Detection_B.V =
+        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 +
+        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0;
+      Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 =
+        Hummingbird_Failure_Detection_B.V +
         Hummingbird_Failure_Detection_B.prev_altitude;
 
       // Saturate: '<S1423>/Saturation2'
-      if (Hummingbird_Failure_Detection_B.CastToDouble25 >
+      if (Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 >
           Hummingbird_Failure_Detection_P.Saturation2_UpperSat) {
-        Hummingbird_Failure_Detection_B.CastToDouble25 =
+        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 =
           Hummingbird_Failure_Detection_P.Saturation2_UpperSat;
-      } else if (Hummingbird_Failure_Detection_B.CastToDouble25 <
+      } else if (Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 <
                  Hummingbird_Failure_Detection_P.Saturation2_LowerSat) {
-        Hummingbird_Failure_Detection_B.CastToDouble25 =
+        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 =
           Hummingbird_Failure_Detection_P.Saturation2_LowerSat;
       }
 
       // Sum: '<S1423>/Add6'
-      Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 =
-        Hummingbird_Failure_Detection_B.course -
+      Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator =
+        Hummingbird_Failure_Detection_B.V -
         Hummingbird_Failure_Detection_B.prev_altitude;
 
       // Saturate: '<S1423>/Saturation6'
-      if (Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 >
+      if (Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator >
           Hummingbird_Failure_Detection_P.Saturation6_UpperSat) {
-        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 =
+        Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator =
           Hummingbird_Failure_Detection_P.Saturation6_UpperSat;
-      } else if (Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 <
+      } else if (Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator <
                  Hummingbird_Failure_Detection_P.Saturation6_LowerSat) {
-        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 =
+        Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator =
           Hummingbird_Failure_Detection_P.Saturation6_LowerSat;
       }
 
       // Sum: '<S1423>/Add3' incorporates:
       //   Sum: '<S1423>/Add7'
 
-      Hummingbird_Failure_Detection_B.course =
-        (Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 -
-         Hummingbird_Failure_Detection_B.CastToDouble11) -
-        Hummingbird_Failure_Detection_B.V;
-      Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 =
-        Hummingbird_Failure_Detection_B.course -
+      Hummingbird_Failure_Detection_B.V =
+        (Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 -
+         Hummingbird_Failure_Detection_B.CastToDouble8) -
+        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2;
+      Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 =
+        Hummingbird_Failure_Detection_B.V -
         Hummingbird_Failure_Detection_B.prev_altitude;
 
       // Saturate: '<S1423>/Saturation3'
-      if (Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 >
+      if (Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 >
           Hummingbird_Failure_Detection_P.Saturation3_UpperSat_a) {
-        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 =
+        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 =
           Hummingbird_Failure_Detection_P.Saturation3_UpperSat_a;
-      } else if (Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 <
+      } else if (Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 <
                  Hummingbird_Failure_Detection_P.Saturation3_LowerSat_o) {
-        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 =
+        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 =
           Hummingbird_Failure_Detection_P.Saturation3_LowerSat_o;
       }
 
       // Sum: '<S1423>/Add7'
-      Hummingbird_Failure_Detection_B.CastToDouble11 =
-        Hummingbird_Failure_Detection_B.course +
+      Hummingbird_Failure_Detection_B.CastToDouble8 =
+        Hummingbird_Failure_Detection_B.V +
         Hummingbird_Failure_Detection_B.prev_altitude;
 
       // Saturate: '<S1423>/Saturation7'
-      if (Hummingbird_Failure_Detection_B.CastToDouble11 >
+      if (Hummingbird_Failure_Detection_B.CastToDouble8 >
           Hummingbird_Failure_Detection_P.Saturation7_UpperSat) {
-        Hummingbird_Failure_Detection_B.CastToDouble11 =
+        Hummingbird_Failure_Detection_B.CastToDouble8 =
           Hummingbird_Failure_Detection_P.Saturation7_UpperSat;
-      } else if (Hummingbird_Failure_Detection_B.CastToDouble11 <
+      } else if (Hummingbird_Failure_Detection_B.CastToDouble8 <
                  Hummingbird_Failure_Detection_P.Saturation7_LowerSat) {
-        Hummingbird_Failure_Detection_B.CastToDouble11 =
+        Hummingbird_Failure_Detection_B.CastToDouble8 =
           Hummingbird_Failure_Detection_P.Saturation7_LowerSat;
       }
 
+      // Sum: '<S1412>/Sum1' incorporates:
+      //   Constant: '<S1412>/Constant'
+
+      Hummingbird_Failure_Detection_B.V = Hummingbird_Failure_Detection_B.assist
+        + Hummingbird_Failure_Detection_P.Constant_Value_cz;
+
       // Gain: '<S1420>/Gain1'
-      Hummingbird_Failure_Detection_B.V =
+      Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2 =
         Hummingbird_Failure_Detection_P.Gain1_Gain_hu *
-        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0;
+        Hummingbird_Failure_Detection_B.Saturation1;
 
       // Gain: '<S1420>/Gain2'
       Hummingbird_Failure_Detection_B.course =
         Hummingbird_Failure_Detection_P.Gain2_Gain_p *
-        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1;
+        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0;
 
       // Gain: '<S1420>/Gain3'
       Hummingbird_Failure_Detection_B.t =
         Hummingbird_Failure_Detection_P.Gain3_Gain_h *
-        Hummingbird_Failure_Detection_B.CastToDouble25;
+        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1;
 
       // Gain: '<S1420>/Gain9'
       Hummingbird_Failure_Detection_B.b_absxk =
         Hummingbird_Failure_Detection_P.Gain9_Gain *
-        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0;
+        Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator;
 
       // Gain: '<S1420>/Gain10'
       Hummingbird_Failure_Detection_B.b_t =
         Hummingbird_Failure_Detection_P.Gain10_Gain_b *
-        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1;
+        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0;
 
       // Gain: '<S1420>/Gain11'
-      Hummingbird_Failure_Detection_B.r_f =
+      Hummingbird_Failure_Detection_B.r_c =
         Hummingbird_Failure_Detection_P.Gain11_Gain *
-        Hummingbird_Failure_Detection_B.CastToDouble11;
+        Hummingbird_Failure_Detection_B.CastToDouble8;
 
       // BusAssignment: '<S1418>/Bus Assignment' incorporates:
       //   BusCreator: '<S13>/Bus Creator4'
@@ -15575,40 +15558,40 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       Hummingbird_Failure_Detection_B.BusAssignment.timestamp =
         Hummingbird_Failure_Detection_B.PX4Timestamp_pm.PX4Timestamp;
       Hummingbird_Failure_Detection_B.BusAssignment.data[0] =
-        static_cast<real32_T>(Hummingbird_Failure_Detection_B.IntegralGain_e);
-      Hummingbird_Failure_Detection_B.BusAssignment.data[1] =
-        static_cast<real32_T>(Hummingbird_Failure_Detection_B.Saturation4);
-      Hummingbird_Failure_Detection_B.BusAssignment.data[2] =
         static_cast<real32_T>
-        (Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0);
+        (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2);
+      Hummingbird_Failure_Detection_B.BusAssignment.data[1] =
+        static_cast<real32_T>(Hummingbird_Failure_Detection_B.IntegralGain_e);
+      Hummingbird_Failure_Detection_B.BusAssignment.data[2] =
+        static_cast<real32_T>(Hummingbird_Failure_Detection_B.Saturation1);
       Hummingbird_Failure_Detection_B.BusAssignment.data[3] =
         static_cast<real32_T>
-        (Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1);
+        (Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0);
       Hummingbird_Failure_Detection_B.BusAssignment.data[4] =
-        static_cast<real32_T>(Hummingbird_Failure_Detection_B.CastToDouble25);
+        static_cast<real32_T>
+        (Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1);
       Hummingbird_Failure_Detection_B.BusAssignment.data[5] =
         static_cast<real32_T>
-        (Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0);
+        (Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator);
       Hummingbird_Failure_Detection_B.BusAssignment.data[6] =
         static_cast<real32_T>
-        (Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1);
+        (Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0);
       Hummingbird_Failure_Detection_B.BusAssignment.data[7] =
-        static_cast<real32_T>(Hummingbird_Failure_Detection_B.CastToDouble11);
+        static_cast<real32_T>(Hummingbird_Failure_Detection_B.CastToDouble8);
       Hummingbird_Failure_Detection_B.BusAssignment.data[8] =
-        static_cast<real32_T>
-        (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1);
+        static_cast<real32_T>(Hummingbird_Failure_Detection_B.CastToDouble11);
       Hummingbird_Failure_Detection_B.BusAssignment.data[12] =
         static_cast<real32_T>(Hummingbird_Failure_Detection_B.dtMR);
       Hummingbird_Failure_Detection_B.BusAssignment.data[16] =
         static_cast<real32_T>(Hummingbird_Failure_Detection_P.Constant14_Value_e);
       Hummingbird_Failure_Detection_B.BusAssignment.data[17] =
-        Hummingbird_Failure_Detection_B.a_i;
+        Hummingbird_Failure_Detection_B.a_j;
       Hummingbird_Failure_Detection_B.BusAssignment.data[18] =
         Hummingbird_Failure_Detection_B.Gain14_h;
       Hummingbird_Failure_Detection_B.BusAssignment.data[19] =
-        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3;
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1;
       Hummingbird_Failure_Detection_B.BusAssignment.data[20] =
-        Hummingbird_Failure_Detection_B.b_o;
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_2;
       Hummingbird_Failure_Detection_B.BusAssignment.data[21] =
         static_cast<real32_T>
         (Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_2);
@@ -15621,12 +15604,12 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
 
       Hummingbird_Failure_Detection_B.prev_altitude =
         Hummingbird_Failure_Detection_P.Gain_Gain_l *
-        Hummingbird_Failure_Detection_B.IntegralGain_e +
+        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 +
         Hummingbird_Failure_Detection_P.Gain8_Gain *
-        Hummingbird_Failure_Detection_B.Saturation4;
+        Hummingbird_Failure_Detection_B.IntegralGain_e;
       Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_2 =
         (Hummingbird_Failure_Detection_B.prev_altitude +
-         Hummingbird_Failure_Detection_B.V) +
+         Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2) +
         Hummingbird_Failure_Detection_B.course;
 
       // BusAssignment: '<S1418>/Bus Assignment' incorporates:
@@ -15647,6 +15630,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //   Gain: '<S1420>/Gain6'
       //   Gain: '<S1420>/Gain7'
       //   MATLAB Function: '<S1410>/Control input Calculation1'
+      //   Product: '<S1412>/Divide'
       //   Product: '<S1420>/Product'
       //   Product: '<S1420>/Product1'
       //   Sum: '<S1410>/Sum1'
@@ -15663,16 +15647,16 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
             Hummingbird_Failure_Detection_B.t) +
            Hummingbird_Failure_Detection_B.b_absxk) +
           Hummingbird_Failure_Detection_B.b_t) +
-         Hummingbird_Failure_Detection_B.r_f);
+         Hummingbird_Failure_Detection_B.r_c);
       Hummingbird_Failure_Detection_B.BusAssignment.data[23] =
         static_cast<real32_T>
         (((((((Hummingbird_Failure_Detection_B.prev_altitude -
-               Hummingbird_Failure_Detection_B.V) -
+               Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2) -
               Hummingbird_Failure_Detection_B.course) -
              Hummingbird_Failure_Detection_B.t) -
             Hummingbird_Failure_Detection_B.b_absxk) +
            Hummingbird_Failure_Detection_B.b_t) +
-          Hummingbird_Failure_Detection_B.r_f) *
+          Hummingbird_Failure_Detection_B.r_c) *
          Hummingbird_Failure_Detection_P.Constant2_Value_i);
       Hummingbird_Failure_Detection_B.BusAssignment.data[24] =
         static_cast<real32_T>
@@ -15680,43 +15664,46 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
              Hummingbird_Failure_Detection_B.t) -
             Hummingbird_Failure_Detection_B.b_absxk) -
            Hummingbird_Failure_Detection_B.b_t) -
-          Hummingbird_Failure_Detection_B.r_f) *
+          Hummingbird_Failure_Detection_B.r_c) *
          Hummingbird_Failure_Detection_P.Constant1_Value_nl);
       Hummingbird_Failure_Detection_B.BusAssignment.data[25] =
         static_cast<real32_T>(((((((Hummingbird_Failure_Detection_P.Gain4_Gain_k
-        * Hummingbird_Failure_Detection_B.IntegralGain_e -
+        * Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 -
         Hummingbird_Failure_Detection_P.Gain12_Gain *
-        Hummingbird_Failure_Detection_B.Saturation4) -
+        Hummingbird_Failure_Detection_B.IntegralGain_e) -
         Hummingbird_Failure_Detection_P.Gain5_Gain *
-        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0) +
+        Hummingbird_Failure_Detection_B.Saturation1) +
         Hummingbird_Failure_Detection_P.Gain13_Gain *
-        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1) +
+        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0) +
         Hummingbird_Failure_Detection_P.Gain6_Gain *
-        Hummingbird_Failure_Detection_B.CastToDouble25) -
+        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1) -
         Hummingbird_Failure_Detection_P.Gain14_Gain *
-        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0) -
+        Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator) -
         Hummingbird_Failure_Detection_P.Gain7_Gain *
-        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1) +
+        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0) +
         Hummingbird_Failure_Detection_P.Gain15_Gain *
-        Hummingbird_Failure_Detection_B.CastToDouble11);
+        Hummingbird_Failure_Detection_B.CastToDouble8);
       Hummingbird_Failure_Detection_B.BusAssignment.data[9] =
-        static_cast<real32_T>(Hummingbird_Failure_Detection_B.Sum_e[0]);
+        static_cast<real32_T>(Hummingbird_Failure_Detection_B.Sum_e[0] /
+        Hummingbird_Failure_Detection_B.V);
       Hummingbird_Failure_Detection_B.BusAssignment.data[13] =
-        static_cast<real32_T>(Hummingbird_Failure_Detection_B.CastToDouble9);
+        static_cast<real32_T>
+        (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1);
       Hummingbird_Failure_Detection_B.BusAssignment.data[26] =
         static_cast<real32_T>(Hummingbird_Failure_Detection_B.mixer[0]);
       Hummingbird_Failure_Detection_B.BusAssignment.data[10] =
-        static_cast<real32_T>(Hummingbird_Failure_Detection_B.Sum_e[1]);
+        static_cast<real32_T>(Hummingbird_Failure_Detection_B.Sum_e[1] /
+        Hummingbird_Failure_Detection_B.V);
       Hummingbird_Failure_Detection_B.BusAssignment.data[14] =
-        static_cast<real32_T>
-        (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2);
+        static_cast<real32_T>(Hummingbird_Failure_Detection_B.CastToDouble9);
       Hummingbird_Failure_Detection_B.BusAssignment.data[27] =
         static_cast<real32_T>(Hummingbird_Failure_Detection_B.mixer[1]);
       Hummingbird_Failure_Detection_B.BusAssignment.data[11] =
-        static_cast<real32_T>(Hummingbird_Failure_Detection_B.Sum_e[2]);
+        static_cast<real32_T>(Hummingbird_Failure_Detection_B.Sum_e[2] /
+        Hummingbird_Failure_Detection_B.V);
       Hummingbird_Failure_Detection_B.BusAssignment.data[15] =
         static_cast<real32_T>
-        (Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2);
+        (Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1);
       Hummingbird_Failure_Detection_B.BusAssignment.data[28] =
         static_cast<real32_T>(Hummingbird_Failure_Detection_B.mixer[2]);
       Hummingbird_Failure_Detection_B.BusAssignment.data[29] =
@@ -15729,16 +15716,16 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         static_cast<real32_T>
         (Hummingbird_Failure_Detection_B.MovingAverage2.MovingAverage);
       Hummingbird_Failure_Detection_B.BusAssignment.data[32] =
-        static_cast<real32_T>(Hummingbird_Failure_Detection_B.CastToDouble9 +
-        Hummingbird_Failure_Detection_B.Gain14_h);
-      Hummingbird_Failure_Detection_B.BusAssignment.data[33] =
         static_cast<real32_T>
-        (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 +
-         Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3);
+        (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1 +
+         Hummingbird_Failure_Detection_B.Gain14_h);
+      Hummingbird_Failure_Detection_B.BusAssignment.data[33] =
+        static_cast<real32_T>(Hummingbird_Failure_Detection_B.CastToDouble9 +
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1);
       Hummingbird_Failure_Detection_B.BusAssignment.data[34] =
         static_cast<real32_T>
-        (Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2 +
-         Hummingbird_Failure_Detection_B.b_o);
+        (Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 +
+         Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_2);
       Hummingbird_Failure_Detection_B.BusAssignment.data[35] =
         static_cast<real32_T>(Hummingbird_Failure_Detection_P.Constant14_Value_e);
       Hummingbird_Failure_Detection_B.BusAssignment.data[36] =
@@ -15826,14 +15813,15 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
 
       if (Hummingbird_Failure_Detection_B.BusCreator.VTOL_Mode >
           Hummingbird_Failure_Detection_P.Switch6_Threshold) {
-        Hummingbird_Failure_Detection_B.CastToDouble8 =
+        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 =
           Hummingbird_Failure_Detection_P.Constant3_Value;
       } else if (Hummingbird_Failure_Detection_B.BusCreator.Flight_Mode >
                  Hummingbird_Failure_Detection_P.Switch5_Threshold) {
         // Switch: '<S1410>/Switch5' incorporates:
         //   Sum: '<S1410>/Sum7'
 
-        Hummingbird_Failure_Detection_B.CastToDouble8 +=
+        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 =
+          Hummingbird_Failure_Detection_B.CastToDouble10 +
           Hummingbird_Failure_Detection_B.In1_m.positions[3];
       } else {
         // Gain: '<S1419>/Gain10' incorporates:
@@ -15841,7 +15829,8 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         //   Sum: '<S1419>/Sum8'
         //   Switch: '<S1410>/Switch5'
 
-        Hummingbird_Failure_Detection_B.CastToDouble8 = (static_cast<real_T>
+        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 = (
+          static_cast<real_T>
           (Hummingbird_Failure_Detection_B.BusCreator.Throttle) -
           Hummingbird_Failure_Detection_P.Constant7_Value_c) *
           Hummingbird_Failure_Detection_P.Gain10_Gain_mz;
@@ -15849,13 +15838,13 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         // Saturate: '<S1419>/Saturation' incorporates:
         //   Switch: '<S1410>/Switch5'
 
-        if (Hummingbird_Failure_Detection_B.CastToDouble8 >
+        if (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 >
             Hummingbird_Failure_Detection_P.Saturation_UpperSat_js) {
-          Hummingbird_Failure_Detection_B.CastToDouble8 =
+          Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 =
             Hummingbird_Failure_Detection_P.Saturation_UpperSat_js;
-        } else if (Hummingbird_Failure_Detection_B.CastToDouble8 <
+        } else if (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 <
                    Hummingbird_Failure_Detection_P.Saturation_LowerSat_d) {
-          Hummingbird_Failure_Detection_B.CastToDouble8 =
+          Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 =
             Hummingbird_Failure_Detection_P.Saturation_LowerSat_d;
         }
       }
@@ -15868,37 +15857,37 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
 
       Hummingbird_Failure_Detection_B.Actuator_output.rotor_1 = static_cast<
         real32_T>(Hummingbird_Failure_Detection_P.Gain_Gain_mx * sqrt
-                  (Hummingbird_Failure_Detection_B.IntegralGain_e));
+                  (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2));
       Hummingbird_Failure_Detection_B.Actuator_output.rotor_2 =
         static_cast<real32_T>(Hummingbird_Failure_Detection_P.Gain_Gain_mx *
-        sqrt(Hummingbird_Failure_Detection_B.Saturation4));
+        sqrt(Hummingbird_Failure_Detection_B.IntegralGain_e));
       Hummingbird_Failure_Detection_B.Actuator_output.rotor_3 =
         static_cast<real32_T>(Hummingbird_Failure_Detection_P.Gain_Gain_mx *
-        sqrt(Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0));
+        sqrt(Hummingbird_Failure_Detection_B.Saturation1));
       Hummingbird_Failure_Detection_B.Actuator_output.rotor_4 =
         static_cast<real32_T>(Hummingbird_Failure_Detection_P.Gain_Gain_mx *
-        sqrt(Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1));
+        sqrt(Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0));
       Hummingbird_Failure_Detection_B.Actuator_output.rotor_5 =
         static_cast<real32_T>(Hummingbird_Failure_Detection_P.Gain_Gain_mx *
-        sqrt(Hummingbird_Failure_Detection_B.CastToDouble25));
+        sqrt(Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1));
       Hummingbird_Failure_Detection_B.Actuator_output.rotor_6 =
         static_cast<real32_T>(Hummingbird_Failure_Detection_P.Gain_Gain_mx *
-        sqrt(Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0));
+        sqrt(Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator));
       Hummingbird_Failure_Detection_B.Actuator_output.rotor_7 =
         static_cast<real32_T>(Hummingbird_Failure_Detection_P.Gain_Gain_mx *
-        sqrt(Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1));
+        sqrt(Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0));
       Hummingbird_Failure_Detection_B.Actuator_output.rotor_8 =
         static_cast<real32_T>(Hummingbird_Failure_Detection_P.Gain_Gain_mx *
-        sqrt(Hummingbird_Failure_Detection_B.CastToDouble11));
+        sqrt(Hummingbird_Failure_Detection_B.CastToDouble8));
 
       // Saturate: '<S1410>/Saturation'
-      if (Hummingbird_Failure_Detection_B.CastToDouble8 >
+      if (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 >
           Hummingbird_Failure_Detection_P.Saturation_UpperSat_d[1]) {
-        Hummingbird_Failure_Detection_B.CastToDouble8 =
+        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 =
           Hummingbird_Failure_Detection_P.Saturation_UpperSat_d[1];
-      } else if (Hummingbird_Failure_Detection_B.CastToDouble8 <
+      } else if (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 <
                  Hummingbird_Failure_Detection_P.Saturation_LowerSat_j[1]) {
-        Hummingbird_Failure_Detection_B.CastToDouble8 =
+        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 =
           Hummingbird_Failure_Detection_P.Saturation_LowerSat_j[1];
       }
 
@@ -15909,8 +15898,8 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //   Sum: '<S1410>/Sum'
 
       Hummingbird_Failure_Detection_B.Actuator_output.throttle = static_cast<
-        real32_T>(Hummingbird_Failure_Detection_B.CastToDouble8) -
-        Hummingbird_Failure_Detection_P.Constant5_Value;
+        real32_T>(Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0)
+        - Hummingbird_Failure_Detection_P.Constant5_Value;
 
       // Saturate: '<S1410>/Saturation'
       if (Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_1 >
@@ -15977,7 +15966,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         Hummingbird_Failure_Detection_P.Gain4_Gain_ki * static_cast<real32_T>
         (Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_0);
       Hummingbird_Failure_Detection_B.Actuator_output.arm_1 =
-        static_cast<real32_T>(Hummingbird_Failure_Detection_B.CastToDouble10);
+        static_cast<real32_T>(Hummingbird_Failure_Detection_B.arms_pos);
       Hummingbird_Failure_Detection_B.Actuator_output.arm_2 =
         static_cast<real32_T>(Hummingbird_Failure_Detection_P.Constant_Value_n5);
       Hummingbird_Failure_Detection_B.Actuator_output.arm_3 =
@@ -16051,22 +16040,22 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunct[3] =
         Hummingbird_Failure_Detection_B.In1_m.positions[3];
       Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunct[4] =
-        Hummingbird_Failure_Detection_B.a_i;
+        Hummingbird_Failure_Detection_B.a_j;
       Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunct[5] =
         Hummingbird_Failure_Detection_B.Gain14_h;
       Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunct[6] =
-        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3;
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1;
       Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunct[7] =
-        Hummingbird_Failure_Detection_B.b_o;
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_2;
 
       // SignalConversion generated from: '<S1413>/ SFunction ' incorporates:
       //   Chart: '<S1410>/Chart'
 
-      Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunctionI[0] =
+      Hummingbird_Failure_Detection_B.Sum_e[0] =
         Hummingbird_Failure_Detection_B.MovingAverage.MovingAverage;
-      Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunctionI[1] =
+      Hummingbird_Failure_Detection_B.Sum_e[1] =
         Hummingbird_Failure_Detection_B.MovingAverage1.MovingAverage;
-      Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunctionI[2] =
+      Hummingbird_Failure_Detection_B.Sum_e[2] =
         Hummingbird_Failure_Detection_B.MovingAverage2.MovingAverage;
 
       // Chart: '<S1410>/Chart' incorporates:
@@ -16088,30 +16077,13 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         Hummingbird_Failure_Detectio_DW.RC_Flight_Mode_start_d =
           Hummingbird_Failure_Detection_B.BusCreator.Flight_Mode;
         Hummingbird_Failure_Detectio_DW.is_active_c9_Hummingbird_Failur = 1U;
-        if (Hummingbird_Failure_Detection_B.BusCreator.VTOL_Mode < 1200) {
-          Hummingbird_Failure_Detectio_DW.is_Mixer_Control =
-            Hummingbird_Failure_Detec_IN_FW;
-          Hummingbird_Fai_enter_atomic_FW
-            (Hummingbird_Failure_Detectio_DW.Memory1_PreviousInput,
-             &Hummingbird_Failure_Detection_B.CastToDouble11,
-             &Hummingbird_Failure_Detection_B.CastToDouble10);
-        } else if (Hummingbird_Failure_Detection_B.BusCreator.VTOL_Mode < 1700)
-        {
-          Hummingbird_Failure_Detectio_DW.is_Mixer_Control =
-            Hummingbird__IN_Mixed_MR_Assist;
-          Hu_enter_atomic_Mixed_MR_Assist
-            (&Hummingbird_Failure_Detection_B.CastToDouble11,
-             &Hummingbird_Failure_Detection_B.CastToDouble10,
-             Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunct);
-        } else {
-          Hummingbird_Failure_Detectio_DW.is_Mixer_Control =
-            Hummingbird_Failure_Detec_IN_MR;
-          Hummingbird_Failure_Detection_B.mixer[0] = 0.0;
-          Hummingbird_Failure_Detection_B.mixer[1] = 0.0;
-          Hummingbird_Failure_Detection_B.mixer[2] = 0.0;
-          Hummingbird_Failure_Detection_B.CastToDouble11 = 0.0;
-          Hummingbird_Failure_Detection_B.CastToDouble10 = 0.0;
-        }
+        Hummingbird_Failure_Detectio_DW.is_Mixer_Control =
+          Hummingbird_Failure_Det_IN_Init;
+        Hummingbird_Failure_Detection_B.assist = 0.0;
+        Hummingbird_Failure_Detection_B.arms_pos = 1.0;
+        Hummingbird_Failure_Detection_B.mixer[0] = 1.0;
+        Hummingbird_Failure_Detection_B.mixer[1] = 1.0;
+        Hummingbird_Failure_Detection_B.mixer[2] = 1.0;
       } else if ((Hummingbird_Failure_Detection_B.RC_Flight_Mode_prev_f !=
                   Hummingbird_Failure_Detectio_DW.RC_VTOL_Mode_start_b) ||
                  (Hummingbird_Failure_Detection_B.RC_VTOL_Mode_prev_o !=
@@ -16121,76 +16093,90 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
             Hummingbird_Failure_Detec_IN_FW;
           Hummingbird_Fai_enter_atomic_FW
             (Hummingbird_Failure_Detectio_DW.Memory1_PreviousInput,
-             &Hummingbird_Failure_Detection_B.CastToDouble11,
-             &Hummingbird_Failure_Detection_B.CastToDouble10);
+             Hummingbird_Failure_Detection_B.Sum_e);
         } else if (Hummingbird_Failure_Detection_B.BusCreator.VTOL_Mode < 1700)
         {
           Hummingbird_Failure_Detectio_DW.is_Mixer_Control =
             Hummingbird__IN_Mixed_MR_Assist;
           Hu_enter_atomic_Mixed_MR_Assist
-            (&Hummingbird_Failure_Detection_B.CastToDouble11,
-             &Hummingbird_Failure_Detection_B.CastToDouble10,
-             Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunct);
+            (Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunct);
         } else {
           Hummingbird_Failure_Detectio_DW.is_Mixer_Control =
             Hummingbird_Failure_Detec_IN_MR;
           Hummingbird_Failure_Detection_B.mixer[0] = 0.0;
           Hummingbird_Failure_Detection_B.mixer[1] = 0.0;
           Hummingbird_Failure_Detection_B.mixer[2] = 0.0;
-          Hummingbird_Failure_Detection_B.CastToDouble11 = 0.0;
-          Hummingbird_Failure_Detection_B.CastToDouble10 = 0.0;
+          Hummingbird_Failure_Detection_B.assist = 0.0;
+          Hummingbird_Failure_Detection_B.arms_pos = 0.0;
         }
       } else {
         switch (Hummingbird_Failure_Detectio_DW.is_Mixer_Control) {
          case Hummingbird_Failure_Detec_IN_FW:
-          Hummingbird_Failure_Detection_B.mixer[0] = 1.0;
           Hummingbird_Failure_Detection_B.y[0] = fabs
-            (Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunctionI[0]);
-          Hummingbird_Failure_Detection_B.mixer[1] = 1.0;
+            (Hummingbird_Failure_Detection_B.MovingAverage.MovingAverage);
           Hummingbird_Failure_Detection_B.y[1] = fabs
-            (Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunctionI[1]);
-          Hummingbird_Failure_Detection_B.mixer[2] = 1.0;
+            (Hummingbird_Failure_Detection_B.MovingAverage1.MovingAverage);
           Hummingbird_Failure_Detection_B.y[2] = fabs
-            (Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunctionI[2]);
-          b_varargout_1 = true;
+            (Hummingbird_Failure_Detection_B.MovingAverage2.MovingAverage);
+          Hummingbird_Failure_Detection_B.b_varargout_1 = false;
           Hummingbird_Failure_Detection_B.i = 0;
           exitg1 = false;
           while ((!exitg1) && (Hummingbird_Failure_Detection_B.i < 3)) {
-            if (!(Hummingbird_Failure_Detection_B.y[Hummingbird_Failure_Detection_B.i]
-                  < 4.0)) {
-              b_varargout_1 = false;
+            if (Hummingbird_Failure_Detection_B.y[Hummingbird_Failure_Detection_B.i]
+                > 4.0) {
+              Hummingbird_Failure_Detection_B.b_varargout_1 = true;
               exitg1 = true;
             } else {
               Hummingbird_Failure_Detection_B.i++;
             }
           }
 
-          if (b_varargout_1) {
-            Hummingbird_Failure_Detection_B.CastToDouble11 = 0.0;
-            Hummingbird_Failure_Detection_B.CastToDouble10 = 1.0;
-          } else {
-            Hummingbird_Failure_Detection_B.CastToDouble10 = 0.0;
-            Hummingbird_Failure_Detection_B.CastToDouble11 = 1.0;
-            if (fabs
-                (Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunctionI[
-                 0]) > 4.0 *
-                Hummingbird_Failure_Detectio_DW.Memory1_PreviousInput[0]) {
+          if (Hummingbird_Failure_Detection_B.b_varargout_1) {
+            Hummingbird_Failure_Detection_B.arms_pos = 0.0;
+            Hummingbird_Failure_Detection_B.assist = 1.0;
+            if (fabs(Hummingbird_Failure_Detection_B.MovingAverage.MovingAverage)
+                > 4.0 * Hummingbird_Failure_Detectio_DW.Memory1_PreviousInput[0])
+            {
               Hummingbird_Failure_Detection_B.mixer[0] = 0.2;
             }
 
             if (fabs
-                (Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunctionI[
-                 1]) > 4.0 *
-                Hummingbird_Failure_Detectio_DW.Memory1_PreviousInput[1]) {
+                (Hummingbird_Failure_Detection_B.MovingAverage1.MovingAverage) >
+                4.0 * Hummingbird_Failure_Detectio_DW.Memory1_PreviousInput[1])
+            {
               Hummingbird_Failure_Detection_B.mixer[1] = 0.2;
             }
 
             if (fabs
-                (Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunctionI[
-                 2]) > 2.0 *
-                Hummingbird_Failure_Detectio_DW.Memory1_PreviousInput[2]) {
+                (Hummingbird_Failure_Detection_B.MovingAverage2.MovingAverage) >
+                2.0 * Hummingbird_Failure_Detectio_DW.Memory1_PreviousInput[2])
+            {
               Hummingbird_Failure_Detection_B.mixer[2] = 0.2;
             }
+          }
+          break;
+
+         case Hummingbird_Failure_Det_IN_Init:
+          if (Hummingbird_Failure_Detection_B.BusCreator.VTOL_Mode < 1200) {
+            Hummingbird_Failure_Detectio_DW.is_Mixer_Control =
+              Hummingbird_Failure_Detec_IN_FW;
+            Hummingbird_Fai_enter_atomic_FW
+              (Hummingbird_Failure_Detectio_DW.Memory1_PreviousInput,
+               Hummingbird_Failure_Detection_B.Sum_e);
+          } else if (Hummingbird_Failure_Detection_B.BusCreator.VTOL_Mode < 1700)
+          {
+            Hummingbird_Failure_Detectio_DW.is_Mixer_Control =
+              Hummingbird__IN_Mixed_MR_Assist;
+            Hu_enter_atomic_Mixed_MR_Assist
+              (Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunct);
+          } else {
+            Hummingbird_Failure_Detectio_DW.is_Mixer_Control =
+              Hummingbird_Failure_Detec_IN_MR;
+            Hummingbird_Failure_Detection_B.mixer[0] = 0.0;
+            Hummingbird_Failure_Detection_B.mixer[1] = 0.0;
+            Hummingbird_Failure_Detection_B.mixer[2] = 0.0;
+            Hummingbird_Failure_Detection_B.assist = 0.0;
+            Hummingbird_Failure_Detection_B.arms_pos = 0.0;
           }
           break;
 
@@ -16198,8 +16184,8 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
           Hummingbird_Failure_Detection_B.mixer[0] = 0.0;
           Hummingbird_Failure_Detection_B.mixer[1] = 0.0;
           Hummingbird_Failure_Detection_B.mixer[2] = 0.0;
-          Hummingbird_Failure_Detection_B.CastToDouble11 = 0.0;
-          Hummingbird_Failure_Detection_B.CastToDouble10 = 0.0;
+          Hummingbird_Failure_Detection_B.assist = 0.0;
+          Hummingbird_Failure_Detection_B.arms_pos = 0.0;
           break;
 
          default:
@@ -16259,8 +16245,8 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
             Hummingbird_Failure_Detection_B.mixer[2] = 1.0;
           }
 
-          Hummingbird_Failure_Detection_B.CastToDouble11 = 1.0;
-          Hummingbird_Failure_Detection_B.CastToDouble10 = 0.0;
+          Hummingbird_Failure_Detection_B.assist = 1.0;
+          Hummingbird_Failure_Detection_B.arms_pos = 0.0;
           break;
         }
       }
@@ -16353,156 +16339,156 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       }
 
       Hummingbird_Failure_Detection_B.i = 0;
-      Hummingbird_Failure_Detection_B.r2_m = 1;
-      Hummingbird_Failure_Detection_B.r3_c = 2;
+      Hummingbird_Failure_Detection_B.r2_o = 1;
+      Hummingbird_Failure_Detection_B.r3_n = 2;
       if (fabs(Hummingbird_Failure_Detection_B.x[2]) >
           Hummingbird_Failure_Detection_B.x[0]) {
         Hummingbird_Failure_Detection_B.i = 2;
-        Hummingbird_Failure_Detection_B.r3_c = 0;
+        Hummingbird_Failure_Detection_B.r3_n = 0;
       }
 
       Hummingbird_Failure_Detection_B.x[1] /=
         Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i];
-      Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c] /=
+      Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n] /=
         Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i];
       Hummingbird_Failure_Detection_B.x[4] -=
         Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i + 3]
         * Hummingbird_Failure_Detection_B.x[1];
-      Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c + 3]
+      Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n + 3]
         -= Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i +
         3] *
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c];
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n];
       Hummingbird_Failure_Detection_B.x[7] -=
         Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i + 6]
         * Hummingbird_Failure_Detection_B.x[1];
-      Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c + 6]
+      Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n + 6]
         -= Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i +
         6] *
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c];
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n];
       if (fabs
-          (Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c
+          (Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n
            + 3]) > fabs(Hummingbird_Failure_Detection_B.x[4])) {
-        Hummingbird_Failure_Detection_B.r2_m =
-          Hummingbird_Failure_Detection_B.r3_c;
-        Hummingbird_Failure_Detection_B.r3_c = 1;
+        Hummingbird_Failure_Detection_B.r2_o =
+          Hummingbird_Failure_Detection_B.r3_n;
+        Hummingbird_Failure_Detection_B.r3_n = 1;
       }
 
-      Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c + 3]
+      Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n + 3]
         /=
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_m +
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_o +
         3];
-      Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c + 6]
+      Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n + 6]
         -=
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c +
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n +
         3] *
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_m +
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_o +
         6];
       Hummingbird_Failure_Detection_B.prev_altitude =
         Hummingbird_Failure_Detection_P.Constant2_Value_n[Hummingbird_Failure_Detection_B.i];
-      Hummingbird_Failure_Detection_B.IntegralGain_e =
-        Hummingbird_Failure_Detection_P.Constant2_Value_n[Hummingbird_Failure_Detection_B.r2_m]
+      Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 =
+        Hummingbird_Failure_Detection_P.Constant2_Value_n[Hummingbird_Failure_Detection_B.r2_o]
         - Hummingbird_Failure_Detection_B.prev_altitude *
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_m];
-      Hummingbird_Failure_Detection_B.Saturation4 =
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c +
-        3];
-      Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 =
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c +
-        6];
-      Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 =
-        ((Hummingbird_Failure_Detection_P.Constant2_Value_n[Hummingbird_Failure_Detection_B.r3_c]
-          - Hummingbird_Failure_Detection_B.prev_altitude *
-          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c])
-         - Hummingbird_Failure_Detection_B.Saturation4 *
-         Hummingbird_Failure_Detection_B.IntegralGain_e) /
-        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0;
-      Hummingbird_Failure_Detection_B.a[2] =
-        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1;
-      Hummingbird_Failure_Detection_B.CastToDouble25 =
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_m +
-        6];
-      Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 =
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_m +
-        3];
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_o];
       Hummingbird_Failure_Detection_B.IntegralGain_e =
-        (Hummingbird_Failure_Detection_B.IntegralGain_e -
-         Hummingbird_Failure_Detection_B.CastToDouble25 *
-         Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1) /
-        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0;
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n +
+        3];
+      Hummingbird_Failure_Detection_B.Saturation1 =
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n +
+        6];
+      Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 =
+        ((Hummingbird_Failure_Detection_P.Constant2_Value_n[Hummingbird_Failure_Detection_B.r3_n]
+          - Hummingbird_Failure_Detection_B.prev_altitude *
+          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n])
+         - Hummingbird_Failure_Detection_B.IntegralGain_e *
+         Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2) /
+        Hummingbird_Failure_Detection_B.Saturation1;
+      Hummingbird_Failure_Detection_B.a[2] =
+        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0;
+      Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 =
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_o +
+        6];
+      Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator =
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_o +
+        3];
+      Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 =
+        (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 -
+         Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 *
+         Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0) /
+        Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator;
       Hummingbird_Failure_Detection_B.a[1] =
-        Hummingbird_Failure_Detection_B.IntegralGain_e;
-      Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 =
+        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2;
+      Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 =
         Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i + 6];
-      Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2 =
+      Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 =
         Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i + 3];
       Hummingbird_Failure_Detection_B.a[0] =
         ((Hummingbird_Failure_Detection_B.prev_altitude -
-          Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 *
-          Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1) -
-         Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2 *
-         Hummingbird_Failure_Detection_B.IntegralGain_e) /
+          Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 *
+          Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0) -
+         Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 *
+         Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2) /
         Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i];
       Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_1 = 0.0;
       Hummingbird_Failure_Detection_B.prev_altitude =
         Hummingbird_Failure_Detection_P.Constant2_Value_n[Hummingbird_Failure_Detection_B.i
         + 3];
-      Hummingbird_Failure_Detection_B.IntegralGain_e =
-        Hummingbird_Failure_Detection_P.Constant2_Value_n[Hummingbird_Failure_Detection_B.r2_m
+      Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 =
+        Hummingbird_Failure_Detection_P.Constant2_Value_n[Hummingbird_Failure_Detection_B.r2_o
         + 3] - Hummingbird_Failure_Detection_B.prev_altitude *
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_m];
-      Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 =
-        ((Hummingbird_Failure_Detection_P.Constant2_Value_n[Hummingbird_Failure_Detection_B.r3_c
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_o];
+      Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 =
+        ((Hummingbird_Failure_Detection_P.Constant2_Value_n[Hummingbird_Failure_Detection_B.r3_n
           + 3] - Hummingbird_Failure_Detection_B.prev_altitude *
-          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c])
-         - Hummingbird_Failure_Detection_B.Saturation4 *
-         Hummingbird_Failure_Detection_B.IntegralGain_e) /
-        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0;
+          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n])
+         - Hummingbird_Failure_Detection_B.IntegralGain_e *
+         Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2) /
+        Hummingbird_Failure_Detection_B.Saturation1;
       Hummingbird_Failure_Detection_B.a[5] =
-        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1;
-      Hummingbird_Failure_Detection_B.IntegralGain_e =
-        (Hummingbird_Failure_Detection_B.IntegralGain_e -
-         Hummingbird_Failure_Detection_B.CastToDouble25 *
-         Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1) /
-        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0;
+        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0;
+      Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 =
+        (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 -
+         Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 *
+         Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0) /
+        Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator;
       Hummingbird_Failure_Detection_B.a[4] =
-        Hummingbird_Failure_Detection_B.IntegralGain_e;
+        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2;
       Hummingbird_Failure_Detection_B.a[3] =
         ((Hummingbird_Failure_Detection_B.prev_altitude -
-          Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 *
-          Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1) -
-         Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2 *
-         Hummingbird_Failure_Detection_B.IntegralGain_e) /
+          Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 *
+          Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0) -
+         Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 *
+         Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2) /
         Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i];
       Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 = 0.0;
       Hummingbird_Failure_Detection_B.prev_altitude =
         Hummingbird_Failure_Detection_P.Constant2_Value_n[Hummingbird_Failure_Detection_B.i
         + 6];
-      Hummingbird_Failure_Detection_B.IntegralGain_e =
-        Hummingbird_Failure_Detection_P.Constant2_Value_n[Hummingbird_Failure_Detection_B.r2_m
+      Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 =
+        Hummingbird_Failure_Detection_P.Constant2_Value_n[Hummingbird_Failure_Detection_B.r2_o
         + 6] - Hummingbird_Failure_Detection_B.prev_altitude *
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_m];
-      Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 =
-        ((Hummingbird_Failure_Detection_P.Constant2_Value_n[Hummingbird_Failure_Detection_B.r3_c
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_o];
+      Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 =
+        ((Hummingbird_Failure_Detection_P.Constant2_Value_n[Hummingbird_Failure_Detection_B.r3_n
           + 6] - Hummingbird_Failure_Detection_B.prev_altitude *
-          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c])
-         - Hummingbird_Failure_Detection_B.Saturation4 *
-         Hummingbird_Failure_Detection_B.IntegralGain_e) /
-        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0;
+          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n])
+         - Hummingbird_Failure_Detection_B.IntegralGain_e *
+         Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2) /
+        Hummingbird_Failure_Detection_B.Saturation1;
       Hummingbird_Failure_Detection_B.a[8] =
-        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1;
-      Hummingbird_Failure_Detection_B.IntegralGain_e =
-        (Hummingbird_Failure_Detection_B.IntegralGain_e -
-         Hummingbird_Failure_Detection_B.CastToDouble25 *
-         Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1) /
-        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0;
+        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0;
+      Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 =
+        (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 -
+         Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 *
+         Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0) /
+        Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator;
       Hummingbird_Failure_Detection_B.a[7] =
-        Hummingbird_Failure_Detection_B.IntegralGain_e;
+        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2;
       Hummingbird_Failure_Detection_B.a[6] =
         ((Hummingbird_Failure_Detection_B.prev_altitude -
-          Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 *
-          Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1) -
-         Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2 *
-         Hummingbird_Failure_Detection_B.IntegralGain_e) /
+          Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 *
+          Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0) -
+         Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 *
+         Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2) /
         Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i];
       Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_0 = 0.0;
       for (Hummingbird_Failure_Detection_B.i = 0;
@@ -16539,10 +16525,10 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //   RelationalOperator: '<S1410>/IsNaN3'
 
       if (rtIsNaN(Hummingbird_Failure_Detection_B.dtFW)) {
-        Hummingbird_Failure_Detection_B.CastToDouble8 =
+        Hummingbird_Failure_Detection_B.CastToDouble10 =
           Hummingbird_Failure_Detection_P.Constant4_Value_g;
       } else {
-        Hummingbird_Failure_Detection_B.CastToDouble8 =
+        Hummingbird_Failure_Detection_B.CastToDouble10 =
           Hummingbird_Failure_Detection_B.dtFW;
       }
 
@@ -16573,7 +16559,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       Hummingbird_Failure_Detection_B.BusAssignment_c.de = static_cast<real32_T>
         (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0);
       Hummingbird_Failure_Detection_B.BusAssignment_c.dt = static_cast<real32_T>
-        (Hummingbird_Failure_Detection_B.CastToDouble8);
+        (Hummingbird_Failure_Detection_B.CastToDouble10);
       Hummingbird_Failure_Detection_B.BusAssignment_c.da = static_cast<real32_T>
         (Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_1);
       Hummingbird_Failure_Detection_B.BusAssignment_c.dr = static_cast<real32_T>
@@ -16595,23 +16581,23 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       if (((Hummingbird_Failure_Detection_B.mixer[0] == 0.0) &&
            (Hummingbird_Failure_Detection_B.mixer[1] == 0.0) &&
            (Hummingbird_Failure_Detection_B.mixer[2] == 0.0)) ||
-          (Hummingbird_Failure_Detection_B.CastToDouble11 == 1.0)) {
-        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1 =
+          (Hummingbird_Failure_Detection_B.assist == 1.0)) {
+        Hummingbird_Failure_Detection_B.CastToDouble11 =
           Hummingbird_Failure_Detection_P.Constant1_Value_n;
       } else {
-        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1 =
+        Hummingbird_Failure_Detection_B.CastToDouble11 =
           Hummingbird_Failure_Detection_B.dtMR +
-          Hummingbird_Failure_Detection_B.a_i;
+          Hummingbird_Failure_Detection_B.a_j;
       }
 
       // Saturate: '<S1412>/Saturation3'
-      if (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1 >
+      if (Hummingbird_Failure_Detection_B.CastToDouble11 >
           Hummingbird_Failure_Detection_P.Saturation3_UpperSat) {
-        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1 =
+        Hummingbird_Failure_Detection_B.CastToDouble11 =
           Hummingbird_Failure_Detection_P.Saturation3_UpperSat;
-      } else if (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1 <
+      } else if (Hummingbird_Failure_Detection_B.CastToDouble11 <
                  Hummingbird_Failure_Detection_P.Saturation3_LowerSat) {
-        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1 =
+        Hummingbird_Failure_Detection_B.CastToDouble11 =
           Hummingbird_Failure_Detection_P.Saturation3_LowerSat;
       }
 
@@ -16619,8 +16605,8 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //   Constant: '<S1423>/Constant'
       //   Product: '<S1423>/Divide'
 
-      Hummingbird_Failure_Detection_B.CastToDouble11 =
-        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1 /
+      Hummingbird_Failure_Detection_B.CastToDouble8 =
+        Hummingbird_Failure_Detection_B.CastToDouble11 /
         Hummingbird_Failure_Detection_P.Constant_Value_li *
         Hummingbird_Failure_Detection_P.Gain_Gain_b;
 
@@ -16628,222 +16614,225 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //   Constant: '<S1410>/Constant12'
       //   Constant: '<S1410>/Constant13'
 
-      memcpy(&Hummingbird_Failure_Detection_B.x[0],
-             &Hummingbird_Failure_Detection_P.Constant12_Value[0], 9U * sizeof
-             (real_T));
+      for (Hummingbird_Failure_Detection_B.i = 0;
+           Hummingbird_Failure_Detection_B.i < 9;
+           Hummingbird_Failure_Detection_B.i++) {
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i] =
+          Hummingbird_Failure_Detection_P.Constant12_Value[Hummingbird_Failure_Detection_B.i];
+        Hummingbird_Failure_Detection_B.B[Hummingbird_Failure_Detection_B.i] =
+          Hummingbird_Failure_Detection_P.IB[Hummingbird_Failure_Detection_B.i]
+          - b[Hummingbird_Failure_Detection_B.i];
+      }
+
       Hummingbird_Failure_Detection_B.i = 0;
-      Hummingbird_Failure_Detection_B.r2_m = 1;
-      Hummingbird_Failure_Detection_B.r3_c = 2;
-      Hummingbird_Failure_Detection_B.CastToDouble9 = fabs
+      Hummingbird_Failure_Detection_B.r2_o = 1;
+      Hummingbird_Failure_Detection_B.r3_n = 2;
+      Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1 = fabs
         (Hummingbird_Failure_Detection_P.Constant12_Value[0]);
-      Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 = fabs
+      Hummingbird_Failure_Detection_B.CastToDouble9 = fabs
         (Hummingbird_Failure_Detection_P.Constant12_Value[1]);
-      if (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 >
-          Hummingbird_Failure_Detection_B.CastToDouble9) {
-        Hummingbird_Failure_Detection_B.CastToDouble9 =
-          Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2;
+      if (Hummingbird_Failure_Detection_B.CastToDouble9 >
+          Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1) {
+        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1 =
+          Hummingbird_Failure_Detection_B.CastToDouble9;
         Hummingbird_Failure_Detection_B.i = 1;
-        Hummingbird_Failure_Detection_B.r2_m = 0;
+        Hummingbird_Failure_Detection_B.r2_o = 0;
       }
 
       if (fabs(Hummingbird_Failure_Detection_P.Constant12_Value[2]) >
-          Hummingbird_Failure_Detection_B.CastToDouble9) {
+          Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1) {
         Hummingbird_Failure_Detection_B.i = 2;
-        Hummingbird_Failure_Detection_B.r2_m = 1;
-        Hummingbird_Failure_Detection_B.r3_c = 0;
+        Hummingbird_Failure_Detection_B.r2_o = 1;
+        Hummingbird_Failure_Detection_B.r3_n = 0;
       }
 
-      Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_m] =
-        Hummingbird_Failure_Detection_P.Constant12_Value[Hummingbird_Failure_Detection_B.r2_m]
+      Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_o] =
+        Hummingbird_Failure_Detection_P.Constant12_Value[Hummingbird_Failure_Detection_B.r2_o]
         /
         Hummingbird_Failure_Detection_P.Constant12_Value[Hummingbird_Failure_Detection_B.i];
-      Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c] /=
+      Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n] /=
         Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i];
-      Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_m + 3]
+      Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_o + 3]
         -= Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i +
         3] *
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_m];
-      Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c + 3]
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_o];
+      Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n + 3]
         -= Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i +
         3] *
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c];
-      Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_m + 6]
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n];
+      Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_o + 6]
         -= Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i +
         6] *
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_m];
-      Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c + 6]
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_o];
+      Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n + 6]
         -= Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i +
         6] *
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c];
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n];
       if (fabs
-          (Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c
+          (Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n
            + 3]) > fabs
-          (Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_m
+          (Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_o
            + 3])) {
         Hummingbird_Failure_Detection_B.rtemp =
-          Hummingbird_Failure_Detection_B.r2_m;
-        Hummingbird_Failure_Detection_B.r2_m =
-          Hummingbird_Failure_Detection_B.r3_c;
-        Hummingbird_Failure_Detection_B.r3_c =
+          Hummingbird_Failure_Detection_B.r2_o;
+        Hummingbird_Failure_Detection_B.r2_o =
+          Hummingbird_Failure_Detection_B.r3_n;
+        Hummingbird_Failure_Detection_B.r3_n =
           Hummingbird_Failure_Detection_B.rtemp;
       }
 
-      Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c + 3]
+      Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n + 3]
         /=
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_m +
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_o +
         3];
-      Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c + 6]
+      Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n + 6]
         -=
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c +
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n +
         3] *
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_m +
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_o +
         6];
       Hummingbird_Failure_Detection_B.prev_altitude =
-        Hummingbird_Failure_Detection_P.IB[Hummingbird_Failure_Detection_B.i];
-      Hummingbird_Failure_Detection_B.IntegralGain_e =
-        Hummingbird_Failure_Detection_P.IB[Hummingbird_Failure_Detection_B.r2_m]
+        Hummingbird_Failure_Detection_B.B[Hummingbird_Failure_Detection_B.i];
+      Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 =
+        Hummingbird_Failure_Detection_B.B[Hummingbird_Failure_Detection_B.r2_o]
         - Hummingbird_Failure_Detection_B.prev_altitude *
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_m];
-      Hummingbird_Failure_Detection_B.Saturation4 =
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c +
-        3];
-      Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 =
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c +
-        6];
-      Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 =
-        ((Hummingbird_Failure_Detection_P.IB[Hummingbird_Failure_Detection_B.r3_c]
-          - Hummingbird_Failure_Detection_B.prev_altitude *
-          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c])
-         - Hummingbird_Failure_Detection_B.Saturation4 *
-         Hummingbird_Failure_Detection_B.IntegralGain_e) /
-        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0;
-      Hummingbird_Failure_Detection_B.a_m[2] =
-        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1;
-      Hummingbird_Failure_Detection_B.CastToDouble25 =
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_m +
-        6];
-      Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 =
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_m +
-        3];
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_o];
       Hummingbird_Failure_Detection_B.IntegralGain_e =
-        (Hummingbird_Failure_Detection_B.IntegralGain_e -
-         Hummingbird_Failure_Detection_B.CastToDouble25 *
-         Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1) /
-        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0;
-      Hummingbird_Failure_Detection_B.a_m[1] =
-        Hummingbird_Failure_Detection_B.IntegralGain_e;
-      Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 =
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n +
+        3];
+      Hummingbird_Failure_Detection_B.Saturation1 =
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n +
+        6];
+      Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 =
+        ((Hummingbird_Failure_Detection_B.B[Hummingbird_Failure_Detection_B.r3_n]
+          - Hummingbird_Failure_Detection_B.prev_altitude *
+          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n])
+         - Hummingbird_Failure_Detection_B.IntegralGain_e *
+         Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2) /
+        Hummingbird_Failure_Detection_B.Saturation1;
+      Hummingbird_Failure_Detection_B.a[2] =
+        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0;
+      Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 =
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_o +
+        6];
+      Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator =
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_o +
+        3];
+      Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 =
+        (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 -
+         Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 *
+         Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0) /
+        Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator;
+      Hummingbird_Failure_Detection_B.a[1] =
+        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2;
+      Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 =
         Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i + 6];
-      Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2 =
+      Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 =
         Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i + 3];
-      Hummingbird_Failure_Detection_B.a_m[0] =
+      Hummingbird_Failure_Detection_B.a[0] =
         ((Hummingbird_Failure_Detection_B.prev_altitude -
-          Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 *
-          Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1) -
-         Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2 *
-         Hummingbird_Failure_Detection_B.IntegralGain_e) /
+          Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 *
+          Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0) -
+         Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 *
+         Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2) /
         Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i];
 
       // Sum: '<S1410>/Sum8'
-      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[0] =
+      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[0] =
         Hummingbird_Failure_Detection_B.dM[0] -
         Hummingbird_Failure_Detection_B.Sum_e[0];
 
-      // MATLAB Function: '<S1410>/Control input Calculation1' incorporates:
-      //   Constant: '<S1410>/Constant13'
-
-      Hummingbird_Failure_Detection_B.CastToDouble9 = 0.0;
+      // MATLAB Function: '<S1410>/Control input Calculation1'
+      Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1 = 0.0;
       Hummingbird_Failure_Detection_B.prev_altitude =
-        Hummingbird_Failure_Detection_P.IB[Hummingbird_Failure_Detection_B.i + 3];
-      Hummingbird_Failure_Detection_B.IntegralGain_e =
-        Hummingbird_Failure_Detection_P.IB[Hummingbird_Failure_Detection_B.r2_m
-        + 3] - Hummingbird_Failure_Detection_B.prev_altitude *
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_m];
-      Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 =
-        ((Hummingbird_Failure_Detection_P.IB[Hummingbird_Failure_Detection_B.r3_c
+        Hummingbird_Failure_Detection_B.B[Hummingbird_Failure_Detection_B.i + 3];
+      Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 =
+        Hummingbird_Failure_Detection_B.B[Hummingbird_Failure_Detection_B.r2_o +
+        3] - Hummingbird_Failure_Detection_B.prev_altitude *
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_o];
+      Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 =
+        ((Hummingbird_Failure_Detection_B.B[Hummingbird_Failure_Detection_B.r3_n
           + 3] - Hummingbird_Failure_Detection_B.prev_altitude *
-          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c])
-         - Hummingbird_Failure_Detection_B.Saturation4 *
-         Hummingbird_Failure_Detection_B.IntegralGain_e) /
+          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n])
+         - Hummingbird_Failure_Detection_B.IntegralGain_e *
+         Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2) /
+        Hummingbird_Failure_Detection_B.Saturation1;
+      Hummingbird_Failure_Detection_B.a[5] =
         Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0;
-      Hummingbird_Failure_Detection_B.a_m[5] =
-        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1;
-      Hummingbird_Failure_Detection_B.IntegralGain_e =
-        (Hummingbird_Failure_Detection_B.IntegralGain_e -
-         Hummingbird_Failure_Detection_B.CastToDouble25 *
-         Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1) /
-        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0;
-      Hummingbird_Failure_Detection_B.a_m[4] =
-        Hummingbird_Failure_Detection_B.IntegralGain_e;
-      Hummingbird_Failure_Detection_B.a_m[3] =
+      Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 =
+        (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 -
+         Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 *
+         Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0) /
+        Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator;
+      Hummingbird_Failure_Detection_B.a[4] =
+        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2;
+      Hummingbird_Failure_Detection_B.a[3] =
         ((Hummingbird_Failure_Detection_B.prev_altitude -
-          Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 *
-          Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1) -
-         Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2 *
-         Hummingbird_Failure_Detection_B.IntegralGain_e) /
+          Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 *
+          Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0) -
+         Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 *
+         Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2) /
         Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i];
 
       // Sum: '<S1410>/Sum8'
-      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[1] =
+      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[1] =
         Hummingbird_Failure_Detection_B.dM[1] -
         Hummingbird_Failure_Detection_B.Sum_e[1];
 
-      // MATLAB Function: '<S1410>/Control input Calculation1' incorporates:
-      //   Constant: '<S1410>/Constant13'
-
-      Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 = 0.0;
+      // MATLAB Function: '<S1410>/Control input Calculation1'
+      Hummingbird_Failure_Detection_B.CastToDouble9 = 0.0;
       Hummingbird_Failure_Detection_B.prev_altitude =
-        Hummingbird_Failure_Detection_P.IB[Hummingbird_Failure_Detection_B.i + 6];
-      Hummingbird_Failure_Detection_B.IntegralGain_e =
-        Hummingbird_Failure_Detection_P.IB[Hummingbird_Failure_Detection_B.r2_m
-        + 6] - Hummingbird_Failure_Detection_B.prev_altitude *
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_m];
-      Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 =
-        ((Hummingbird_Failure_Detection_P.IB[Hummingbird_Failure_Detection_B.r3_c
+        Hummingbird_Failure_Detection_B.B[Hummingbird_Failure_Detection_B.i + 6];
+      Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 =
+        Hummingbird_Failure_Detection_B.B[Hummingbird_Failure_Detection_B.r2_o +
+        6] - Hummingbird_Failure_Detection_B.prev_altitude *
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_o];
+      Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 =
+        ((Hummingbird_Failure_Detection_B.B[Hummingbird_Failure_Detection_B.r3_n
           + 6] - Hummingbird_Failure_Detection_B.prev_altitude *
-          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c])
-         - Hummingbird_Failure_Detection_B.Saturation4 *
-         Hummingbird_Failure_Detection_B.IntegralGain_e) /
+          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n])
+         - Hummingbird_Failure_Detection_B.IntegralGain_e *
+         Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2) /
+        Hummingbird_Failure_Detection_B.Saturation1;
+      Hummingbird_Failure_Detection_B.a[8] =
         Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0;
-      Hummingbird_Failure_Detection_B.a_m[8] =
-        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1;
-      Hummingbird_Failure_Detection_B.IntegralGain_e =
-        (Hummingbird_Failure_Detection_B.IntegralGain_e -
-         Hummingbird_Failure_Detection_B.CastToDouble25 *
-         Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1) /
-        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0;
-      Hummingbird_Failure_Detection_B.a_m[7] =
-        Hummingbird_Failure_Detection_B.IntegralGain_e;
-      Hummingbird_Failure_Detection_B.a_m[6] =
+      Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 =
+        (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 -
+         Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 *
+         Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0) /
+        Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator;
+      Hummingbird_Failure_Detection_B.a[7] =
+        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2;
+      Hummingbird_Failure_Detection_B.a[6] =
         ((Hummingbird_Failure_Detection_B.prev_altitude -
-          Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 *
-          Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1) -
-         Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2 *
-         Hummingbird_Failure_Detection_B.IntegralGain_e) /
+          Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 *
+          Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0) -
+         Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 *
+         Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2) /
         Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i];
 
       // Sum: '<S1410>/Sum8'
-      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[2] =
+      Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[2] =
         Hummingbird_Failure_Detection_B.dM[2] -
         Hummingbird_Failure_Detection_B.Sum_e[2];
 
       // MATLAB Function: '<S1410>/Control input Calculation1'
-      Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2 = 0.0;
+      Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 = 0.0;
       for (Hummingbird_Failure_Detection_B.i = 0;
            Hummingbird_Failure_Detection_B.i < 3;
            Hummingbird_Failure_Detection_B.i++) {
         Hummingbird_Failure_Detection_B.prev_altitude =
-          Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[Hummingbird_Failure_Detection_B.i];
-        Hummingbird_Failure_Detection_B.CastToDouble9 +=
-          Hummingbird_Failure_Detection_B.a_m[3 *
+          Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[Hummingbird_Failure_Detection_B.i];
+        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1 +=
+          Hummingbird_Failure_Detection_B.a[3 *
           Hummingbird_Failure_Detection_B.i] *
           Hummingbird_Failure_Detection_B.prev_altitude;
-        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 +=
-          Hummingbird_Failure_Detection_B.a_m[3 *
+        Hummingbird_Failure_Detection_B.CastToDouble9 +=
+          Hummingbird_Failure_Detection_B.a[3 *
           Hummingbird_Failure_Detection_B.i + 1] *
           Hummingbird_Failure_Detection_B.prev_altitude;
-        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2 +=
-          Hummingbird_Failure_Detection_B.a_m[3 *
+        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 +=
+          Hummingbird_Failure_Detection_B.a[3 *
           Hummingbird_Failure_Detection_B.i + 2] *
           Hummingbird_Failure_Detection_B.prev_altitude;
       }
@@ -16855,12 +16844,8 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         // Outputs for IfAction SubSystem: '<S1421>/If Action Subsystem1' incorporates:
         //   ActionPort: '<S1425>/Action Port'
 
-        // Outputs for IfAction SubSystem: '<S1421>/If Action Subsystem' incorporates:
-        //   ActionPort: '<S1424>/Action Port'
-
         // SignalConversion generated from: '<S1425>/In1' incorporates:
         //   Constant: '<S1421>/Constant1'
-        //   Merge: '<S1421>/Merge'
 
         Hummingbird_Failure_Detection_B.Sum_e[0] =
           Hummingbird_Failure_Detection_P.Constant1_Value_a[0];
@@ -16869,132 +16854,93 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         Hummingbird_Failure_Detection_B.Sum_e[2] =
           Hummingbird_Failure_Detection_P.Constant1_Value_a[2];
 
-        // End of Outputs for SubSystem: '<S1421>/If Action Subsystem'
         // End of Outputs for SubSystem: '<S1421>/If Action Subsystem1'
       } else {
         // Outputs for IfAction SubSystem: '<S1421>/If Action Subsystem' incorporates:
         //   ActionPort: '<S1424>/Action Port'
 
-        // Outputs for IfAction SubSystem: '<S1421>/If Action Subsystem1' incorporates:
-        //   ActionPort: '<S1425>/Action Port'
+        // Sum: '<S1424>/Sum' incorporates:
+        //   Constant: '<S1424>/Constant'
 
-        // SignalConversion generated from: '<S1424>/In1' incorporates:
+        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 =
+          Hummingbird_Failure_Detection_B.assist +
+          Hummingbird_Failure_Detection_P.Constant_Value_ni;
+
+        // Product: '<S1424>/Product' incorporates:
         //   MATLAB Function: '<S1410>/Control input Calculation1'
-        //   Merge: '<S1421>/Merge'
+        //   Product: '<S1412>/Divide'
         //   Sum: '<S1412>/Sum10'
 
         Hummingbird_Failure_Detection_B.Sum_e[0] =
-          Hummingbird_Failure_Detection_B.Gain14_h +
-          Hummingbird_Failure_Detection_B.CastToDouble9;
+          (Hummingbird_Failure_Detection_B.Gain14_h +
+           Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1) *
+          Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2;
         Hummingbird_Failure_Detection_B.Sum_e[1] =
-          Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3 +
+          (Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1 +
+           Hummingbird_Failure_Detection_B.CastToDouble9) *
           Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2;
         Hummingbird_Failure_Detection_B.Sum_e[2] =
-          Hummingbird_Failure_Detection_B.b_o +
-          Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2;
+          (Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_2 +
+           Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1) *
+          Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2;
 
-        // End of Outputs for SubSystem: '<S1421>/If Action Subsystem1'
         // End of Outputs for SubSystem: '<S1421>/If Action Subsystem'
-      }
-
-      // Saturate: '<S1423>/Saturation9'
-      if (Hummingbird_Failure_Detection_B.Sum_e[0] >
-          Hummingbird_Failure_Detection_P.Saturation9_UpperSat) {
-        Hummingbird_Failure_Detection_B.prev_altitude =
-          Hummingbird_Failure_Detection_P.Saturation9_UpperSat;
-      } else if (Hummingbird_Failure_Detection_B.Sum_e[0] <
-                 Hummingbird_Failure_Detection_P.Saturation9_LowerSat) {
-        Hummingbird_Failure_Detection_B.prev_altitude =
-          Hummingbird_Failure_Detection_P.Saturation9_LowerSat;
-      } else {
-        Hummingbird_Failure_Detection_B.prev_altitude =
-          Hummingbird_Failure_Detection_B.Sum_e[0];
       }
 
       // Product: '<S1423>/Divide3' incorporates:
       //   Constant: '<S1423>/Constant2'
-      //   Saturate: '<S1423>/Saturation9'
 
-      Hummingbird_Failure_Detection_B.V =
-        Hummingbird_Failure_Detection_B.prev_altitude /
+      Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2 =
+        Hummingbird_Failure_Detection_B.Sum_e[0] /
         Hummingbird_Failure_Detection_P.Constant2_Value_a;
-
-      // Saturate: '<S1423>/Saturation8'
-      if (Hummingbird_Failure_Detection_B.Sum_e[1] >
-          Hummingbird_Failure_Detection_P.Saturation8_UpperSat) {
-        Hummingbird_Failure_Detection_B.prev_altitude =
-          Hummingbird_Failure_Detection_P.Saturation8_UpperSat;
-      } else if (Hummingbird_Failure_Detection_B.Sum_e[1] <
-                 Hummingbird_Failure_Detection_P.Saturation8_LowerSat) {
-        Hummingbird_Failure_Detection_B.prev_altitude =
-          Hummingbird_Failure_Detection_P.Saturation8_LowerSat;
-      } else {
-        Hummingbird_Failure_Detection_B.prev_altitude =
-          Hummingbird_Failure_Detection_B.Sum_e[1];
-      }
 
       // Product: '<S1423>/Divide2' incorporates:
       //   Constant: '<S1423>/Constant1'
-      //   Saturate: '<S1423>/Saturation8'
 
-      Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 =
-        Hummingbird_Failure_Detection_B.prev_altitude /
+      Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 =
+        Hummingbird_Failure_Detection_B.Sum_e[1] /
         Hummingbird_Failure_Detection_P.Constant1_Value_p;
-
-      // Saturate: '<S1423>/Saturation10'
-      if (Hummingbird_Failure_Detection_B.Sum_e[2] >
-          Hummingbird_Failure_Detection_P.Saturation10_UpperSat) {
-        Hummingbird_Failure_Detection_B.prev_altitude =
-          Hummingbird_Failure_Detection_P.Saturation10_UpperSat;
-      } else if (Hummingbird_Failure_Detection_B.Sum_e[2] <
-                 Hummingbird_Failure_Detection_P.Saturation10_LowerSat) {
-        Hummingbird_Failure_Detection_B.prev_altitude =
-          Hummingbird_Failure_Detection_P.Saturation10_LowerSat;
-      } else {
-        Hummingbird_Failure_Detection_B.prev_altitude =
-          Hummingbird_Failure_Detection_B.Sum_e[2];
-      }
 
       // Product: '<S1423>/Divide1' incorporates:
       //   Constant: '<S1423>/Constant3'
-      //   Saturate: '<S1423>/Saturation10'
 
-      Hummingbird_Failure_Detection_B.prev_altitude /=
+      Hummingbird_Failure_Detection_B.prev_altitude =
+        Hummingbird_Failure_Detection_B.Sum_e[2] /
         Hummingbird_Failure_Detection_P.Constant3_Value_k;
 
       // Sum: '<S1423>/Add'
-      Hummingbird_Failure_Detection_B.IntegralGain_e =
+      Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 =
         ((Hummingbird_Failure_Detection_B.prev_altitude -
-          Hummingbird_Failure_Detection_B.CastToDouble11) -
-         Hummingbird_Failure_Detection_B.V) -
-        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1;
+          Hummingbird_Failure_Detection_B.CastToDouble8) -
+         Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2) -
+        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0;
 
       // Saturate: '<S1423>/Saturation'
-      if (Hummingbird_Failure_Detection_B.IntegralGain_e >
+      if (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 >
           Hummingbird_Failure_Detection_P.Saturation_UpperSat_o) {
-        Hummingbird_Failure_Detection_B.IntegralGain_e =
+        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 =
           Hummingbird_Failure_Detection_P.Saturation_UpperSat_o;
-      } else if (Hummingbird_Failure_Detection_B.IntegralGain_e <
+      } else if (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 <
                  Hummingbird_Failure_Detection_P.Saturation_LowerSat_n) {
-        Hummingbird_Failure_Detection_B.IntegralGain_e =
+        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 =
           Hummingbird_Failure_Detection_P.Saturation_LowerSat_n;
       }
 
       // Sum: '<S1423>/Add4'
-      Hummingbird_Failure_Detection_B.Saturation4 = (((0.0 -
-        Hummingbird_Failure_Detection_B.CastToDouble11) -
-        Hummingbird_Failure_Detection_B.V) -
-        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1) -
+      Hummingbird_Failure_Detection_B.IntegralGain_e = (((0.0 -
+        Hummingbird_Failure_Detection_B.CastToDouble8) -
+        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2) -
+        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0) -
         Hummingbird_Failure_Detection_B.prev_altitude;
 
       // Saturate: '<S1423>/Saturation4'
-      if (Hummingbird_Failure_Detection_B.Saturation4 >
+      if (Hummingbird_Failure_Detection_B.IntegralGain_e >
           Hummingbird_Failure_Detection_P.Saturation4_UpperSat) {
-        Hummingbird_Failure_Detection_B.Saturation4 =
+        Hummingbird_Failure_Detection_B.IntegralGain_e =
           Hummingbird_Failure_Detection_P.Saturation4_UpperSat;
-      } else if (Hummingbird_Failure_Detection_B.Saturation4 <
+      } else if (Hummingbird_Failure_Detection_B.IntegralGain_e <
                  Hummingbird_Failure_Detection_P.Saturation4_LowerSat) {
-        Hummingbird_Failure_Detection_B.Saturation4 =
+        Hummingbird_Failure_Detection_B.IntegralGain_e =
           Hummingbird_Failure_Detection_P.Saturation4_LowerSat;
       }
 
@@ -17002,147 +16948,153 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //   Sum: '<S1423>/Add2'
       //   Sum: '<S1423>/Add5'
 
-      Hummingbird_Failure_Detection_B.CastToDouble25 =
+      Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 =
+        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2 -
+        Hummingbird_Failure_Detection_B.CastToDouble8;
+      Hummingbird_Failure_Detection_B.V =
+        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 -
+        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0;
+      Hummingbird_Failure_Detection_B.Saturation1 =
         Hummingbird_Failure_Detection_B.V -
-        Hummingbird_Failure_Detection_B.CastToDouble11;
-      Hummingbird_Failure_Detection_B.course =
-        Hummingbird_Failure_Detection_B.CastToDouble25 -
-        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1;
-      Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 =
-        Hummingbird_Failure_Detection_B.course -
         Hummingbird_Failure_Detection_B.prev_altitude;
 
       // Saturate: '<S1423>/Saturation1'
-      if (Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 >
+      if (Hummingbird_Failure_Detection_B.Saturation1 >
           Hummingbird_Failure_Detection_P.Saturation1_UpperSat_e) {
-        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 =
+        Hummingbird_Failure_Detection_B.Saturation1 =
           Hummingbird_Failure_Detection_P.Saturation1_UpperSat_e;
-      } else if (Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 <
+      } else if (Hummingbird_Failure_Detection_B.Saturation1 <
                  Hummingbird_Failure_Detection_P.Saturation1_LowerSat_b) {
-        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 =
+        Hummingbird_Failure_Detection_B.Saturation1 =
           Hummingbird_Failure_Detection_P.Saturation1_LowerSat_b;
       }
 
       // Sum: '<S1423>/Add5'
-      Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 =
-        Hummingbird_Failure_Detection_B.course +
+      Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 =
+        Hummingbird_Failure_Detection_B.V +
         Hummingbird_Failure_Detection_B.prev_altitude;
 
       // Saturate: '<S1423>/Saturation5'
-      if (Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 >
+      if (Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 >
           Hummingbird_Failure_Detection_P.Saturation5_UpperSat) {
-        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 =
+        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 =
           Hummingbird_Failure_Detection_P.Saturation5_UpperSat;
-      } else if (Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 <
+      } else if (Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 <
                  Hummingbird_Failure_Detection_P.Saturation5_LowerSat) {
-        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 =
+        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 =
           Hummingbird_Failure_Detection_P.Saturation5_LowerSat;
       }
 
       // Sum: '<S1423>/Add2' incorporates:
       //   Sum: '<S1423>/Add6'
 
-      Hummingbird_Failure_Detection_B.course =
-        Hummingbird_Failure_Detection_B.CastToDouble25 +
-        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1;
-      Hummingbird_Failure_Detection_B.CastToDouble25 =
-        Hummingbird_Failure_Detection_B.course +
+      Hummingbird_Failure_Detection_B.V =
+        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 +
+        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0;
+      Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 =
+        Hummingbird_Failure_Detection_B.V +
         Hummingbird_Failure_Detection_B.prev_altitude;
 
       // Saturate: '<S1423>/Saturation2'
-      if (Hummingbird_Failure_Detection_B.CastToDouble25 >
+      if (Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 >
           Hummingbird_Failure_Detection_P.Saturation2_UpperSat) {
-        Hummingbird_Failure_Detection_B.CastToDouble25 =
+        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 =
           Hummingbird_Failure_Detection_P.Saturation2_UpperSat;
-      } else if (Hummingbird_Failure_Detection_B.CastToDouble25 <
+      } else if (Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 <
                  Hummingbird_Failure_Detection_P.Saturation2_LowerSat) {
-        Hummingbird_Failure_Detection_B.CastToDouble25 =
+        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 =
           Hummingbird_Failure_Detection_P.Saturation2_LowerSat;
       }
 
       // Sum: '<S1423>/Add6'
-      Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 =
-        Hummingbird_Failure_Detection_B.course -
+      Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator =
+        Hummingbird_Failure_Detection_B.V -
         Hummingbird_Failure_Detection_B.prev_altitude;
 
       // Saturate: '<S1423>/Saturation6'
-      if (Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 >
+      if (Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator >
           Hummingbird_Failure_Detection_P.Saturation6_UpperSat) {
-        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 =
+        Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator =
           Hummingbird_Failure_Detection_P.Saturation6_UpperSat;
-      } else if (Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 <
+      } else if (Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator <
                  Hummingbird_Failure_Detection_P.Saturation6_LowerSat) {
-        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 =
+        Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator =
           Hummingbird_Failure_Detection_P.Saturation6_LowerSat;
       }
 
       // Sum: '<S1423>/Add3' incorporates:
       //   Sum: '<S1423>/Add7'
 
-      Hummingbird_Failure_Detection_B.course =
-        (Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 -
-         Hummingbird_Failure_Detection_B.CastToDouble11) -
-        Hummingbird_Failure_Detection_B.V;
-      Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 =
-        Hummingbird_Failure_Detection_B.course -
+      Hummingbird_Failure_Detection_B.V =
+        (Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 -
+         Hummingbird_Failure_Detection_B.CastToDouble8) -
+        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2;
+      Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 =
+        Hummingbird_Failure_Detection_B.V -
         Hummingbird_Failure_Detection_B.prev_altitude;
 
       // Saturate: '<S1423>/Saturation3'
-      if (Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 >
+      if (Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 >
           Hummingbird_Failure_Detection_P.Saturation3_UpperSat_a) {
-        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 =
+        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 =
           Hummingbird_Failure_Detection_P.Saturation3_UpperSat_a;
-      } else if (Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 <
+      } else if (Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 <
                  Hummingbird_Failure_Detection_P.Saturation3_LowerSat_o) {
-        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 =
+        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 =
           Hummingbird_Failure_Detection_P.Saturation3_LowerSat_o;
       }
 
       // Sum: '<S1423>/Add7'
-      Hummingbird_Failure_Detection_B.CastToDouble11 =
-        Hummingbird_Failure_Detection_B.course +
+      Hummingbird_Failure_Detection_B.CastToDouble8 =
+        Hummingbird_Failure_Detection_B.V +
         Hummingbird_Failure_Detection_B.prev_altitude;
 
       // Saturate: '<S1423>/Saturation7'
-      if (Hummingbird_Failure_Detection_B.CastToDouble11 >
+      if (Hummingbird_Failure_Detection_B.CastToDouble8 >
           Hummingbird_Failure_Detection_P.Saturation7_UpperSat) {
-        Hummingbird_Failure_Detection_B.CastToDouble11 =
+        Hummingbird_Failure_Detection_B.CastToDouble8 =
           Hummingbird_Failure_Detection_P.Saturation7_UpperSat;
-      } else if (Hummingbird_Failure_Detection_B.CastToDouble11 <
+      } else if (Hummingbird_Failure_Detection_B.CastToDouble8 <
                  Hummingbird_Failure_Detection_P.Saturation7_LowerSat) {
-        Hummingbird_Failure_Detection_B.CastToDouble11 =
+        Hummingbird_Failure_Detection_B.CastToDouble8 =
           Hummingbird_Failure_Detection_P.Saturation7_LowerSat;
       }
 
+      // Sum: '<S1412>/Sum1' incorporates:
+      //   Constant: '<S1412>/Constant'
+
+      Hummingbird_Failure_Detection_B.V = Hummingbird_Failure_Detection_B.assist
+        + Hummingbird_Failure_Detection_P.Constant_Value_cz;
+
       // Gain: '<S1420>/Gain1'
-      Hummingbird_Failure_Detection_B.V =
+      Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2 =
         Hummingbird_Failure_Detection_P.Gain1_Gain_hu *
-        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0;
+        Hummingbird_Failure_Detection_B.Saturation1;
 
       // Gain: '<S1420>/Gain2'
       Hummingbird_Failure_Detection_B.course =
         Hummingbird_Failure_Detection_P.Gain2_Gain_p *
-        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1;
+        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0;
 
       // Gain: '<S1420>/Gain3'
       Hummingbird_Failure_Detection_B.t =
         Hummingbird_Failure_Detection_P.Gain3_Gain_h *
-        Hummingbird_Failure_Detection_B.CastToDouble25;
+        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1;
 
       // Gain: '<S1420>/Gain9'
       Hummingbird_Failure_Detection_B.b_absxk =
         Hummingbird_Failure_Detection_P.Gain9_Gain *
-        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0;
+        Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator;
 
       // Gain: '<S1420>/Gain10'
       Hummingbird_Failure_Detection_B.b_t =
         Hummingbird_Failure_Detection_P.Gain10_Gain_b *
-        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1;
+        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0;
 
       // Gain: '<S1420>/Gain11'
-      Hummingbird_Failure_Detection_B.r_f =
+      Hummingbird_Failure_Detection_B.r_c =
         Hummingbird_Failure_Detection_P.Gain11_Gain *
-        Hummingbird_Failure_Detection_B.CastToDouble11;
+        Hummingbird_Failure_Detection_B.CastToDouble8;
 
       // BusAssignment: '<S1418>/Bus Assignment' incorporates:
       //   BusCreator: '<S13>/Bus Creator4'
@@ -17154,40 +17106,40 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       Hummingbird_Failure_Detection_B.BusAssignment.timestamp =
         Hummingbird_Failure_Detection_B.PX4Timestamp_pm.PX4Timestamp;
       Hummingbird_Failure_Detection_B.BusAssignment.data[0] =
-        static_cast<real32_T>(Hummingbird_Failure_Detection_B.IntegralGain_e);
-      Hummingbird_Failure_Detection_B.BusAssignment.data[1] =
-        static_cast<real32_T>(Hummingbird_Failure_Detection_B.Saturation4);
-      Hummingbird_Failure_Detection_B.BusAssignment.data[2] =
         static_cast<real32_T>
-        (Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0);
+        (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2);
+      Hummingbird_Failure_Detection_B.BusAssignment.data[1] =
+        static_cast<real32_T>(Hummingbird_Failure_Detection_B.IntegralGain_e);
+      Hummingbird_Failure_Detection_B.BusAssignment.data[2] =
+        static_cast<real32_T>(Hummingbird_Failure_Detection_B.Saturation1);
       Hummingbird_Failure_Detection_B.BusAssignment.data[3] =
         static_cast<real32_T>
-        (Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1);
+        (Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0);
       Hummingbird_Failure_Detection_B.BusAssignment.data[4] =
-        static_cast<real32_T>(Hummingbird_Failure_Detection_B.CastToDouble25);
+        static_cast<real32_T>
+        (Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1);
       Hummingbird_Failure_Detection_B.BusAssignment.data[5] =
         static_cast<real32_T>
-        (Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0);
+        (Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator);
       Hummingbird_Failure_Detection_B.BusAssignment.data[6] =
         static_cast<real32_T>
-        (Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1);
+        (Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0);
       Hummingbird_Failure_Detection_B.BusAssignment.data[7] =
-        static_cast<real32_T>(Hummingbird_Failure_Detection_B.CastToDouble11);
+        static_cast<real32_T>(Hummingbird_Failure_Detection_B.CastToDouble8);
       Hummingbird_Failure_Detection_B.BusAssignment.data[8] =
-        static_cast<real32_T>
-        (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1);
+        static_cast<real32_T>(Hummingbird_Failure_Detection_B.CastToDouble11);
       Hummingbird_Failure_Detection_B.BusAssignment.data[12] =
         static_cast<real32_T>(Hummingbird_Failure_Detection_B.dtMR);
       Hummingbird_Failure_Detection_B.BusAssignment.data[16] =
         static_cast<real32_T>(Hummingbird_Failure_Detection_P.Constant14_Value_e);
       Hummingbird_Failure_Detection_B.BusAssignment.data[17] =
-        Hummingbird_Failure_Detection_B.a_i;
+        Hummingbird_Failure_Detection_B.a_j;
       Hummingbird_Failure_Detection_B.BusAssignment.data[18] =
         Hummingbird_Failure_Detection_B.Gain14_h;
       Hummingbird_Failure_Detection_B.BusAssignment.data[19] =
-        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3;
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1;
       Hummingbird_Failure_Detection_B.BusAssignment.data[20] =
-        Hummingbird_Failure_Detection_B.b_o;
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_2;
       Hummingbird_Failure_Detection_B.BusAssignment.data[21] =
         static_cast<real32_T>
         (Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_2);
@@ -17200,12 +17152,12 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
 
       Hummingbird_Failure_Detection_B.prev_altitude =
         Hummingbird_Failure_Detection_P.Gain_Gain_l *
-        Hummingbird_Failure_Detection_B.IntegralGain_e +
+        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 +
         Hummingbird_Failure_Detection_P.Gain8_Gain *
-        Hummingbird_Failure_Detection_B.Saturation4;
+        Hummingbird_Failure_Detection_B.IntegralGain_e;
       Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_2 =
         (Hummingbird_Failure_Detection_B.prev_altitude +
-         Hummingbird_Failure_Detection_B.V) +
+         Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2) +
         Hummingbird_Failure_Detection_B.course;
 
       // BusAssignment: '<S1418>/Bus Assignment' incorporates:
@@ -17226,6 +17178,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //   Gain: '<S1420>/Gain6'
       //   Gain: '<S1420>/Gain7'
       //   MATLAB Function: '<S1410>/Control input Calculation1'
+      //   Product: '<S1412>/Divide'
       //   Product: '<S1420>/Product'
       //   Product: '<S1420>/Product1'
       //   Sum: '<S1410>/Sum1'
@@ -17242,16 +17195,16 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
             Hummingbird_Failure_Detection_B.t) +
            Hummingbird_Failure_Detection_B.b_absxk) +
           Hummingbird_Failure_Detection_B.b_t) +
-         Hummingbird_Failure_Detection_B.r_f);
+         Hummingbird_Failure_Detection_B.r_c);
       Hummingbird_Failure_Detection_B.BusAssignment.data[23] =
         static_cast<real32_T>
         (((((((Hummingbird_Failure_Detection_B.prev_altitude -
-               Hummingbird_Failure_Detection_B.V) -
+               Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2) -
               Hummingbird_Failure_Detection_B.course) -
              Hummingbird_Failure_Detection_B.t) -
             Hummingbird_Failure_Detection_B.b_absxk) +
            Hummingbird_Failure_Detection_B.b_t) +
-          Hummingbird_Failure_Detection_B.r_f) *
+          Hummingbird_Failure_Detection_B.r_c) *
          Hummingbird_Failure_Detection_P.Constant2_Value_i);
       Hummingbird_Failure_Detection_B.BusAssignment.data[24] =
         static_cast<real32_T>
@@ -17259,43 +17212,46 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
              Hummingbird_Failure_Detection_B.t) -
             Hummingbird_Failure_Detection_B.b_absxk) -
            Hummingbird_Failure_Detection_B.b_t) -
-          Hummingbird_Failure_Detection_B.r_f) *
+          Hummingbird_Failure_Detection_B.r_c) *
          Hummingbird_Failure_Detection_P.Constant1_Value_nl);
       Hummingbird_Failure_Detection_B.BusAssignment.data[25] =
         static_cast<real32_T>(((((((Hummingbird_Failure_Detection_P.Gain4_Gain_k
-        * Hummingbird_Failure_Detection_B.IntegralGain_e -
+        * Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 -
         Hummingbird_Failure_Detection_P.Gain12_Gain *
-        Hummingbird_Failure_Detection_B.Saturation4) -
+        Hummingbird_Failure_Detection_B.IntegralGain_e) -
         Hummingbird_Failure_Detection_P.Gain5_Gain *
-        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0) +
+        Hummingbird_Failure_Detection_B.Saturation1) +
         Hummingbird_Failure_Detection_P.Gain13_Gain *
-        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1) +
+        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0) +
         Hummingbird_Failure_Detection_P.Gain6_Gain *
-        Hummingbird_Failure_Detection_B.CastToDouble25) -
+        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1) -
         Hummingbird_Failure_Detection_P.Gain14_Gain *
-        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0) -
+        Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator) -
         Hummingbird_Failure_Detection_P.Gain7_Gain *
-        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1) +
+        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0) +
         Hummingbird_Failure_Detection_P.Gain15_Gain *
-        Hummingbird_Failure_Detection_B.CastToDouble11);
+        Hummingbird_Failure_Detection_B.CastToDouble8);
       Hummingbird_Failure_Detection_B.BusAssignment.data[9] =
-        static_cast<real32_T>(Hummingbird_Failure_Detection_B.Sum_e[0]);
+        static_cast<real32_T>(Hummingbird_Failure_Detection_B.Sum_e[0] /
+        Hummingbird_Failure_Detection_B.V);
       Hummingbird_Failure_Detection_B.BusAssignment.data[13] =
-        static_cast<real32_T>(Hummingbird_Failure_Detection_B.CastToDouble9);
+        static_cast<real32_T>
+        (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1);
       Hummingbird_Failure_Detection_B.BusAssignment.data[26] =
         static_cast<real32_T>(Hummingbird_Failure_Detection_B.mixer[0]);
       Hummingbird_Failure_Detection_B.BusAssignment.data[10] =
-        static_cast<real32_T>(Hummingbird_Failure_Detection_B.Sum_e[1]);
+        static_cast<real32_T>(Hummingbird_Failure_Detection_B.Sum_e[1] /
+        Hummingbird_Failure_Detection_B.V);
       Hummingbird_Failure_Detection_B.BusAssignment.data[14] =
-        static_cast<real32_T>
-        (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2);
+        static_cast<real32_T>(Hummingbird_Failure_Detection_B.CastToDouble9);
       Hummingbird_Failure_Detection_B.BusAssignment.data[27] =
         static_cast<real32_T>(Hummingbird_Failure_Detection_B.mixer[1]);
       Hummingbird_Failure_Detection_B.BusAssignment.data[11] =
-        static_cast<real32_T>(Hummingbird_Failure_Detection_B.Sum_e[2]);
+        static_cast<real32_T>(Hummingbird_Failure_Detection_B.Sum_e[2] /
+        Hummingbird_Failure_Detection_B.V);
       Hummingbird_Failure_Detection_B.BusAssignment.data[15] =
         static_cast<real32_T>
-        (Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2);
+        (Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1);
       Hummingbird_Failure_Detection_B.BusAssignment.data[28] =
         static_cast<real32_T>(Hummingbird_Failure_Detection_B.mixer[2]);
       Hummingbird_Failure_Detection_B.BusAssignment.data[29] =
@@ -17308,16 +17264,16 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         static_cast<real32_T>
         (Hummingbird_Failure_Detection_B.MovingAverage2.MovingAverage);
       Hummingbird_Failure_Detection_B.BusAssignment.data[32] =
-        static_cast<real32_T>(Hummingbird_Failure_Detection_B.CastToDouble9 +
-        Hummingbird_Failure_Detection_B.Gain14_h);
-      Hummingbird_Failure_Detection_B.BusAssignment.data[33] =
         static_cast<real32_T>
-        (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 +
-         Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3);
+        (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1 +
+         Hummingbird_Failure_Detection_B.Gain14_h);
+      Hummingbird_Failure_Detection_B.BusAssignment.data[33] =
+        static_cast<real32_T>(Hummingbird_Failure_Detection_B.CastToDouble9 +
+        Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1);
       Hummingbird_Failure_Detection_B.BusAssignment.data[34] =
         static_cast<real32_T>
-        (Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2 +
-         Hummingbird_Failure_Detection_B.b_o);
+        (Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 +
+         Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_2);
       Hummingbird_Failure_Detection_B.BusAssignment.data[35] =
         static_cast<real32_T>(Hummingbird_Failure_Detection_P.Constant14_Value_e);
       Hummingbird_Failure_Detection_B.BusAssignment.data[36] =
@@ -17405,14 +17361,15 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
 
       if (Hummingbird_Failure_Detection_B.BusCreator.VTOL_Mode >
           Hummingbird_Failure_Detection_P.Switch6_Threshold) {
-        Hummingbird_Failure_Detection_B.CastToDouble8 =
+        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 =
           Hummingbird_Failure_Detection_P.Constant3_Value;
       } else if (Hummingbird_Failure_Detection_B.BusCreator.Flight_Mode >
                  Hummingbird_Failure_Detection_P.Switch5_Threshold) {
         // Switch: '<S1410>/Switch5' incorporates:
         //   Sum: '<S1410>/Sum7'
 
-        Hummingbird_Failure_Detection_B.CastToDouble8 +=
+        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 =
+          Hummingbird_Failure_Detection_B.CastToDouble10 +
           Hummingbird_Failure_Detection_B.In1_m.positions[3];
       } else {
         // Gain: '<S1419>/Gain10' incorporates:
@@ -17420,7 +17377,8 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         //   Sum: '<S1419>/Sum8'
         //   Switch: '<S1410>/Switch5'
 
-        Hummingbird_Failure_Detection_B.CastToDouble8 = (static_cast<real_T>
+        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 = (
+          static_cast<real_T>
           (Hummingbird_Failure_Detection_B.BusCreator.Throttle) -
           Hummingbird_Failure_Detection_P.Constant7_Value_c) *
           Hummingbird_Failure_Detection_P.Gain10_Gain_mz;
@@ -17428,13 +17386,13 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         // Saturate: '<S1419>/Saturation' incorporates:
         //   Switch: '<S1410>/Switch5'
 
-        if (Hummingbird_Failure_Detection_B.CastToDouble8 >
+        if (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 >
             Hummingbird_Failure_Detection_P.Saturation_UpperSat_js) {
-          Hummingbird_Failure_Detection_B.CastToDouble8 =
+          Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 =
             Hummingbird_Failure_Detection_P.Saturation_UpperSat_js;
-        } else if (Hummingbird_Failure_Detection_B.CastToDouble8 <
+        } else if (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 <
                    Hummingbird_Failure_Detection_P.Saturation_LowerSat_d) {
-          Hummingbird_Failure_Detection_B.CastToDouble8 =
+          Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 =
             Hummingbird_Failure_Detection_P.Saturation_LowerSat_d;
         }
       }
@@ -17447,37 +17405,37 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
 
       Hummingbird_Failure_Detection_B.Actuator_output.rotor_1 = static_cast<
         real32_T>(Hummingbird_Failure_Detection_P.Gain_Gain_mx * sqrt
-                  (Hummingbird_Failure_Detection_B.IntegralGain_e));
+                  (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2));
       Hummingbird_Failure_Detection_B.Actuator_output.rotor_2 =
         static_cast<real32_T>(Hummingbird_Failure_Detection_P.Gain_Gain_mx *
-        sqrt(Hummingbird_Failure_Detection_B.Saturation4));
+        sqrt(Hummingbird_Failure_Detection_B.IntegralGain_e));
       Hummingbird_Failure_Detection_B.Actuator_output.rotor_3 =
         static_cast<real32_T>(Hummingbird_Failure_Detection_P.Gain_Gain_mx *
-        sqrt(Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0));
+        sqrt(Hummingbird_Failure_Detection_B.Saturation1));
       Hummingbird_Failure_Detection_B.Actuator_output.rotor_4 =
         static_cast<real32_T>(Hummingbird_Failure_Detection_P.Gain_Gain_mx *
-        sqrt(Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1));
+        sqrt(Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0));
       Hummingbird_Failure_Detection_B.Actuator_output.rotor_5 =
         static_cast<real32_T>(Hummingbird_Failure_Detection_P.Gain_Gain_mx *
-        sqrt(Hummingbird_Failure_Detection_B.CastToDouble25));
+        sqrt(Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1));
       Hummingbird_Failure_Detection_B.Actuator_output.rotor_6 =
         static_cast<real32_T>(Hummingbird_Failure_Detection_P.Gain_Gain_mx *
-        sqrt(Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0));
+        sqrt(Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator));
       Hummingbird_Failure_Detection_B.Actuator_output.rotor_7 =
         static_cast<real32_T>(Hummingbird_Failure_Detection_P.Gain_Gain_mx *
-        sqrt(Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1));
+        sqrt(Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0));
       Hummingbird_Failure_Detection_B.Actuator_output.rotor_8 =
         static_cast<real32_T>(Hummingbird_Failure_Detection_P.Gain_Gain_mx *
-        sqrt(Hummingbird_Failure_Detection_B.CastToDouble11));
+        sqrt(Hummingbird_Failure_Detection_B.CastToDouble8));
 
       // Saturate: '<S1410>/Saturation'
-      if (Hummingbird_Failure_Detection_B.CastToDouble8 >
+      if (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 >
           Hummingbird_Failure_Detection_P.Saturation_UpperSat_d[1]) {
-        Hummingbird_Failure_Detection_B.CastToDouble8 =
+        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 =
           Hummingbird_Failure_Detection_P.Saturation_UpperSat_d[1];
-      } else if (Hummingbird_Failure_Detection_B.CastToDouble8 <
+      } else if (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 <
                  Hummingbird_Failure_Detection_P.Saturation_LowerSat_j[1]) {
-        Hummingbird_Failure_Detection_B.CastToDouble8 =
+        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 =
           Hummingbird_Failure_Detection_P.Saturation_LowerSat_j[1];
       }
 
@@ -17488,8 +17446,8 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       //   Sum: '<S1410>/Sum'
 
       Hummingbird_Failure_Detection_B.Actuator_output.throttle = static_cast<
-        real32_T>(Hummingbird_Failure_Detection_B.CastToDouble8) -
-        Hummingbird_Failure_Detection_P.Constant5_Value;
+        real32_T>(Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0)
+        - Hummingbird_Failure_Detection_P.Constant5_Value;
 
       // Saturate: '<S1410>/Saturation'
       if (Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_1 >
@@ -17556,7 +17514,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         Hummingbird_Failure_Detection_P.Gain4_Gain_ki * static_cast<real32_T>
         (Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_0);
       Hummingbird_Failure_Detection_B.Actuator_output.arm_1 =
-        static_cast<real32_T>(Hummingbird_Failure_Detection_B.CastToDouble10);
+        static_cast<real32_T>(Hummingbird_Failure_Detection_B.arms_pos);
       Hummingbird_Failure_Detection_B.Actuator_output.arm_2 =
         static_cast<real32_T>(Hummingbird_Failure_Detection_P.Constant_Value_n5);
       Hummingbird_Failure_Detection_B.Actuator_output.arm_3 =
@@ -18035,22 +17993,22 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunct[3] =
           Hummingbird_Failure_Detection_B.In1_m.positions[3];
         Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunct[4] =
-          Hummingbird_Failure_Detection_B.a_i;
+          Hummingbird_Failure_Detection_B.a_j;
         Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunct[5] =
           Hummingbird_Failure_Detection_B.Gain14_h;
         Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunct[6] =
-          Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3;
+          Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1;
         Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunct[7] =
-          Hummingbird_Failure_Detection_B.b_o;
+          Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_2;
 
         // SignalConversion generated from: '<S1413>/ SFunction ' incorporates:
         //   Chart: '<S1410>/Chart'
 
-        Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunctionI[0] =
+        Hummingbird_Failure_Detection_B.Sum_e[0] =
           Hummingbird_Failure_Detection_B.MovingAverage.MovingAverage;
-        Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunctionI[1] =
+        Hummingbird_Failure_Detection_B.Sum_e[1] =
           Hummingbird_Failure_Detection_B.MovingAverage1.MovingAverage;
-        Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunctionI[2] =
+        Hummingbird_Failure_Detection_B.Sum_e[2] =
           Hummingbird_Failure_Detection_B.MovingAverage2.MovingAverage;
 
         // Chart: '<S1410>/Chart' incorporates:
@@ -18072,30 +18030,13 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
           Hummingbird_Failure_Detectio_DW.RC_Flight_Mode_start_d =
             Hummingbird_Failure_Detection_B.BusCreator.Flight_Mode;
           Hummingbird_Failure_Detectio_DW.is_active_c9_Hummingbird_Failur = 1U;
-          if (Hummingbird_Failure_Detection_B.BusCreator.VTOL_Mode < 1200) {
-            Hummingbird_Failure_Detectio_DW.is_Mixer_Control =
-              Hummingbird_Failure_Detec_IN_FW;
-            Hummingbird_Fai_enter_atomic_FW
-              (Hummingbird_Failure_Detectio_DW.Memory1_PreviousInput,
-               &Hummingbird_Failure_Detection_B.CastToDouble11,
-               &Hummingbird_Failure_Detection_B.CastToDouble10);
-          } else if (Hummingbird_Failure_Detection_B.BusCreator.VTOL_Mode < 1700)
-          {
-            Hummingbird_Failure_Detectio_DW.is_Mixer_Control =
-              Hummingbird__IN_Mixed_MR_Assist;
-            Hu_enter_atomic_Mixed_MR_Assist
-              (&Hummingbird_Failure_Detection_B.CastToDouble11,
-               &Hummingbird_Failure_Detection_B.CastToDouble10,
-               Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunct);
-          } else {
-            Hummingbird_Failure_Detectio_DW.is_Mixer_Control =
-              Hummingbird_Failure_Detec_IN_MR;
-            Hummingbird_Failure_Detection_B.mixer[0] = 0.0;
-            Hummingbird_Failure_Detection_B.mixer[1] = 0.0;
-            Hummingbird_Failure_Detection_B.mixer[2] = 0.0;
-            Hummingbird_Failure_Detection_B.CastToDouble11 = 0.0;
-            Hummingbird_Failure_Detection_B.CastToDouble10 = 0.0;
-          }
+          Hummingbird_Failure_Detectio_DW.is_Mixer_Control =
+            Hummingbird_Failure_Det_IN_Init;
+          Hummingbird_Failure_Detection_B.assist = 0.0;
+          Hummingbird_Failure_Detection_B.arms_pos = 1.0;
+          Hummingbird_Failure_Detection_B.mixer[0] = 1.0;
+          Hummingbird_Failure_Detection_B.mixer[1] = 1.0;
+          Hummingbird_Failure_Detection_B.mixer[2] = 1.0;
         } else if ((Hummingbird_Failure_Detection_B.RC_Flight_Mode_prev_f !=
                     Hummingbird_Failure_Detectio_DW.RC_VTOL_Mode_start_b) ||
                    (Hummingbird_Failure_Detection_B.RC_VTOL_Mode_prev_o !=
@@ -18105,76 +18046,91 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
               Hummingbird_Failure_Detec_IN_FW;
             Hummingbird_Fai_enter_atomic_FW
               (Hummingbird_Failure_Detectio_DW.Memory1_PreviousInput,
-               &Hummingbird_Failure_Detection_B.CastToDouble11,
-               &Hummingbird_Failure_Detection_B.CastToDouble10);
+               Hummingbird_Failure_Detection_B.Sum_e);
           } else if (Hummingbird_Failure_Detection_B.BusCreator.VTOL_Mode < 1700)
           {
             Hummingbird_Failure_Detectio_DW.is_Mixer_Control =
               Hummingbird__IN_Mixed_MR_Assist;
             Hu_enter_atomic_Mixed_MR_Assist
-              (&Hummingbird_Failure_Detection_B.CastToDouble11,
-               &Hummingbird_Failure_Detection_B.CastToDouble10,
-               Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunct);
+              (Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunct);
           } else {
             Hummingbird_Failure_Detectio_DW.is_Mixer_Control =
               Hummingbird_Failure_Detec_IN_MR;
             Hummingbird_Failure_Detection_B.mixer[0] = 0.0;
             Hummingbird_Failure_Detection_B.mixer[1] = 0.0;
             Hummingbird_Failure_Detection_B.mixer[2] = 0.0;
-            Hummingbird_Failure_Detection_B.CastToDouble11 = 0.0;
-            Hummingbird_Failure_Detection_B.CastToDouble10 = 0.0;
+            Hummingbird_Failure_Detection_B.assist = 0.0;
+            Hummingbird_Failure_Detection_B.arms_pos = 0.0;
           }
         } else {
           switch (Hummingbird_Failure_Detectio_DW.is_Mixer_Control) {
            case Hummingbird_Failure_Detec_IN_FW:
-            Hummingbird_Failure_Detection_B.mixer[0] = 1.0;
             Hummingbird_Failure_Detection_B.y[0] = fabs
-              (Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunctionI[0]);
-            Hummingbird_Failure_Detection_B.mixer[1] = 1.0;
+              (Hummingbird_Failure_Detection_B.MovingAverage.MovingAverage);
             Hummingbird_Failure_Detection_B.y[1] = fabs
-              (Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunctionI[1]);
-            Hummingbird_Failure_Detection_B.mixer[2] = 1.0;
+              (Hummingbird_Failure_Detection_B.MovingAverage1.MovingAverage);
             Hummingbird_Failure_Detection_B.y[2] = fabs
-              (Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunctionI[2]);
-            b_varargout_1 = true;
+              (Hummingbird_Failure_Detection_B.MovingAverage2.MovingAverage);
+            Hummingbird_Failure_Detection_B.b_varargout_1 = false;
             Hummingbird_Failure_Detection_B.i = 0;
             exitg1 = false;
             while ((!exitg1) && (Hummingbird_Failure_Detection_B.i < 3)) {
-              if (!(Hummingbird_Failure_Detection_B.y[Hummingbird_Failure_Detection_B.i]
-                    < 4.0)) {
-                b_varargout_1 = false;
+              if (Hummingbird_Failure_Detection_B.y[Hummingbird_Failure_Detection_B.i]
+                  > 4.0) {
+                Hummingbird_Failure_Detection_B.b_varargout_1 = true;
                 exitg1 = true;
               } else {
                 Hummingbird_Failure_Detection_B.i++;
               }
             }
 
-            if (b_varargout_1) {
-              Hummingbird_Failure_Detection_B.CastToDouble11 = 0.0;
-              Hummingbird_Failure_Detection_B.CastToDouble10 = 1.0;
-            } else {
-              Hummingbird_Failure_Detection_B.CastToDouble10 = 0.0;
-              Hummingbird_Failure_Detection_B.CastToDouble11 = 1.0;
+            if (Hummingbird_Failure_Detection_B.b_varargout_1) {
+              Hummingbird_Failure_Detection_B.arms_pos = 0.0;
+              Hummingbird_Failure_Detection_B.assist = 1.0;
               if (fabs
-                  (Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunctionI
-                   [0]) > 4.0 *
-                  Hummingbird_Failure_Detectio_DW.Memory1_PreviousInput[0]) {
+                  (Hummingbird_Failure_Detection_B.MovingAverage.MovingAverage) >
+                  4.0 * Hummingbird_Failure_Detectio_DW.Memory1_PreviousInput[0])
+              {
                 Hummingbird_Failure_Detection_B.mixer[0] = 0.2;
               }
 
               if (fabs
-                  (Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunctionI
-                   [1]) > 4.0 *
-                  Hummingbird_Failure_Detectio_DW.Memory1_PreviousInput[1]) {
+                  (Hummingbird_Failure_Detection_B.MovingAverage1.MovingAverage)
+                  > 4.0 * Hummingbird_Failure_Detectio_DW.Memory1_PreviousInput
+                  [1]) {
                 Hummingbird_Failure_Detection_B.mixer[1] = 0.2;
               }
 
               if (fabs
-                  (Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunctionI
-                   [2]) > 2.0 *
-                  Hummingbird_Failure_Detectio_DW.Memory1_PreviousInput[2]) {
+                  (Hummingbird_Failure_Detection_B.MovingAverage2.MovingAverage)
+                  > 2.0 * Hummingbird_Failure_Detectio_DW.Memory1_PreviousInput
+                  [2]) {
                 Hummingbird_Failure_Detection_B.mixer[2] = 0.2;
               }
+            }
+            break;
+
+           case Hummingbird_Failure_Det_IN_Init:
+            if (Hummingbird_Failure_Detection_B.BusCreator.VTOL_Mode < 1200) {
+              Hummingbird_Failure_Detectio_DW.is_Mixer_Control =
+                Hummingbird_Failure_Detec_IN_FW;
+              Hummingbird_Fai_enter_atomic_FW
+                (Hummingbird_Failure_Detectio_DW.Memory1_PreviousInput,
+                 Hummingbird_Failure_Detection_B.Sum_e);
+            } else if (Hummingbird_Failure_Detection_B.BusCreator.VTOL_Mode <
+                       1700) {
+              Hummingbird_Failure_Detectio_DW.is_Mixer_Control =
+                Hummingbird__IN_Mixed_MR_Assist;
+              Hu_enter_atomic_Mixed_MR_Assist
+                (Hummingbird_Failure_Detection_B.TmpSignalConversionAtSFunct);
+            } else {
+              Hummingbird_Failure_Detectio_DW.is_Mixer_Control =
+                Hummingbird_Failure_Detec_IN_MR;
+              Hummingbird_Failure_Detection_B.mixer[0] = 0.0;
+              Hummingbird_Failure_Detection_B.mixer[1] = 0.0;
+              Hummingbird_Failure_Detection_B.mixer[2] = 0.0;
+              Hummingbird_Failure_Detection_B.assist = 0.0;
+              Hummingbird_Failure_Detection_B.arms_pos = 0.0;
             }
             break;
 
@@ -18182,8 +18138,8 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
             Hummingbird_Failure_Detection_B.mixer[0] = 0.0;
             Hummingbird_Failure_Detection_B.mixer[1] = 0.0;
             Hummingbird_Failure_Detection_B.mixer[2] = 0.0;
-            Hummingbird_Failure_Detection_B.CastToDouble11 = 0.0;
-            Hummingbird_Failure_Detection_B.CastToDouble10 = 0.0;
+            Hummingbird_Failure_Detection_B.assist = 0.0;
+            Hummingbird_Failure_Detection_B.arms_pos = 0.0;
             break;
 
            default:
@@ -18243,8 +18199,8 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
               Hummingbird_Failure_Detection_B.mixer[2] = 1.0;
             }
 
-            Hummingbird_Failure_Detection_B.CastToDouble11 = 1.0;
-            Hummingbird_Failure_Detection_B.CastToDouble10 = 0.0;
+            Hummingbird_Failure_Detection_B.assist = 1.0;
+            Hummingbird_Failure_Detection_B.arms_pos = 0.0;
             break;
           }
         }
@@ -18337,160 +18293,160 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         }
 
         Hummingbird_Failure_Detection_B.i = 0;
-        Hummingbird_Failure_Detection_B.r2_m = 1;
-        Hummingbird_Failure_Detection_B.r3_c = 2;
+        Hummingbird_Failure_Detection_B.r2_o = 1;
+        Hummingbird_Failure_Detection_B.r3_n = 2;
         if (fabs(Hummingbird_Failure_Detection_B.x[2]) >
             Hummingbird_Failure_Detection_B.x[0]) {
           Hummingbird_Failure_Detection_B.i = 2;
-          Hummingbird_Failure_Detection_B.r3_c = 0;
+          Hummingbird_Failure_Detection_B.r3_n = 0;
         }
 
         Hummingbird_Failure_Detection_B.x[1] /=
           Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i];
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c] /=
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n] /=
           Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i];
         Hummingbird_Failure_Detection_B.x[4] -=
           Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i +
           3] * Hummingbird_Failure_Detection_B.x[1];
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c +
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n +
           3] -=
           Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i +
           3] *
-          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c];
+          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n];
         Hummingbird_Failure_Detection_B.x[7] -=
           Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i +
           6] * Hummingbird_Failure_Detection_B.x[1];
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c +
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n +
           6] -=
           Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i +
           6] *
-          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c];
+          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n];
         if (fabs
-            (Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c
+            (Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n
              + 3]) > fabs(Hummingbird_Failure_Detection_B.x[4])) {
-          Hummingbird_Failure_Detection_B.r2_m =
-            Hummingbird_Failure_Detection_B.r3_c;
-          Hummingbird_Failure_Detection_B.r3_c = 1;
+          Hummingbird_Failure_Detection_B.r2_o =
+            Hummingbird_Failure_Detection_B.r3_n;
+          Hummingbird_Failure_Detection_B.r3_n = 1;
         }
 
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c +
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n +
           3] /=
-          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_m
+          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_o
           + 3];
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c +
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n +
           6] -=
-          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c
+          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n
           + 3] *
-          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_m
+          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_o
           + 6];
         Hummingbird_Failure_Detection_B.prev_altitude =
           Hummingbird_Failure_Detection_P.Constant2_Value_n[Hummingbird_Failure_Detection_B.i];
-        Hummingbird_Failure_Detection_B.IntegralGain_e =
-          Hummingbird_Failure_Detection_P.Constant2_Value_n[Hummingbird_Failure_Detection_B.r2_m]
+        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 =
+          Hummingbird_Failure_Detection_P.Constant2_Value_n[Hummingbird_Failure_Detection_B.r2_o]
           - Hummingbird_Failure_Detection_B.prev_altitude *
-          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_m];
-        Hummingbird_Failure_Detection_B.Saturation4 =
-          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c
-          + 3];
-        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 =
-          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c
-          + 6];
-        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 =
-          ((Hummingbird_Failure_Detection_P.Constant2_Value_n[Hummingbird_Failure_Detection_B.r3_c]
-            - Hummingbird_Failure_Detection_B.prev_altitude *
-            Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c])
-           - Hummingbird_Failure_Detection_B.Saturation4 *
-           Hummingbird_Failure_Detection_B.IntegralGain_e) /
-          Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0;
-        Hummingbird_Failure_Detection_B.a[2] =
-          Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1;
-        Hummingbird_Failure_Detection_B.CastToDouble25 =
-          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_m
-          + 6];
-        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 =
-          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_m
-          + 3];
+          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_o];
         Hummingbird_Failure_Detection_B.IntegralGain_e =
-          (Hummingbird_Failure_Detection_B.IntegralGain_e -
-           Hummingbird_Failure_Detection_B.CastToDouble25 *
-           Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1) /
-          Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0;
+          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n
+          + 3];
+        Hummingbird_Failure_Detection_B.Saturation1 =
+          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n
+          + 6];
+        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 =
+          ((Hummingbird_Failure_Detection_P.Constant2_Value_n[Hummingbird_Failure_Detection_B.r3_n]
+            - Hummingbird_Failure_Detection_B.prev_altitude *
+            Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n])
+           - Hummingbird_Failure_Detection_B.IntegralGain_e *
+           Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2) /
+          Hummingbird_Failure_Detection_B.Saturation1;
+        Hummingbird_Failure_Detection_B.a[2] =
+          Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0;
+        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 =
+          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_o
+          + 6];
+        Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator =
+          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_o
+          + 3];
+        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 =
+          (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 -
+           Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 *
+           Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0) /
+          Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator;
         Hummingbird_Failure_Detection_B.a[1] =
-          Hummingbird_Failure_Detection_B.IntegralGain_e;
-        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 =
+          Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2;
+        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 =
           Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i +
           6];
-        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2 =
+        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 =
           Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i +
           3];
         Hummingbird_Failure_Detection_B.a[0] =
           ((Hummingbird_Failure_Detection_B.prev_altitude -
-            Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 *
-            Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1) -
-           Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2 *
-           Hummingbird_Failure_Detection_B.IntegralGain_e) /
+            Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 *
+            Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0) -
+           Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 *
+           Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2) /
           Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i];
         Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_1 = 0.0;
         Hummingbird_Failure_Detection_B.prev_altitude =
           Hummingbird_Failure_Detection_P.Constant2_Value_n[Hummingbird_Failure_Detection_B.i
           + 3];
-        Hummingbird_Failure_Detection_B.IntegralGain_e =
-          Hummingbird_Failure_Detection_P.Constant2_Value_n[Hummingbird_Failure_Detection_B.r2_m
+        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 =
+          Hummingbird_Failure_Detection_P.Constant2_Value_n[Hummingbird_Failure_Detection_B.r2_o
           + 3] - Hummingbird_Failure_Detection_B.prev_altitude *
-          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_m];
-        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 =
-          ((Hummingbird_Failure_Detection_P.Constant2_Value_n[Hummingbird_Failure_Detection_B.r3_c
+          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_o];
+        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 =
+          ((Hummingbird_Failure_Detection_P.Constant2_Value_n[Hummingbird_Failure_Detection_B.r3_n
             + 3] - Hummingbird_Failure_Detection_B.prev_altitude *
-            Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c])
-           - Hummingbird_Failure_Detection_B.Saturation4 *
-           Hummingbird_Failure_Detection_B.IntegralGain_e) /
-          Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0;
+            Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n])
+           - Hummingbird_Failure_Detection_B.IntegralGain_e *
+           Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2) /
+          Hummingbird_Failure_Detection_B.Saturation1;
         Hummingbird_Failure_Detection_B.a[5] =
-          Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1;
-        Hummingbird_Failure_Detection_B.IntegralGain_e =
-          (Hummingbird_Failure_Detection_B.IntegralGain_e -
-           Hummingbird_Failure_Detection_B.CastToDouble25 *
-           Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1) /
-          Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0;
+          Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0;
+        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 =
+          (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 -
+           Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 *
+           Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0) /
+          Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator;
         Hummingbird_Failure_Detection_B.a[4] =
-          Hummingbird_Failure_Detection_B.IntegralGain_e;
+          Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2;
         Hummingbird_Failure_Detection_B.a[3] =
           ((Hummingbird_Failure_Detection_B.prev_altitude -
-            Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 *
-            Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1) -
-           Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2 *
-           Hummingbird_Failure_Detection_B.IntegralGain_e) /
+            Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 *
+            Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0) -
+           Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 *
+           Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2) /
           Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i];
         Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 = 0.0;
         Hummingbird_Failure_Detection_B.prev_altitude =
           Hummingbird_Failure_Detection_P.Constant2_Value_n[Hummingbird_Failure_Detection_B.i
           + 6];
-        Hummingbird_Failure_Detection_B.IntegralGain_e =
-          Hummingbird_Failure_Detection_P.Constant2_Value_n[Hummingbird_Failure_Detection_B.r2_m
+        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 =
+          Hummingbird_Failure_Detection_P.Constant2_Value_n[Hummingbird_Failure_Detection_B.r2_o
           + 6] - Hummingbird_Failure_Detection_B.prev_altitude *
-          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_m];
-        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 =
-          ((Hummingbird_Failure_Detection_P.Constant2_Value_n[Hummingbird_Failure_Detection_B.r3_c
+          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_o];
+        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 =
+          ((Hummingbird_Failure_Detection_P.Constant2_Value_n[Hummingbird_Failure_Detection_B.r3_n
             + 6] - Hummingbird_Failure_Detection_B.prev_altitude *
-            Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c])
-           - Hummingbird_Failure_Detection_B.Saturation4 *
-           Hummingbird_Failure_Detection_B.IntegralGain_e) /
-          Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0;
+            Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n])
+           - Hummingbird_Failure_Detection_B.IntegralGain_e *
+           Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2) /
+          Hummingbird_Failure_Detection_B.Saturation1;
         Hummingbird_Failure_Detection_B.a[8] =
-          Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1;
-        Hummingbird_Failure_Detection_B.IntegralGain_e =
-          (Hummingbird_Failure_Detection_B.IntegralGain_e -
-           Hummingbird_Failure_Detection_B.CastToDouble25 *
-           Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1) /
-          Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0;
+          Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0;
+        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 =
+          (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 -
+           Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 *
+           Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0) /
+          Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator;
         Hummingbird_Failure_Detection_B.a[7] =
-          Hummingbird_Failure_Detection_B.IntegralGain_e;
+          Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2;
         Hummingbird_Failure_Detection_B.a[6] =
           ((Hummingbird_Failure_Detection_B.prev_altitude -
-            Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 *
-            Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1) -
-           Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2 *
-           Hummingbird_Failure_Detection_B.IntegralGain_e) /
+            Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 *
+            Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0) -
+           Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 *
+           Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2) /
           Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i];
         Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_0 = 0.0;
         for (Hummingbird_Failure_Detection_B.i = 0;
@@ -18527,10 +18483,10 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         //   RelationalOperator: '<S1410>/IsNaN3'
 
         if (rtIsNaN(Hummingbird_Failure_Detection_B.dtFW)) {
-          Hummingbird_Failure_Detection_B.CastToDouble8 =
+          Hummingbird_Failure_Detection_B.CastToDouble10 =
             Hummingbird_Failure_Detection_P.Constant4_Value_g;
         } else {
-          Hummingbird_Failure_Detection_B.CastToDouble8 =
+          Hummingbird_Failure_Detection_B.CastToDouble10 =
             Hummingbird_Failure_Detection_B.dtFW;
         }
 
@@ -18562,7 +18518,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
           static_cast<real32_T>
           (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0);
         Hummingbird_Failure_Detection_B.BusAssignment_c.dt =
-          static_cast<real32_T>(Hummingbird_Failure_Detection_B.CastToDouble8);
+          static_cast<real32_T>(Hummingbird_Failure_Detection_B.CastToDouble10);
         Hummingbird_Failure_Detection_B.BusAssignment_c.da =
           static_cast<real32_T>
           (Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_1);
@@ -18586,23 +18542,23 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         if (((Hummingbird_Failure_Detection_B.mixer[0] == 0.0) &&
              (Hummingbird_Failure_Detection_B.mixer[1] == 0.0) &&
              (Hummingbird_Failure_Detection_B.mixer[2] == 0.0)) ||
-            (Hummingbird_Failure_Detection_B.CastToDouble11 == 1.0)) {
-          Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1 =
+            (Hummingbird_Failure_Detection_B.assist == 1.0)) {
+          Hummingbird_Failure_Detection_B.CastToDouble11 =
             Hummingbird_Failure_Detection_P.Constant1_Value_n;
         } else {
-          Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1 =
+          Hummingbird_Failure_Detection_B.CastToDouble11 =
             Hummingbird_Failure_Detection_B.dtMR +
-            Hummingbird_Failure_Detection_B.a_i;
+            Hummingbird_Failure_Detection_B.a_j;
         }
 
         // Saturate: '<S1412>/Saturation3'
-        if (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1 >
+        if (Hummingbird_Failure_Detection_B.CastToDouble11 >
             Hummingbird_Failure_Detection_P.Saturation3_UpperSat) {
-          Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1 =
+          Hummingbird_Failure_Detection_B.CastToDouble11 =
             Hummingbird_Failure_Detection_P.Saturation3_UpperSat;
-        } else if (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1 <
+        } else if (Hummingbird_Failure_Detection_B.CastToDouble11 <
                    Hummingbird_Failure_Detection_P.Saturation3_LowerSat) {
-          Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1 =
+          Hummingbird_Failure_Detection_B.CastToDouble11 =
             Hummingbird_Failure_Detection_P.Saturation3_LowerSat;
         }
 
@@ -18610,8 +18566,8 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         //   Constant: '<S1423>/Constant'
         //   Product: '<S1423>/Divide'
 
-        Hummingbird_Failure_Detection_B.CastToDouble11 =
-          Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1 /
+        Hummingbird_Failure_Detection_B.CastToDouble8 =
+          Hummingbird_Failure_Detection_B.CastToDouble11 /
           Hummingbird_Failure_Detection_P.Constant_Value_li *
           Hummingbird_Failure_Detection_P.Gain_Gain_b;
 
@@ -18619,230 +18575,233 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         //   Constant: '<S1410>/Constant12'
         //   Constant: '<S1410>/Constant13'
 
-        memcpy(&Hummingbird_Failure_Detection_B.x[0],
-               &Hummingbird_Failure_Detection_P.Constant12_Value[0], 9U * sizeof
-               (real_T));
+        for (Hummingbird_Failure_Detection_B.i = 0;
+             Hummingbird_Failure_Detection_B.i < 9;
+             Hummingbird_Failure_Detection_B.i++) {
+          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i] =
+            Hummingbird_Failure_Detection_P.Constant12_Value[Hummingbird_Failure_Detection_B.i];
+          Hummingbird_Failure_Detection_B.B[Hummingbird_Failure_Detection_B.i] =
+            Hummingbird_Failure_Detection_P.IB[Hummingbird_Failure_Detection_B.i]
+            - b[Hummingbird_Failure_Detection_B.i];
+        }
+
         Hummingbird_Failure_Detection_B.i = 0;
-        Hummingbird_Failure_Detection_B.r2_m = 1;
-        Hummingbird_Failure_Detection_B.r3_c = 2;
-        Hummingbird_Failure_Detection_B.CastToDouble9 = fabs
+        Hummingbird_Failure_Detection_B.r2_o = 1;
+        Hummingbird_Failure_Detection_B.r3_n = 2;
+        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1 = fabs
           (Hummingbird_Failure_Detection_P.Constant12_Value[0]);
-        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 = fabs
+        Hummingbird_Failure_Detection_B.CastToDouble9 = fabs
           (Hummingbird_Failure_Detection_P.Constant12_Value[1]);
-        if (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 >
-            Hummingbird_Failure_Detection_B.CastToDouble9) {
-          Hummingbird_Failure_Detection_B.CastToDouble9 =
-            Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2;
+        if (Hummingbird_Failure_Detection_B.CastToDouble9 >
+            Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1) {
+          Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1 =
+            Hummingbird_Failure_Detection_B.CastToDouble9;
           Hummingbird_Failure_Detection_B.i = 1;
-          Hummingbird_Failure_Detection_B.r2_m = 0;
+          Hummingbird_Failure_Detection_B.r2_o = 0;
         }
 
         if (fabs(Hummingbird_Failure_Detection_P.Constant12_Value[2]) >
-            Hummingbird_Failure_Detection_B.CastToDouble9) {
+            Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1) {
           Hummingbird_Failure_Detection_B.i = 2;
-          Hummingbird_Failure_Detection_B.r2_m = 1;
-          Hummingbird_Failure_Detection_B.r3_c = 0;
+          Hummingbird_Failure_Detection_B.r2_o = 1;
+          Hummingbird_Failure_Detection_B.r3_n = 0;
         }
 
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_m] =
-          Hummingbird_Failure_Detection_P.Constant12_Value[Hummingbird_Failure_Detection_B.r2_m]
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_o] =
+          Hummingbird_Failure_Detection_P.Constant12_Value[Hummingbird_Failure_Detection_B.r2_o]
           /
           Hummingbird_Failure_Detection_P.Constant12_Value[Hummingbird_Failure_Detection_B.i];
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c] /=
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n] /=
           Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i];
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_m +
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_o +
           3] -=
           Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i +
           3] *
-          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_m];
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c +
+          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_o];
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n +
           3] -=
           Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i +
           3] *
-          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c];
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_m +
+          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n];
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_o +
           6] -=
           Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i +
           6] *
-          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_m];
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c +
+          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_o];
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n +
           6] -=
           Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i +
           6] *
-          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c];
+          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n];
         if (fabs
-            (Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c
+            (Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n
              + 3]) > fabs
-            (Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_m
+            (Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_o
              + 3])) {
           Hummingbird_Failure_Detection_B.rtemp =
-            Hummingbird_Failure_Detection_B.r2_m;
-          Hummingbird_Failure_Detection_B.r2_m =
-            Hummingbird_Failure_Detection_B.r3_c;
-          Hummingbird_Failure_Detection_B.r3_c =
+            Hummingbird_Failure_Detection_B.r2_o;
+          Hummingbird_Failure_Detection_B.r2_o =
+            Hummingbird_Failure_Detection_B.r3_n;
+          Hummingbird_Failure_Detection_B.r3_n =
             Hummingbird_Failure_Detection_B.rtemp;
         }
 
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c +
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n +
           3] /=
-          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_m
+          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_o
           + 3];
-        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c +
+        Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n +
           6] -=
-          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c
+          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n
           + 3] *
-          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_m
+          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_o
           + 6];
         Hummingbird_Failure_Detection_B.prev_altitude =
-          Hummingbird_Failure_Detection_P.IB[Hummingbird_Failure_Detection_B.i];
-        Hummingbird_Failure_Detection_B.IntegralGain_e =
-          Hummingbird_Failure_Detection_P.IB[Hummingbird_Failure_Detection_B.r2_m]
+          Hummingbird_Failure_Detection_B.B[Hummingbird_Failure_Detection_B.i];
+        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 =
+          Hummingbird_Failure_Detection_B.B[Hummingbird_Failure_Detection_B.r2_o]
           - Hummingbird_Failure_Detection_B.prev_altitude *
-          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_m];
-        Hummingbird_Failure_Detection_B.Saturation4 =
-          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c
-          + 3];
-        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 =
-          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c
-          + 6];
-        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 =
-          ((Hummingbird_Failure_Detection_P.IB[Hummingbird_Failure_Detection_B.r3_c]
-            - Hummingbird_Failure_Detection_B.prev_altitude *
-            Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c])
-           - Hummingbird_Failure_Detection_B.Saturation4 *
-           Hummingbird_Failure_Detection_B.IntegralGain_e) /
-          Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0;
-        Hummingbird_Failure_Detection_B.a_m[2] =
-          Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1;
-        Hummingbird_Failure_Detection_B.CastToDouble25 =
-          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_m
-          + 6];
-        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 =
-          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_m
-          + 3];
+          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_o];
         Hummingbird_Failure_Detection_B.IntegralGain_e =
-          (Hummingbird_Failure_Detection_B.IntegralGain_e -
-           Hummingbird_Failure_Detection_B.CastToDouble25 *
-           Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1) /
-          Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0;
-        Hummingbird_Failure_Detection_B.a_m[1] =
-          Hummingbird_Failure_Detection_B.IntegralGain_e;
-        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 =
+          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n
+          + 3];
+        Hummingbird_Failure_Detection_B.Saturation1 =
+          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n
+          + 6];
+        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 =
+          ((Hummingbird_Failure_Detection_B.B[Hummingbird_Failure_Detection_B.r3_n]
+            - Hummingbird_Failure_Detection_B.prev_altitude *
+            Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n])
+           - Hummingbird_Failure_Detection_B.IntegralGain_e *
+           Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2) /
+          Hummingbird_Failure_Detection_B.Saturation1;
+        Hummingbird_Failure_Detection_B.a[2] =
+          Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0;
+        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 =
+          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_o
+          + 6];
+        Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator =
+          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_o
+          + 3];
+        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 =
+          (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 -
+           Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 *
+           Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0) /
+          Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator;
+        Hummingbird_Failure_Detection_B.a[1] =
+          Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2;
+        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 =
           Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i +
           6];
-        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2 =
+        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 =
           Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i +
           3];
-        Hummingbird_Failure_Detection_B.a_m[0] =
+        Hummingbird_Failure_Detection_B.a[0] =
           ((Hummingbird_Failure_Detection_B.prev_altitude -
-            Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 *
-            Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1) -
-           Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2 *
-           Hummingbird_Failure_Detection_B.IntegralGain_e) /
+            Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 *
+            Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0) -
+           Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 *
+           Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2) /
           Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i];
 
         // Sum: '<S1410>/Sum8'
-        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[0] =
+        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[0] =
           Hummingbird_Failure_Detection_B.dM[0] -
           Hummingbird_Failure_Detection_B.Sum_e[0];
 
-        // MATLAB Function: '<S1410>/Control input Calculation1' incorporates:
-        //   Constant: '<S1410>/Constant13'
-
-        Hummingbird_Failure_Detection_B.CastToDouble9 = 0.0;
+        // MATLAB Function: '<S1410>/Control input Calculation1'
+        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1 = 0.0;
         Hummingbird_Failure_Detection_B.prev_altitude =
-          Hummingbird_Failure_Detection_P.IB[Hummingbird_Failure_Detection_B.i +
+          Hummingbird_Failure_Detection_B.B[Hummingbird_Failure_Detection_B.i +
           3];
-        Hummingbird_Failure_Detection_B.IntegralGain_e =
-          Hummingbird_Failure_Detection_P.IB[Hummingbird_Failure_Detection_B.r2_m
+        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 =
+          Hummingbird_Failure_Detection_B.B[Hummingbird_Failure_Detection_B.r2_o
           + 3] - Hummingbird_Failure_Detection_B.prev_altitude *
-          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_m];
-        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 =
-          ((Hummingbird_Failure_Detection_P.IB[Hummingbird_Failure_Detection_B.r3_c
+          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_o];
+        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 =
+          ((Hummingbird_Failure_Detection_B.B[Hummingbird_Failure_Detection_B.r3_n
             + 3] - Hummingbird_Failure_Detection_B.prev_altitude *
-            Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c])
-           - Hummingbird_Failure_Detection_B.Saturation4 *
-           Hummingbird_Failure_Detection_B.IntegralGain_e) /
+            Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n])
+           - Hummingbird_Failure_Detection_B.IntegralGain_e *
+           Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2) /
+          Hummingbird_Failure_Detection_B.Saturation1;
+        Hummingbird_Failure_Detection_B.a[5] =
           Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0;
-        Hummingbird_Failure_Detection_B.a_m[5] =
-          Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1;
-        Hummingbird_Failure_Detection_B.IntegralGain_e =
-          (Hummingbird_Failure_Detection_B.IntegralGain_e -
-           Hummingbird_Failure_Detection_B.CastToDouble25 *
-           Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1) /
-          Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0;
-        Hummingbird_Failure_Detection_B.a_m[4] =
-          Hummingbird_Failure_Detection_B.IntegralGain_e;
-        Hummingbird_Failure_Detection_B.a_m[3] =
+        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 =
+          (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 -
+           Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 *
+           Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0) /
+          Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator;
+        Hummingbird_Failure_Detection_B.a[4] =
+          Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2;
+        Hummingbird_Failure_Detection_B.a[3] =
           ((Hummingbird_Failure_Detection_B.prev_altitude -
-            Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 *
-            Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1) -
-           Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2 *
-           Hummingbird_Failure_Detection_B.IntegralGain_e) /
+            Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 *
+            Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0) -
+           Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 *
+           Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2) /
           Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i];
 
         // Sum: '<S1410>/Sum8'
-        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[1] =
+        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[1] =
           Hummingbird_Failure_Detection_B.dM[1] -
           Hummingbird_Failure_Detection_B.Sum_e[1];
 
-        // MATLAB Function: '<S1410>/Control input Calculation1' incorporates:
-        //   Constant: '<S1410>/Constant13'
-
-        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 = 0.0;
+        // MATLAB Function: '<S1410>/Control input Calculation1'
+        Hummingbird_Failure_Detection_B.CastToDouble9 = 0.0;
         Hummingbird_Failure_Detection_B.prev_altitude =
-          Hummingbird_Failure_Detection_P.IB[Hummingbird_Failure_Detection_B.i +
+          Hummingbird_Failure_Detection_B.B[Hummingbird_Failure_Detection_B.i +
           6];
-        Hummingbird_Failure_Detection_B.IntegralGain_e =
-          Hummingbird_Failure_Detection_P.IB[Hummingbird_Failure_Detection_B.r2_m
+        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 =
+          Hummingbird_Failure_Detection_B.B[Hummingbird_Failure_Detection_B.r2_o
           + 6] - Hummingbird_Failure_Detection_B.prev_altitude *
-          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_m];
-        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 =
-          ((Hummingbird_Failure_Detection_P.IB[Hummingbird_Failure_Detection_B.r3_c
+          Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r2_o];
+        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 =
+          ((Hummingbird_Failure_Detection_B.B[Hummingbird_Failure_Detection_B.r3_n
             + 6] - Hummingbird_Failure_Detection_B.prev_altitude *
-            Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_c])
-           - Hummingbird_Failure_Detection_B.Saturation4 *
-           Hummingbird_Failure_Detection_B.IntegralGain_e) /
+            Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.r3_n])
+           - Hummingbird_Failure_Detection_B.IntegralGain_e *
+           Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2) /
+          Hummingbird_Failure_Detection_B.Saturation1;
+        Hummingbird_Failure_Detection_B.a[8] =
           Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0;
-        Hummingbird_Failure_Detection_B.a_m[8] =
-          Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1;
-        Hummingbird_Failure_Detection_B.IntegralGain_e =
-          (Hummingbird_Failure_Detection_B.IntegralGain_e -
-           Hummingbird_Failure_Detection_B.CastToDouble25 *
-           Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1) /
-          Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0;
-        Hummingbird_Failure_Detection_B.a_m[7] =
-          Hummingbird_Failure_Detection_B.IntegralGain_e;
-        Hummingbird_Failure_Detection_B.a_m[6] =
+        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 =
+          (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 -
+           Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 *
+           Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0) /
+          Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator;
+        Hummingbird_Failure_Detection_B.a[7] =
+          Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2;
+        Hummingbird_Failure_Detection_B.a[6] =
           ((Hummingbird_Failure_Detection_B.prev_altitude -
-            Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 *
-            Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1) -
-           Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2 *
-           Hummingbird_Failure_Detection_B.IntegralGain_e) /
+            Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 *
+            Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0) -
+           Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 *
+           Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2) /
           Hummingbird_Failure_Detection_B.x[Hummingbird_Failure_Detection_B.i];
 
         // Sum: '<S1410>/Sum8'
-        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[2] =
+        Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[2] =
           Hummingbird_Failure_Detection_B.dM[2] -
           Hummingbird_Failure_Detection_B.Sum_e[2];
 
         // MATLAB Function: '<S1410>/Control input Calculation1'
-        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2 = 0.0;
+        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 = 0.0;
         for (Hummingbird_Failure_Detection_B.i = 0;
              Hummingbird_Failure_Detection_B.i < 3;
              Hummingbird_Failure_Detection_B.i++) {
           Hummingbird_Failure_Detection_B.prev_altitude =
-            Hummingbird_Failure_Detection_B.rtb_DProdOut_n_c[Hummingbird_Failure_Detection_B.i];
-          Hummingbird_Failure_Detection_B.CastToDouble9 +=
-            Hummingbird_Failure_Detection_B.a_m[3 *
+            Hummingbird_Failure_Detection_B.rtb_DProdOut_n_k[Hummingbird_Failure_Detection_B.i];
+          Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1 +=
+            Hummingbird_Failure_Detection_B.a[3 *
             Hummingbird_Failure_Detection_B.i] *
             Hummingbird_Failure_Detection_B.prev_altitude;
-          Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 +=
-            Hummingbird_Failure_Detection_B.a_m[3 *
+          Hummingbird_Failure_Detection_B.CastToDouble9 +=
+            Hummingbird_Failure_Detection_B.a[3 *
             Hummingbird_Failure_Detection_B.i + 1] *
             Hummingbird_Failure_Detection_B.prev_altitude;
-          Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2 +=
-            Hummingbird_Failure_Detection_B.a_m[3 *
+          Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 +=
+            Hummingbird_Failure_Detection_B.a[3 *
             Hummingbird_Failure_Detection_B.i + 2] *
             Hummingbird_Failure_Detection_B.prev_altitude;
         }
@@ -18854,12 +18813,8 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
           // Outputs for IfAction SubSystem: '<S1421>/If Action Subsystem1' incorporates:
           //   ActionPort: '<S1425>/Action Port'
 
-          // Outputs for IfAction SubSystem: '<S1421>/If Action Subsystem' incorporates:
-          //   ActionPort: '<S1424>/Action Port'
-
           // SignalConversion generated from: '<S1425>/In1' incorporates:
           //   Constant: '<S1421>/Constant1'
-          //   Merge: '<S1421>/Merge'
 
           Hummingbird_Failure_Detection_B.Sum_e[0] =
             Hummingbird_Failure_Detection_P.Constant1_Value_a[0];
@@ -18868,132 +18823,93 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
           Hummingbird_Failure_Detection_B.Sum_e[2] =
             Hummingbird_Failure_Detection_P.Constant1_Value_a[2];
 
-          // End of Outputs for SubSystem: '<S1421>/If Action Subsystem'
           // End of Outputs for SubSystem: '<S1421>/If Action Subsystem1'
         } else {
           // Outputs for IfAction SubSystem: '<S1421>/If Action Subsystem' incorporates:
           //   ActionPort: '<S1424>/Action Port'
 
-          // Outputs for IfAction SubSystem: '<S1421>/If Action Subsystem1' incorporates:
-          //   ActionPort: '<S1425>/Action Port'
+          // Sum: '<S1424>/Sum' incorporates:
+          //   Constant: '<S1424>/Constant'
 
-          // SignalConversion generated from: '<S1424>/In1' incorporates:
+          Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 =
+            Hummingbird_Failure_Detection_B.assist +
+            Hummingbird_Failure_Detection_P.Constant_Value_ni;
+
+          // Product: '<S1424>/Product' incorporates:
           //   MATLAB Function: '<S1410>/Control input Calculation1'
-          //   Merge: '<S1421>/Merge'
+          //   Product: '<S1412>/Divide'
           //   Sum: '<S1412>/Sum10'
 
           Hummingbird_Failure_Detection_B.Sum_e[0] =
-            Hummingbird_Failure_Detection_B.Gain14_h +
-            Hummingbird_Failure_Detection_B.CastToDouble9;
+            (Hummingbird_Failure_Detection_B.Gain14_h +
+             Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1) *
+            Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2;
           Hummingbird_Failure_Detection_B.Sum_e[1] =
-            Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3 +
+            (Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1 +
+             Hummingbird_Failure_Detection_B.CastToDouble9) *
             Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2;
           Hummingbird_Failure_Detection_B.Sum_e[2] =
-            Hummingbird_Failure_Detection_B.b_o +
-            Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2;
+            (Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_2 +
+             Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1) *
+            Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2;
 
-          // End of Outputs for SubSystem: '<S1421>/If Action Subsystem1'
           // End of Outputs for SubSystem: '<S1421>/If Action Subsystem'
-        }
-
-        // Saturate: '<S1423>/Saturation9'
-        if (Hummingbird_Failure_Detection_B.Sum_e[0] >
-            Hummingbird_Failure_Detection_P.Saturation9_UpperSat) {
-          Hummingbird_Failure_Detection_B.prev_altitude =
-            Hummingbird_Failure_Detection_P.Saturation9_UpperSat;
-        } else if (Hummingbird_Failure_Detection_B.Sum_e[0] <
-                   Hummingbird_Failure_Detection_P.Saturation9_LowerSat) {
-          Hummingbird_Failure_Detection_B.prev_altitude =
-            Hummingbird_Failure_Detection_P.Saturation9_LowerSat;
-        } else {
-          Hummingbird_Failure_Detection_B.prev_altitude =
-            Hummingbird_Failure_Detection_B.Sum_e[0];
         }
 
         // Product: '<S1423>/Divide3' incorporates:
         //   Constant: '<S1423>/Constant2'
-        //   Saturate: '<S1423>/Saturation9'
 
-        Hummingbird_Failure_Detection_B.V =
-          Hummingbird_Failure_Detection_B.prev_altitude /
+        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2 =
+          Hummingbird_Failure_Detection_B.Sum_e[0] /
           Hummingbird_Failure_Detection_P.Constant2_Value_a;
-
-        // Saturate: '<S1423>/Saturation8'
-        if (Hummingbird_Failure_Detection_B.Sum_e[1] >
-            Hummingbird_Failure_Detection_P.Saturation8_UpperSat) {
-          Hummingbird_Failure_Detection_B.prev_altitude =
-            Hummingbird_Failure_Detection_P.Saturation8_UpperSat;
-        } else if (Hummingbird_Failure_Detection_B.Sum_e[1] <
-                   Hummingbird_Failure_Detection_P.Saturation8_LowerSat) {
-          Hummingbird_Failure_Detection_B.prev_altitude =
-            Hummingbird_Failure_Detection_P.Saturation8_LowerSat;
-        } else {
-          Hummingbird_Failure_Detection_B.prev_altitude =
-            Hummingbird_Failure_Detection_B.Sum_e[1];
-        }
 
         // Product: '<S1423>/Divide2' incorporates:
         //   Constant: '<S1423>/Constant1'
-        //   Saturate: '<S1423>/Saturation8'
 
-        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 =
-          Hummingbird_Failure_Detection_B.prev_altitude /
+        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 =
+          Hummingbird_Failure_Detection_B.Sum_e[1] /
           Hummingbird_Failure_Detection_P.Constant1_Value_p;
-
-        // Saturate: '<S1423>/Saturation10'
-        if (Hummingbird_Failure_Detection_B.Sum_e[2] >
-            Hummingbird_Failure_Detection_P.Saturation10_UpperSat) {
-          Hummingbird_Failure_Detection_B.prev_altitude =
-            Hummingbird_Failure_Detection_P.Saturation10_UpperSat;
-        } else if (Hummingbird_Failure_Detection_B.Sum_e[2] <
-                   Hummingbird_Failure_Detection_P.Saturation10_LowerSat) {
-          Hummingbird_Failure_Detection_B.prev_altitude =
-            Hummingbird_Failure_Detection_P.Saturation10_LowerSat;
-        } else {
-          Hummingbird_Failure_Detection_B.prev_altitude =
-            Hummingbird_Failure_Detection_B.Sum_e[2];
-        }
 
         // Product: '<S1423>/Divide1' incorporates:
         //   Constant: '<S1423>/Constant3'
-        //   Saturate: '<S1423>/Saturation10'
 
-        Hummingbird_Failure_Detection_B.prev_altitude /=
+        Hummingbird_Failure_Detection_B.prev_altitude =
+          Hummingbird_Failure_Detection_B.Sum_e[2] /
           Hummingbird_Failure_Detection_P.Constant3_Value_k;
 
         // Sum: '<S1423>/Add'
-        Hummingbird_Failure_Detection_B.IntegralGain_e =
+        Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 =
           ((Hummingbird_Failure_Detection_B.prev_altitude -
-            Hummingbird_Failure_Detection_B.CastToDouble11) -
-           Hummingbird_Failure_Detection_B.V) -
-          Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1;
+            Hummingbird_Failure_Detection_B.CastToDouble8) -
+           Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2) -
+          Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0;
 
         // Saturate: '<S1423>/Saturation'
-        if (Hummingbird_Failure_Detection_B.IntegralGain_e >
+        if (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 >
             Hummingbird_Failure_Detection_P.Saturation_UpperSat_o) {
-          Hummingbird_Failure_Detection_B.IntegralGain_e =
+          Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 =
             Hummingbird_Failure_Detection_P.Saturation_UpperSat_o;
-        } else if (Hummingbird_Failure_Detection_B.IntegralGain_e <
+        } else if (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 <
                    Hummingbird_Failure_Detection_P.Saturation_LowerSat_n) {
-          Hummingbird_Failure_Detection_B.IntegralGain_e =
+          Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 =
             Hummingbird_Failure_Detection_P.Saturation_LowerSat_n;
         }
 
         // Sum: '<S1423>/Add4'
-        Hummingbird_Failure_Detection_B.Saturation4 = (((0.0 -
-          Hummingbird_Failure_Detection_B.CastToDouble11) -
-          Hummingbird_Failure_Detection_B.V) -
-          Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1) -
+        Hummingbird_Failure_Detection_B.IntegralGain_e = (((0.0 -
+          Hummingbird_Failure_Detection_B.CastToDouble8) -
+          Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2) -
+          Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0) -
           Hummingbird_Failure_Detection_B.prev_altitude;
 
         // Saturate: '<S1423>/Saturation4'
-        if (Hummingbird_Failure_Detection_B.Saturation4 >
+        if (Hummingbird_Failure_Detection_B.IntegralGain_e >
             Hummingbird_Failure_Detection_P.Saturation4_UpperSat) {
-          Hummingbird_Failure_Detection_B.Saturation4 =
+          Hummingbird_Failure_Detection_B.IntegralGain_e =
             Hummingbird_Failure_Detection_P.Saturation4_UpperSat;
-        } else if (Hummingbird_Failure_Detection_B.Saturation4 <
+        } else if (Hummingbird_Failure_Detection_B.IntegralGain_e <
                    Hummingbird_Failure_Detection_P.Saturation4_LowerSat) {
-          Hummingbird_Failure_Detection_B.Saturation4 =
+          Hummingbird_Failure_Detection_B.IntegralGain_e =
             Hummingbird_Failure_Detection_P.Saturation4_LowerSat;
         }
 
@@ -19001,147 +18917,154 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         //   Sum: '<S1423>/Add2'
         //   Sum: '<S1423>/Add5'
 
-        Hummingbird_Failure_Detection_B.CastToDouble25 =
+        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 =
+          Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2 -
+          Hummingbird_Failure_Detection_B.CastToDouble8;
+        Hummingbird_Failure_Detection_B.V =
+          Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 -
+          Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0;
+        Hummingbird_Failure_Detection_B.Saturation1 =
           Hummingbird_Failure_Detection_B.V -
-          Hummingbird_Failure_Detection_B.CastToDouble11;
-        Hummingbird_Failure_Detection_B.course =
-          Hummingbird_Failure_Detection_B.CastToDouble25 -
-          Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1;
-        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 =
-          Hummingbird_Failure_Detection_B.course -
           Hummingbird_Failure_Detection_B.prev_altitude;
 
         // Saturate: '<S1423>/Saturation1'
-        if (Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 >
+        if (Hummingbird_Failure_Detection_B.Saturation1 >
             Hummingbird_Failure_Detection_P.Saturation1_UpperSat_e) {
-          Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 =
+          Hummingbird_Failure_Detection_B.Saturation1 =
             Hummingbird_Failure_Detection_P.Saturation1_UpperSat_e;
-        } else if (Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 <
+        } else if (Hummingbird_Failure_Detection_B.Saturation1 <
                    Hummingbird_Failure_Detection_P.Saturation1_LowerSat_b) {
-          Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 =
+          Hummingbird_Failure_Detection_B.Saturation1 =
             Hummingbird_Failure_Detection_P.Saturation1_LowerSat_b;
         }
 
         // Sum: '<S1423>/Add5'
-        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 =
-          Hummingbird_Failure_Detection_B.course +
+        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 =
+          Hummingbird_Failure_Detection_B.V +
           Hummingbird_Failure_Detection_B.prev_altitude;
 
         // Saturate: '<S1423>/Saturation5'
-        if (Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 >
+        if (Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 >
             Hummingbird_Failure_Detection_P.Saturation5_UpperSat) {
-          Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 =
+          Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 =
             Hummingbird_Failure_Detection_P.Saturation5_UpperSat;
-        } else if (Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 <
+        } else if (Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 <
                    Hummingbird_Failure_Detection_P.Saturation5_LowerSat) {
-          Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 =
+          Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0 =
             Hummingbird_Failure_Detection_P.Saturation5_LowerSat;
         }
 
         // Sum: '<S1423>/Add2' incorporates:
         //   Sum: '<S1423>/Add6'
 
-        Hummingbird_Failure_Detection_B.course =
-          Hummingbird_Failure_Detection_B.CastToDouble25 +
-          Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1;
-        Hummingbird_Failure_Detection_B.CastToDouble25 =
-          Hummingbird_Failure_Detection_B.course +
+        Hummingbird_Failure_Detection_B.V =
+          Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 +
+          Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0;
+        Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 =
+          Hummingbird_Failure_Detection_B.V +
           Hummingbird_Failure_Detection_B.prev_altitude;
 
         // Saturate: '<S1423>/Saturation2'
-        if (Hummingbird_Failure_Detection_B.CastToDouble25 >
+        if (Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 >
             Hummingbird_Failure_Detection_P.Saturation2_UpperSat) {
-          Hummingbird_Failure_Detection_B.CastToDouble25 =
+          Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 =
             Hummingbird_Failure_Detection_P.Saturation2_UpperSat;
-        } else if (Hummingbird_Failure_Detection_B.CastToDouble25 <
+        } else if (Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 <
                    Hummingbird_Failure_Detection_P.Saturation2_LowerSat) {
-          Hummingbird_Failure_Detection_B.CastToDouble25 =
+          Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1 =
             Hummingbird_Failure_Detection_P.Saturation2_LowerSat;
         }
 
         // Sum: '<S1423>/Add6'
-        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 =
-          Hummingbird_Failure_Detection_B.course -
+        Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator =
+          Hummingbird_Failure_Detection_B.V -
           Hummingbird_Failure_Detection_B.prev_altitude;
 
         // Saturate: '<S1423>/Saturation6'
-        if (Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 >
+        if (Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator >
             Hummingbird_Failure_Detection_P.Saturation6_UpperSat) {
-          Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 =
+          Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator =
             Hummingbird_Failure_Detection_P.Saturation6_UpperSat;
-        } else if (Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 <
+        } else if (Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator <
                    Hummingbird_Failure_Detection_P.Saturation6_LowerSat) {
-          Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 =
+          Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator =
             Hummingbird_Failure_Detection_P.Saturation6_LowerSat;
         }
 
         // Sum: '<S1423>/Add3' incorporates:
         //   Sum: '<S1423>/Add7'
 
-        Hummingbird_Failure_Detection_B.course =
-          (Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 -
-           Hummingbird_Failure_Detection_B.CastToDouble11) -
-          Hummingbird_Failure_Detection_B.V;
-        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 =
-          Hummingbird_Failure_Detection_B.course -
+        Hummingbird_Failure_Detection_B.V =
+          (Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 -
+           Hummingbird_Failure_Detection_B.CastToDouble8) -
+          Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2;
+        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 =
+          Hummingbird_Failure_Detection_B.V -
           Hummingbird_Failure_Detection_B.prev_altitude;
 
         // Saturate: '<S1423>/Saturation3'
-        if (Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 >
+        if (Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 >
             Hummingbird_Failure_Detection_P.Saturation3_UpperSat_a) {
-          Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 =
+          Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 =
             Hummingbird_Failure_Detection_P.Saturation3_UpperSat_a;
-        } else if (Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 <
+        } else if (Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 <
                    Hummingbird_Failure_Detection_P.Saturation3_LowerSat_o) {
-          Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 =
+          Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0 =
             Hummingbird_Failure_Detection_P.Saturation3_LowerSat_o;
         }
 
         // Sum: '<S1423>/Add7'
-        Hummingbird_Failure_Detection_B.CastToDouble11 =
-          Hummingbird_Failure_Detection_B.course +
+        Hummingbird_Failure_Detection_B.CastToDouble8 =
+          Hummingbird_Failure_Detection_B.V +
           Hummingbird_Failure_Detection_B.prev_altitude;
 
         // Saturate: '<S1423>/Saturation7'
-        if (Hummingbird_Failure_Detection_B.CastToDouble11 >
+        if (Hummingbird_Failure_Detection_B.CastToDouble8 >
             Hummingbird_Failure_Detection_P.Saturation7_UpperSat) {
-          Hummingbird_Failure_Detection_B.CastToDouble11 =
+          Hummingbird_Failure_Detection_B.CastToDouble8 =
             Hummingbird_Failure_Detection_P.Saturation7_UpperSat;
-        } else if (Hummingbird_Failure_Detection_B.CastToDouble11 <
+        } else if (Hummingbird_Failure_Detection_B.CastToDouble8 <
                    Hummingbird_Failure_Detection_P.Saturation7_LowerSat) {
-          Hummingbird_Failure_Detection_B.CastToDouble11 =
+          Hummingbird_Failure_Detection_B.CastToDouble8 =
             Hummingbird_Failure_Detection_P.Saturation7_LowerSat;
         }
 
-        // Gain: '<S1420>/Gain1'
+        // Sum: '<S1412>/Sum1' incorporates:
+        //   Constant: '<S1412>/Constant'
+
         Hummingbird_Failure_Detection_B.V =
+          Hummingbird_Failure_Detection_B.assist +
+          Hummingbird_Failure_Detection_P.Constant_Value_cz;
+
+        // Gain: '<S1420>/Gain1'
+        Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2 =
           Hummingbird_Failure_Detection_P.Gain1_Gain_hu *
-          Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0;
+          Hummingbird_Failure_Detection_B.Saturation1;
 
         // Gain: '<S1420>/Gain2'
         Hummingbird_Failure_Detection_B.course =
           Hummingbird_Failure_Detection_P.Gain2_Gain_p *
-          Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1;
+          Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0;
 
         // Gain: '<S1420>/Gain3'
         Hummingbird_Failure_Detection_B.t =
           Hummingbird_Failure_Detection_P.Gain3_Gain_h *
-          Hummingbird_Failure_Detection_B.CastToDouble25;
+          Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1;
 
         // Gain: '<S1420>/Gain9'
         Hummingbird_Failure_Detection_B.b_absxk =
           Hummingbird_Failure_Detection_P.Gain9_Gain *
-          Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0;
+          Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator;
 
         // Gain: '<S1420>/Gain10'
         Hummingbird_Failure_Detection_B.b_t =
           Hummingbird_Failure_Detection_P.Gain10_Gain_b *
-          Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1;
+          Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0;
 
         // Gain: '<S1420>/Gain11'
-        Hummingbird_Failure_Detection_B.r_f =
+        Hummingbird_Failure_Detection_B.r_c =
           Hummingbird_Failure_Detection_P.Gain11_Gain *
-          Hummingbird_Failure_Detection_B.CastToDouble11;
+          Hummingbird_Failure_Detection_B.CastToDouble8;
 
         // BusAssignment: '<S1418>/Bus Assignment' incorporates:
         //   BusCreator: '<S13>/Bus Creator4'
@@ -19153,41 +19076,41 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         Hummingbird_Failure_Detection_B.BusAssignment.timestamp =
           Hummingbird_Failure_Detection_B.PX4Timestamp_pm.PX4Timestamp;
         Hummingbird_Failure_Detection_B.BusAssignment.data[0] =
-          static_cast<real32_T>(Hummingbird_Failure_Detection_B.IntegralGain_e);
-        Hummingbird_Failure_Detection_B.BusAssignment.data[1] =
-          static_cast<real32_T>(Hummingbird_Failure_Detection_B.Saturation4);
-        Hummingbird_Failure_Detection_B.BusAssignment.data[2] =
           static_cast<real32_T>
-          (Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0);
+          (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2);
+        Hummingbird_Failure_Detection_B.BusAssignment.data[1] =
+          static_cast<real32_T>(Hummingbird_Failure_Detection_B.IntegralGain_e);
+        Hummingbird_Failure_Detection_B.BusAssignment.data[2] =
+          static_cast<real32_T>(Hummingbird_Failure_Detection_B.Saturation1);
         Hummingbird_Failure_Detection_B.BusAssignment.data[3] =
           static_cast<real32_T>
-          (Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1);
+          (Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0);
         Hummingbird_Failure_Detection_B.BusAssignment.data[4] =
-          static_cast<real32_T>(Hummingbird_Failure_Detection_B.CastToDouble25);
+          static_cast<real32_T>
+          (Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1);
         Hummingbird_Failure_Detection_B.BusAssignment.data[5] =
           static_cast<real32_T>
-          (Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0);
+          (Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator);
         Hummingbird_Failure_Detection_B.BusAssignment.data[6] =
           static_cast<real32_T>
-          (Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1);
+          (Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0);
         Hummingbird_Failure_Detection_B.BusAssignment.data[7] =
-          static_cast<real32_T>(Hummingbird_Failure_Detection_B.CastToDouble11);
+          static_cast<real32_T>(Hummingbird_Failure_Detection_B.CastToDouble8);
         Hummingbird_Failure_Detection_B.BusAssignment.data[8] =
-          static_cast<real32_T>
-          (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1);
+          static_cast<real32_T>(Hummingbird_Failure_Detection_B.CastToDouble11);
         Hummingbird_Failure_Detection_B.BusAssignment.data[12] =
           static_cast<real32_T>(Hummingbird_Failure_Detection_B.dtMR);
         Hummingbird_Failure_Detection_B.BusAssignment.data[16] =
           static_cast<real32_T>
           (Hummingbird_Failure_Detection_P.Constant14_Value_e);
         Hummingbird_Failure_Detection_B.BusAssignment.data[17] =
-          Hummingbird_Failure_Detection_B.a_i;
+          Hummingbird_Failure_Detection_B.a_j;
         Hummingbird_Failure_Detection_B.BusAssignment.data[18] =
           Hummingbird_Failure_Detection_B.Gain14_h;
         Hummingbird_Failure_Detection_B.BusAssignment.data[19] =
-          Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3;
+          Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1;
         Hummingbird_Failure_Detection_B.BusAssignment.data[20] =
-          Hummingbird_Failure_Detection_B.b_o;
+          Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_2;
         Hummingbird_Failure_Detection_B.BusAssignment.data[21] =
           static_cast<real32_T>
           (Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_2);
@@ -19200,12 +19123,12 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
 
         Hummingbird_Failure_Detection_B.prev_altitude =
           Hummingbird_Failure_Detection_P.Gain_Gain_l *
-          Hummingbird_Failure_Detection_B.IntegralGain_e +
+          Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 +
           Hummingbird_Failure_Detection_P.Gain8_Gain *
-          Hummingbird_Failure_Detection_B.Saturation4;
+          Hummingbird_Failure_Detection_B.IntegralGain_e;
         Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_2 =
           (Hummingbird_Failure_Detection_B.prev_altitude +
-           Hummingbird_Failure_Detection_B.V) +
+           Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2) +
           Hummingbird_Failure_Detection_B.course;
 
         // BusAssignment: '<S1418>/Bus Assignment' incorporates:
@@ -19226,6 +19149,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         //   Gain: '<S1420>/Gain6'
         //   Gain: '<S1420>/Gain7'
         //   MATLAB Function: '<S1410>/Control input Calculation1'
+        //   Product: '<S1412>/Divide'
         //   Product: '<S1420>/Product'
         //   Product: '<S1420>/Product1'
         //   Sum: '<S1410>/Sum1'
@@ -19242,16 +19166,16 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
               Hummingbird_Failure_Detection_B.t) +
              Hummingbird_Failure_Detection_B.b_absxk) +
             Hummingbird_Failure_Detection_B.b_t) +
-           Hummingbird_Failure_Detection_B.r_f);
+           Hummingbird_Failure_Detection_B.r_c);
         Hummingbird_Failure_Detection_B.BusAssignment.data[23] =
           static_cast<real32_T>
           (((((((Hummingbird_Failure_Detection_B.prev_altitude -
-                 Hummingbird_Failure_Detection_B.V) -
+                 Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2) -
                 Hummingbird_Failure_Detection_B.course) -
                Hummingbird_Failure_Detection_B.t) -
               Hummingbird_Failure_Detection_B.b_absxk) +
              Hummingbird_Failure_Detection_B.b_t) +
-            Hummingbird_Failure_Detection_B.r_f) *
+            Hummingbird_Failure_Detection_B.r_c) *
            Hummingbird_Failure_Detection_P.Constant2_Value_i);
         Hummingbird_Failure_Detection_B.BusAssignment.data[24] =
           static_cast<real32_T>
@@ -19259,44 +19183,47 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
                Hummingbird_Failure_Detection_B.t) -
               Hummingbird_Failure_Detection_B.b_absxk) -
              Hummingbird_Failure_Detection_B.b_t) -
-            Hummingbird_Failure_Detection_B.r_f) *
+            Hummingbird_Failure_Detection_B.r_c) *
            Hummingbird_Failure_Detection_P.Constant1_Value_nl);
         Hummingbird_Failure_Detection_B.BusAssignment.data[25] =
           static_cast<real32_T>
           (((((((Hummingbird_Failure_Detection_P.Gain4_Gain_k *
-                 Hummingbird_Failure_Detection_B.IntegralGain_e -
+                 Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 -
                  Hummingbird_Failure_Detection_P.Gain12_Gain *
-                 Hummingbird_Failure_Detection_B.Saturation4) -
+                 Hummingbird_Failure_Detection_B.IntegralGain_e) -
                 Hummingbird_Failure_Detection_P.Gain5_Gain *
-                Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0) +
+                Hummingbird_Failure_Detection_B.Saturation1) +
                Hummingbird_Failure_Detection_P.Gain13_Gain *
-               Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1) +
+               Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0) +
               Hummingbird_Failure_Detection_P.Gain6_Gain *
-              Hummingbird_Failure_Detection_B.CastToDouble25) -
+              Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1) -
              Hummingbird_Failure_Detection_P.Gain14_Gain *
-             Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0) -
+             Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator) -
             Hummingbird_Failure_Detection_P.Gain7_Gain *
-            Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1) +
+            Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0) +
            Hummingbird_Failure_Detection_P.Gain15_Gain *
-           Hummingbird_Failure_Detection_B.CastToDouble11);
+           Hummingbird_Failure_Detection_B.CastToDouble8);
         Hummingbird_Failure_Detection_B.BusAssignment.data[9] =
-          static_cast<real32_T>(Hummingbird_Failure_Detection_B.Sum_e[0]);
+          static_cast<real32_T>(Hummingbird_Failure_Detection_B.Sum_e[0] /
+          Hummingbird_Failure_Detection_B.V);
         Hummingbird_Failure_Detection_B.BusAssignment.data[13] =
-          static_cast<real32_T>(Hummingbird_Failure_Detection_B.CastToDouble9);
+          static_cast<real32_T>
+          (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1);
         Hummingbird_Failure_Detection_B.BusAssignment.data[26] =
           static_cast<real32_T>(Hummingbird_Failure_Detection_B.mixer[0]);
         Hummingbird_Failure_Detection_B.BusAssignment.data[10] =
-          static_cast<real32_T>(Hummingbird_Failure_Detection_B.Sum_e[1]);
+          static_cast<real32_T>(Hummingbird_Failure_Detection_B.Sum_e[1] /
+          Hummingbird_Failure_Detection_B.V);
         Hummingbird_Failure_Detection_B.BusAssignment.data[14] =
-          static_cast<real32_T>
-          (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2);
+          static_cast<real32_T>(Hummingbird_Failure_Detection_B.CastToDouble9);
         Hummingbird_Failure_Detection_B.BusAssignment.data[27] =
           static_cast<real32_T>(Hummingbird_Failure_Detection_B.mixer[1]);
         Hummingbird_Failure_Detection_B.BusAssignment.data[11] =
-          static_cast<real32_T>(Hummingbird_Failure_Detection_B.Sum_e[2]);
+          static_cast<real32_T>(Hummingbird_Failure_Detection_B.Sum_e[2] /
+          Hummingbird_Failure_Detection_B.V);
         Hummingbird_Failure_Detection_B.BusAssignment.data[15] =
           static_cast<real32_T>
-          (Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2);
+          (Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1);
         Hummingbird_Failure_Detection_B.BusAssignment.data[28] =
           static_cast<real32_T>(Hummingbird_Failure_Detection_B.mixer[2]);
         Hummingbird_Failure_Detection_B.BusAssignment.data[29] =
@@ -19309,16 +19236,16 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
           static_cast<real32_T>
           (Hummingbird_Failure_Detection_B.MovingAverage2.MovingAverage);
         Hummingbird_Failure_Detection_B.BusAssignment.data[32] =
-          static_cast<real32_T>(Hummingbird_Failure_Detection_B.CastToDouble9 +
-          Hummingbird_Failure_Detection_B.Gain14_h);
-        Hummingbird_Failure_Detection_B.BusAssignment.data[33] =
           static_cast<real32_T>
-          (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2 +
-           Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_3);
+          (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_1 +
+           Hummingbird_Failure_Detection_B.Gain14_h);
+        Hummingbird_Failure_Detection_B.BusAssignment.data[33] =
+          static_cast<real32_T>(Hummingbird_Failure_Detection_B.CastToDouble9 +
+          Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1);
         Hummingbird_Failure_Detection_B.BusAssignment.data[34] =
           static_cast<real32_T>
-          (Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_2 +
-           Hummingbird_Failure_Detection_B.b_o);
+          (Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1 +
+           Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_2);
         Hummingbird_Failure_Detection_B.BusAssignment.data[35] =
           static_cast<real32_T>
           (Hummingbird_Failure_Detection_P.Constant14_Value_e);
@@ -19429,14 +19356,15 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
 
         if (Hummingbird_Failure_Detection_B.BusCreator.VTOL_Mode >
             Hummingbird_Failure_Detection_P.Switch6_Threshold) {
-          Hummingbird_Failure_Detection_B.CastToDouble8 =
+          Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 =
             Hummingbird_Failure_Detection_P.Constant3_Value;
         } else if (Hummingbird_Failure_Detection_B.BusCreator.Flight_Mode >
                    Hummingbird_Failure_Detection_P.Switch5_Threshold) {
           // Switch: '<S1410>/Switch5' incorporates:
           //   Sum: '<S1410>/Sum7'
 
-          Hummingbird_Failure_Detection_B.CastToDouble8 +=
+          Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 =
+            Hummingbird_Failure_Detection_B.CastToDouble10 +
             Hummingbird_Failure_Detection_B.In1_m.positions[3];
         } else {
           // Gain: '<S1419>/Gain10' incorporates:
@@ -19444,7 +19372,8 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
           //   Sum: '<S1419>/Sum8'
           //   Switch: '<S1410>/Switch5'
 
-          Hummingbird_Failure_Detection_B.CastToDouble8 = (static_cast<real_T>
+          Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 = (
+            static_cast<real_T>
             (Hummingbird_Failure_Detection_B.BusCreator.Throttle) -
             Hummingbird_Failure_Detection_P.Constant7_Value_c) *
             Hummingbird_Failure_Detection_P.Gain10_Gain_mz;
@@ -19452,13 +19381,14 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
           // Saturate: '<S1419>/Saturation' incorporates:
           //   Switch: '<S1410>/Switch5'
 
-          if (Hummingbird_Failure_Detection_B.CastToDouble8 >
+          if (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 >
               Hummingbird_Failure_Detection_P.Saturation_UpperSat_js) {
-            Hummingbird_Failure_Detection_B.CastToDouble8 =
+            Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 =
               Hummingbird_Failure_Detection_P.Saturation_UpperSat_js;
-          } else if (Hummingbird_Failure_Detection_B.CastToDouble8 <
-                     Hummingbird_Failure_Detection_P.Saturation_LowerSat_d) {
-            Hummingbird_Failure_Detection_B.CastToDouble8 =
+          } else if
+              (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 <
+               Hummingbird_Failure_Detection_P.Saturation_LowerSat_d) {
+            Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 =
               Hummingbird_Failure_Detection_P.Saturation_LowerSat_d;
           }
         }
@@ -19471,37 +19401,37 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
 
         Hummingbird_Failure_Detection_B.Actuator_output.rotor_1 = static_cast<
           real32_T>(Hummingbird_Failure_Detection_P.Gain_Gain_mx * sqrt
-                    (Hummingbird_Failure_Detection_B.IntegralGain_e));
+                    (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_2));
         Hummingbird_Failure_Detection_B.Actuator_output.rotor_2 =
           static_cast<real32_T>(Hummingbird_Failure_Detection_P.Gain_Gain_mx *
-          sqrt(Hummingbird_Failure_Detection_B.Saturation4));
+          sqrt(Hummingbird_Failure_Detection_B.IntegralGain_e));
         Hummingbird_Failure_Detection_B.Actuator_output.rotor_3 =
           static_cast<real32_T>(Hummingbird_Failure_Detection_P.Gain_Gain_mx *
-          sqrt(Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0));
+          sqrt(Hummingbird_Failure_Detection_B.Saturation1));
         Hummingbird_Failure_Detection_B.Actuator_output.rotor_4 =
           static_cast<real32_T>(Hummingbird_Failure_Detection_P.Gain_Gain_mx *
-          sqrt(Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1));
+          sqrt(Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_0));
         Hummingbird_Failure_Detection_B.Actuator_output.rotor_5 =
           static_cast<real32_T>(Hummingbird_Failure_Detection_P.Gain_Gain_mx *
-          sqrt(Hummingbird_Failure_Detection_B.CastToDouble25));
+          sqrt(Hummingbird_Failure_Detection_B.rtb_ConvertTofts_idx_1));
         Hummingbird_Failure_Detection_B.Actuator_output.rotor_6 =
           static_cast<real32_T>(Hummingbird_Failure_Detection_P.Gain_Gain_mx *
-          sqrt(Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0));
+          sqrt(Hummingbird_Failure_Detection_B.DiscreteTimeIntegrator));
         Hummingbird_Failure_Detection_B.Actuator_output.rotor_7 =
           static_cast<real32_T>(Hummingbird_Failure_Detection_P.Gain_Gain_mx *
-          sqrt(Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_1));
+          sqrt(Hummingbird_Failure_Detection_B.rtb_next_waypoint_idx_0));
         Hummingbird_Failure_Detection_B.Actuator_output.rotor_8 =
           static_cast<real32_T>(Hummingbird_Failure_Detection_P.Gain_Gain_mx *
-          sqrt(Hummingbird_Failure_Detection_B.CastToDouble11));
+          sqrt(Hummingbird_Failure_Detection_B.CastToDouble8));
 
         // Saturate: '<S1410>/Saturation'
-        if (Hummingbird_Failure_Detection_B.CastToDouble8 >
+        if (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 >
             Hummingbird_Failure_Detection_P.Saturation_UpperSat_d[1]) {
-          Hummingbird_Failure_Detection_B.CastToDouble8 =
+          Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 =
             Hummingbird_Failure_Detection_P.Saturation_UpperSat_d[1];
-        } else if (Hummingbird_Failure_Detection_B.CastToDouble8 <
+        } else if (Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 <
                    Hummingbird_Failure_Detection_P.Saturation_LowerSat_j[1]) {
-          Hummingbird_Failure_Detection_B.CastToDouble8 =
+          Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0 =
             Hummingbird_Failure_Detection_P.Saturation_LowerSat_j[1];
         }
 
@@ -19512,8 +19442,8 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
         //   Sum: '<S1410>/Sum'
 
         Hummingbird_Failure_Detection_B.Actuator_output.throttle = static_cast<
-          real32_T>(Hummingbird_Failure_Detection_B.CastToDouble8) -
-          Hummingbird_Failure_Detection_P.Constant5_Value;
+          real32_T>(Hummingbird_Failure_Detection_B.rtb_current_waypoint_b_idx_0)
+          - Hummingbird_Failure_Detection_P.Constant5_Value;
 
         // Saturate: '<S1410>/Saturation'
         if (Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_1 >
@@ -19580,7 +19510,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
           Hummingbird_Failure_Detection_P.Gain4_Gain_ki * static_cast<real32_T>
           (Hummingbird_Failure_Detection_B.rtb_prev_waypoint_idx_0);
         Hummingbird_Failure_Detection_B.Actuator_output.arm_1 =
-          static_cast<real32_T>(Hummingbird_Failure_Detection_B.CastToDouble10);
+          static_cast<real32_T>(Hummingbird_Failure_Detection_B.arms_pos);
         Hummingbird_Failure_Detection_B.Actuator_output.arm_2 =
           static_cast<real32_T>
           (Hummingbird_Failure_Detection_P.Constant_Value_n5);
@@ -19676,17 +19606,18 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
                   &Hummingbird_Failure_Detection_B.BusAssignment_a);
   Hummingbird_Fa_PX4Timestamp(&Hummingbird_Failure_Detection_B.PX4Timestamp_i);
 
-  // BusAssignment: '<S1458>/Bus Assignment' incorporates:
-  //   MATLABSystem: '<S1458>/PX4 Timestamp'
+  // BusAssignment: '<S1463>/Bus Assignment' incorporates:
+  //   MATLABSystem: '<S1463>/PX4 Timestamp'
+  //   Switch: '<S13>/Switch'
 
   Hummingbird_Failure_Detection_B.BusAssignment_kr.timestamp =
     Hummingbird_Failure_Detection_B.PX4Timestamp_i.PX4Timestamp;
   Hummingbird_Failure_Detection_B.BusAssignment_kr.p =
-    Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_0;
+    Hummingbird_Failure_Detection_B.In1_f.gyro_rad[0];
   Hummingbird_Failure_Detection_B.BusAssignment_kr.q =
-    Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_1;
+    Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_0;
   Hummingbird_Failure_Detection_B.BusAssignment_kr.r =
-    Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_2;
+    Hummingbird_Failure_Detection_B.In1_f.gyro_rad[2];
 
   // DataTypeConversion: '<S13>/Cast To Double27' incorporates:
   //   Constant: '<S13>/Constant'
@@ -19703,7 +19634,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       (Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_0), 256.0));
   }
 
-  // BusAssignment: '<S1458>/Bus Assignment' incorporates:
+  // BusAssignment: '<S1463>/Bus Assignment' incorporates:
   //   DataTypeConversion: '<S13>/Cast To Double27'
 
   Hummingbird_Failure_Detection_B.BusAssignment_kr._padding0[0] = static_cast<
@@ -19729,7 +19660,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       (Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_0), 256.0));
   }
 
-  // BusAssignment: '<S1458>/Bus Assignment' incorporates:
+  // BusAssignment: '<S1463>/Bus Assignment' incorporates:
   //   DataTypeConversion: '<S13>/Cast To Double27'
 
   Hummingbird_Failure_Detection_B.BusAssignment_kr._padding0[1] = static_cast<
@@ -19755,7 +19686,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       (Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_0), 256.0));
   }
 
-  // BusAssignment: '<S1458>/Bus Assignment' incorporates:
+  // BusAssignment: '<S1463>/Bus Assignment' incorporates:
   //   DataTypeConversion: '<S13>/Cast To Double27'
 
   Hummingbird_Failure_Detection_B.BusAssignment_kr._padding0[2] = static_cast<
@@ -19781,7 +19712,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
       (Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_0), 256.0));
   }
 
-  // BusAssignment: '<S1458>/Bus Assignment' incorporates:
+  // BusAssignment: '<S1463>/Bus Assignment' incorporates:
   //   DataTypeConversion: '<S13>/Cast To Double27'
 
   Hummingbird_Failure_Detection_B.BusAssignment_kr._padding0[3] = static_cast<
@@ -19792,12 +19723,132 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
              static_cast<int32_T>(static_cast<uint8_T>
               (Hummingbird_Failure_Detection_B.rtb_CastToBoolean1_d_idx_0)));
 
-  // MATLABSystem: '<S1534>/SinkBlock' incorporates:
-  //   BusAssignment: '<S1458>/Bus Assignment'
+  // MATLABSystem: '<S1543>/SinkBlock' incorporates:
+  //   BusAssignment: '<S1463>/Bus Assignment'
 
   uORB_write_step(Hummingbird_Failure_Detectio_DW.obj_f.orbMetadataObj,
                   &Hummingbird_Failure_Detectio_DW.obj_f.orbAdvertiseObj,
                   &Hummingbird_Failure_Detection_B.BusAssignment_kr);
+
+  // MATLABSystem: '<S1472>/SourceBlock'
+  Hummingbird_Failure_Detection_B.b_varargout_1 = uORB_read_step
+    (Hummingbird_Failure_Detectio_DW.obj_m.orbMetadataObj,
+     &Hummingbird_Failure_Detectio_DW.obj_m.eventStructObj,
+     &Hummingbird_Failure_Detection_B.r8, false, 1.0);
+
+  // Outputs for Enabled SubSystem: '<S1472>/Enabled Subsystem' incorporates:
+  //   EnablePort: '<S1553>/Enable'
+
+  // Start for MATLABSystem: '<S1472>/SourceBlock'
+  if (Hummingbird_Failure_Detection_B.b_varargout_1) {
+    // SignalConversion generated from: '<S1553>/In1'
+    Hummingbird_Failure_Detection_B.In1_k = Hummingbird_Failure_Detection_B.r8;
+  }
+
+  // End of Outputs for SubSystem: '<S1472>/Enabled Subsystem'
+
+  // Sum: '<S13>/Sum' incorporates:
+  //   UnitDelay: '<S13>/Unit Delay'
+
+  Hummingbird_Failure_Detection_B.Gain_ny =
+    Hummingbird_Failure_Detectio_DW.UnitDelay_DSTATE -
+    Hummingbird_Failure_Detection_B.In1_k.y;
+
+  // BusAssignment: '<S1464>/Bus Assignment' incorporates:
+  //   Delay: '<S13>/Delay'
+
+  Hummingbird_Failure_Detection_B.BusAssignment_b.double_a =
+    Hummingbird_Failure_Detectio_DW.Delay_DSTATE;
+
+  // If: '<S13>/If' incorporates:
+  //   Constant: '<S1460>/Constant'
+  //   DataTypeConversion: '<S13>/Cast To Single'
+  //   DiscreteIntegrator: '<S13>/Discrete-Time Integrator'
+
+  if (static_cast<real32_T>
+      (Hummingbird_Failure_Detectio_DW.DiscreteTimeIntegrator_DSTATE) == 0.0F) {
+    // Outputs for IfAction SubSystem: '<S13>/If Action Subsystem4' incorporates:
+    //   ActionPort: '<S1460>/Action Port'
+
+    // SignalConversion generated from: '<S1460>/Out1' incorporates:
+    //   Constant: '<S1460>/Constant1'
+    //   Delay: '<S13>/Delay'
+
+    Hummingbird_Failure_Detectio_DW.Delay_DSTATE =
+      Hummingbird_Failure_Detection_P.Constant1_Value_h;
+    Humm_PX4WriteParameterBlock
+      (Hummingbird_Failure_Detection_P.Constant_Value_he,
+       &Hummingbird_Failure_Detectio_DW.PX4WriteParameterBlock);
+
+    // End of Outputs for SubSystem: '<S13>/If Action Subsystem4'
+  } else if (Hummingbird_Failure_Detection_B.Gain_ny == 0.0F) {
+    // Outputs for IfAction SubSystem: '<S13>/If Action Subsystem' incorporates:
+    //   ActionPort: '<S1456>/Action Port'
+
+    // Sum: '<S1456>/Sum' incorporates:
+    //   Constant: '<S1456>/Constant'
+    //   Delay: '<S13>/Delay'
+
+    Hummingbird_Failure_Detectio_DW.Delay_DSTATE +=
+      Hummingbird_Failure_Detection_P.Constant_Value_c4;
+
+    // End of Outputs for SubSystem: '<S13>/If Action Subsystem'
+  } else {
+    // Outputs for IfAction SubSystem: '<S13>/If Action Subsystem1' incorporates:
+    //   ActionPort: '<S1457>/Action Port'
+
+    // SignalConversion generated from: '<S1457>/Out1' incorporates:
+    //   Constant: '<S1457>/Constant'
+    //   Delay: '<S13>/Delay'
+
+    Hummingbird_Failure_Detectio_DW.Delay_DSTATE =
+      Hummingbird_Failure_Detection_P.Constant_Value_eg;
+
+    // End of Outputs for SubSystem: '<S13>/If Action Subsystem1'
+  }
+
+  // End of If: '<S13>/If'
+
+  // If: '<S13>/If1' incorporates:
+  //   Constant: '<S1458>/Constant'
+  //   Delay: '<S13>/Delay'
+
+  if (Hummingbird_Failure_Detectio_DW.Delay_DSTATE >= 500.0) {
+    // Outputs for IfAction SubSystem: '<S13>/If Action Subsystem2' incorporates:
+    //   ActionPort: '<S1458>/Action Port'
+
+    Humm_PX4WriteParameterBlock
+      (Hummingbird_Failure_Detection_P.Constant_Value_ho0,
+       &Hummingbird_Failure_Detectio_DW.PX4WriteParameterBlock_g);
+
+    // End of Outputs for SubSystem: '<S13>/If Action Subsystem2'
+  }
+
+  // End of If: '<S13>/If1'
+  Hummingbird_Fa_PX4Timestamp(&Hummingbird_Failure_Detection_B.PX4Timestamp_i2);
+
+  // BusAssignment: '<S1464>/Bus Assignment' incorporates:
+  //   DataTypeConversion: '<S13>/Cast To Single'
+  //   Delay: '<S13>/Delay'
+  //   DiscreteIntegrator: '<S13>/Discrete-Time Integrator'
+  //   MATLABSystem: '<S1464>/PX4 Timestamp'
+
+  Hummingbird_Failure_Detection_B.BusAssignment_b.timestamp =
+    Hummingbird_Failure_Detection_B.PX4Timestamp_i2.PX4Timestamp;
+  Hummingbird_Failure_Detection_B.BusAssignment_b.double_b =
+    Hummingbird_Failure_Detectio_DW.Delay_DSTATE;
+  Hummingbird_Failure_Detection_B.BusAssignment_b.single_a =
+    Hummingbird_Failure_Detection_B.Gain_ny;
+  Hummingbird_Failure_Detection_B.BusAssignment_b.single_b =
+    static_cast<real32_T>
+    (Hummingbird_Failure_Detectio_DW.DiscreteTimeIntegrator_DSTATE);
+
+  // MATLABSystem: '<S1545>/SinkBlock' incorporates:
+  //   BusAssignment: '<S1464>/Bus Assignment'
+
+  uORB_write_step(Hummingbird_Failure_Detectio_DW.obj_is.orbMetadataObj,
+                  &Hummingbird_Failure_Detectio_DW.obj_is.orbAdvertiseObj,
+                  &Hummingbird_Failure_Detection_B.BusAssignment_b);
   Hummingbird_Fa_PX4Timestamp(&Hummingbird_Failure_Detection_B.PX4Timestamp_f);
   Hummingbird_Fai_SourceBlock(&Hummingbird_Failure_Detection_B.SourceBlock_k,
     &Hummingbird_Failure_Detectio_DW.SourceBlock_k);
@@ -19847,7 +19898,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
   b_varargout_1 = uORB_read_step
     (Hummingbird_Failure_Detectio_DW.obj_n.orbMetadataObj,
      &Hummingbird_Failure_Detectio_DW.obj_n.eventStructObj,
-     &Hummingbird_Failure_Detection_B.r10, false, 1.0);
+     &Hummingbird_Failure_Detection_B.r11, false, 1.0);
 
   // Outputs for Enabled SubSystem: '<S11>/Enabled Subsystem' incorporates:
   //   EnablePort: '<S1454>/Enable'
@@ -19855,7 +19906,7 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
   // Start for MATLABSystem: '<S11>/SourceBlock'
   if (b_varargout_1) {
     // SignalConversion generated from: '<S1454>/In1'
-    Hummingbird_Failure_Detection_B.In1_d1 = Hummingbird_Failure_Detection_B.r10;
+    Hummingbird_Failure_Detection_B.In1_d1 = Hummingbird_Failure_Detection_B.r11;
   }
 
   // End of Outputs for SubSystem: '<S11>/Enabled Subsystem'
@@ -19881,8 +19932,8 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
                   &Hummingbird_Failure_Detectio_DW.obj_an.orbAdvertiseObj,
                   &Hummingbird_Failure_Detection_B.BusAssignment_fu);
 
-  // Update for DiscreteIntegrator: '<S1510>/Filter' incorporates:
-  //   Gain: '<S1518>/Filter Coefficient'
+  // Update for DiscreteIntegrator: '<S1519>/Filter' incorporates:
+  //   Gain: '<S1527>/Filter Coefficient'
   //
   Hummingbird_Failure_Detectio_DW.Filter_DSTATE[0] +=
     Hummingbird_Failure_Detection_P.Filter_gainval_a *
@@ -19892,7 +19943,22 @@ void Hummingbird_Failure_Detection_step0(void) // Sample time: [0.001s, 0.0s]
     Hummingbird_Failure_Detection_B.rtb_FilterCoefficient_idx_1;
   Hummingbird_Failure_Detectio_DW.Filter_DSTATE[2] +=
     Hummingbird_Failure_Detection_P.Filter_gainval_a *
-    Hummingbird_Failure_Detection_B.rtb_FilterCoefficient_g2;
+    Hummingbird_Failure_Detection_B.rtb_FilterCoefficient_f;
+
+  // Update for UnitDelay: '<S13>/Unit Delay'
+  Hummingbird_Failure_Detectio_DW.UnitDelay_DSTATE =
+    Hummingbird_Failure_Detection_B.In1_k.y;
+
+  // Update for DiscreteIntegrator: '<S13>/Discrete-Time Integrator' incorporates:
+  //   Constant: '<S13>/Constant2'
+  //   Logic: '<S1472>/NOT'
+  //   MATLABSystem: '<S1472>/SourceBlock'
+  //   Sum: '<S13>/Sum1'
+  //
+  Hummingbird_Failure_Detectio_DW.DiscreteTimeIntegrator_DSTATE += (static_cast<
+    real_T>(!Hummingbird_Failure_Detection_B.b_varargout_1) -
+    Hummingbird_Failure_Detection_P.Constant2_Value_f) *
+    Hummingbird_Failure_Detection_P.DiscreteTimeIntegrator_gainval;
 }
 
 // Model step function for TID1
@@ -19910,7 +19976,7 @@ void Hummingbird_Failure_Detection_step1(void) // Sample time: [0.5s, 0.0s]
   real32_T rtb_ReadParameter_o1_n;
   boolean_T b_varargout_2;
 
-  // MATLABSystem: '<S1466>/Read Parameter'
+  // MATLABSystem: '<S1473>/Read Parameter'
   b_varargout_2 = MW_ParamRead_Step
     (Hummingbird_Failure_Detectio_DW.obj_ns.MW_PARAMHANDLE, MW_SINGLE,
      &rtb_ReadParameter_o1_h);
@@ -19918,9 +19984,9 @@ void Hummingbird_Failure_Detection_step1(void) // Sample time: [0.5s, 0.0s]
     rtb_ReadParameter_o1_h = 0.0F;
   }
 
-  // End of MATLABSystem: '<S1466>/Read Parameter'
+  // End of MATLABSystem: '<S1473>/Read Parameter'
 
-  // MATLABSystem: '<S1466>/Read Parameter1'
+  // MATLABSystem: '<S1473>/Read Parameter1'
   b_varargout_2 = MW_ParamRead_Step
     (Hummingbird_Failure_Detectio_DW.obj_g0.MW_PARAMHANDLE, MW_SINGLE,
      &ParamStep);
@@ -19928,18 +19994,18 @@ void Hummingbird_Failure_Detection_step1(void) // Sample time: [0.5s, 0.0s]
     ParamStep = 0.0F;
   }
 
-  // RateTransition generated from: '<S1466>/Divide' incorporates:
-  //   MATLABSystem: '<S1466>/Read Parameter1'
-  //   Sum: '<S1466>/Sum1'
+  // RateTransition generated from: '<S1473>/Divide' incorporates:
+  //   MATLABSystem: '<S1473>/Read Parameter1'
+  //   Sum: '<S1473>/Sum1'
   //
   Hummingbird_Failure_Detectio_DW.TmpRTBAtDivideInport2_Buffer0_l = ParamStep -
     rtb_ReadParameter_o1_h;
 
-  // RateTransition generated from: '<S1466>/Sum'
+  // RateTransition generated from: '<S1473>/Sum'
   Hummingbird_Failure_Detectio_DW.TmpRTBAtSumInport2_Buffer0_o =
     rtb_ReadParameter_o1_h;
 
-  // MATLABSystem: '<S1467>/Read Parameter'
+  // MATLABSystem: '<S1474>/Read Parameter'
   b_varargout_2 = MW_ParamRead_Step
     (Hummingbird_Failure_Detectio_DW.obj_er.MW_PARAMHANDLE, MW_SINGLE,
      &rtb_ReadParameter_o1_h2);
@@ -19947,9 +20013,9 @@ void Hummingbird_Failure_Detection_step1(void) // Sample time: [0.5s, 0.0s]
     rtb_ReadParameter_o1_h2 = 0.0F;
   }
 
-  // End of MATLABSystem: '<S1467>/Read Parameter'
+  // End of MATLABSystem: '<S1474>/Read Parameter'
 
-  // MATLABSystem: '<S1467>/Read Parameter1'
+  // MATLABSystem: '<S1474>/Read Parameter1'
   b_varargout_2 = MW_ParamRead_Step
     (Hummingbird_Failure_Detectio_DW.obj_ez.MW_PARAMHANDLE, MW_SINGLE,
      &ParamStep);
@@ -19957,18 +20023,18 @@ void Hummingbird_Failure_Detection_step1(void) // Sample time: [0.5s, 0.0s]
     ParamStep = 0.0F;
   }
 
-  // RateTransition generated from: '<S1467>/Divide' incorporates:
-  //   MATLABSystem: '<S1467>/Read Parameter1'
-  //   Sum: '<S1467>/Sum1'
+  // RateTransition generated from: '<S1474>/Divide' incorporates:
+  //   MATLABSystem: '<S1474>/Read Parameter1'
+  //   Sum: '<S1474>/Sum1'
   //
   Hummingbird_Failure_Detectio_DW.TmpRTBAtDivideInport2_Buffer_lz = ParamStep -
     rtb_ReadParameter_o1_h2;
 
-  // RateTransition generated from: '<S1467>/Sum'
+  // RateTransition generated from: '<S1474>/Sum'
   Hummingbird_Failure_Detectio_DW.TmpRTBAtSumInport2_Buffer0_os =
     rtb_ReadParameter_o1_h2;
 
-  // MATLABSystem: '<S1468>/Read Parameter'
+  // MATLABSystem: '<S1475>/Read Parameter'
   b_varargout_2 = MW_ParamRead_Step
     (Hummingbird_Failure_Detectio_DW.obj_ar.MW_PARAMHANDLE, MW_SINGLE,
      &rtb_ReadParameter_o1_kx);
@@ -19976,9 +20042,9 @@ void Hummingbird_Failure_Detection_step1(void) // Sample time: [0.5s, 0.0s]
     rtb_ReadParameter_o1_kx = 0.0F;
   }
 
-  // End of MATLABSystem: '<S1468>/Read Parameter'
+  // End of MATLABSystem: '<S1475>/Read Parameter'
 
-  // MATLABSystem: '<S1468>/Read Parameter1'
+  // MATLABSystem: '<S1475>/Read Parameter1'
   b_varargout_2 = MW_ParamRead_Step
     (Hummingbird_Failure_Detectio_DW.obj_iy.MW_PARAMHANDLE, MW_SINGLE,
      &ParamStep);
@@ -19986,18 +20052,18 @@ void Hummingbird_Failure_Detection_step1(void) // Sample time: [0.5s, 0.0s]
     ParamStep = 0.0F;
   }
 
-  // RateTransition generated from: '<S1468>/Divide' incorporates:
-  //   MATLABSystem: '<S1468>/Read Parameter1'
-  //   Sum: '<S1468>/Sum1'
+  // RateTransition generated from: '<S1475>/Divide' incorporates:
+  //   MATLABSystem: '<S1475>/Read Parameter1'
+  //   Sum: '<S1475>/Sum1'
   //
   Hummingbird_Failure_Detectio_DW.TmpRTBAtDivideInport2_Buffer0 = ParamStep -
     rtb_ReadParameter_o1_kx;
 
-  // RateTransition generated from: '<S1468>/Sum'
+  // RateTransition generated from: '<S1475>/Sum'
   Hummingbird_Failure_Detectio_DW.TmpRTBAtSumInport2_Buffer0 =
     rtb_ReadParameter_o1_kx;
 
-  // MATLABSystem: '<S1469>/Read Parameter'
+  // MATLABSystem: '<S1476>/Read Parameter'
   b_varargout_2 = MW_ParamRead_Step
     (Hummingbird_Failure_Detectio_DW.obj_mb.MW_PARAMHANDLE, MW_SINGLE,
      &rtb_ReadParameter_o1_l3);
@@ -20005,9 +20071,9 @@ void Hummingbird_Failure_Detection_step1(void) // Sample time: [0.5s, 0.0s]
     rtb_ReadParameter_o1_l3 = 0.0F;
   }
 
-  // End of MATLABSystem: '<S1469>/Read Parameter'
+  // End of MATLABSystem: '<S1476>/Read Parameter'
 
-  // MATLABSystem: '<S1469>/Read Parameter1'
+  // MATLABSystem: '<S1476>/Read Parameter1'
   b_varargout_2 = MW_ParamRead_Step
     (Hummingbird_Failure_Detectio_DW.obj_et.MW_PARAMHANDLE, MW_SINGLE,
      &ParamStep);
@@ -20015,18 +20081,18 @@ void Hummingbird_Failure_Detection_step1(void) // Sample time: [0.5s, 0.0s]
     ParamStep = 0.0F;
   }
 
-  // RateTransition generated from: '<S1469>/Divide' incorporates:
-  //   MATLABSystem: '<S1469>/Read Parameter1'
-  //   Sum: '<S1469>/Sum1'
+  // RateTransition generated from: '<S1476>/Divide' incorporates:
+  //   MATLABSystem: '<S1476>/Read Parameter1'
+  //   Sum: '<S1476>/Sum1'
   //
   Hummingbird_Failure_Detectio_DW.TmpRTBAtDivideInport2_Buffe_lzh = ParamStep -
     rtb_ReadParameter_o1_l3;
 
-  // RateTransition generated from: '<S1469>/Sum'
+  // RateTransition generated from: '<S1476>/Sum'
   Hummingbird_Failure_Detectio_DW.TmpRTBAtSumInport2_Buffer0_osg =
     rtb_ReadParameter_o1_l3;
 
-  // MATLABSystem: '<S1470>/Read Parameter'
+  // MATLABSystem: '<S1477>/Read Parameter'
   b_varargout_2 = MW_ParamRead_Step
     (Hummingbird_Failure_Detectio_DW.obj_iw.MW_PARAMHANDLE, MW_SINGLE,
      &rtb_ReadParameter_o1_kh);
@@ -20034,9 +20100,9 @@ void Hummingbird_Failure_Detection_step1(void) // Sample time: [0.5s, 0.0s]
     rtb_ReadParameter_o1_kh = 0.0F;
   }
 
-  // End of MATLABSystem: '<S1470>/Read Parameter'
+  // End of MATLABSystem: '<S1477>/Read Parameter'
 
-  // MATLABSystem: '<S1470>/Read Parameter1'
+  // MATLABSystem: '<S1477>/Read Parameter1'
   b_varargout_2 = MW_ParamRead_Step
     (Hummingbird_Failure_Detectio_DW.obj_hw.MW_PARAMHANDLE, MW_SINGLE,
      &ParamStep);
@@ -20044,18 +20110,18 @@ void Hummingbird_Failure_Detection_step1(void) // Sample time: [0.5s, 0.0s]
     ParamStep = 0.0F;
   }
 
-  // RateTransition generated from: '<S1470>/Divide' incorporates:
-  //   MATLABSystem: '<S1470>/Read Parameter1'
-  //   Sum: '<S1470>/Sum1'
+  // RateTransition generated from: '<S1477>/Divide' incorporates:
+  //   MATLABSystem: '<S1477>/Read Parameter1'
+  //   Sum: '<S1477>/Sum1'
   //
   Hummingbird_Failure_Detectio_DW.TmpRTBAtDivideInport2_Buff_lzhx = ParamStep -
     rtb_ReadParameter_o1_kh;
 
-  // RateTransition generated from: '<S1470>/Sum'
+  // RateTransition generated from: '<S1477>/Sum'
   Hummingbird_Failure_Detectio_DW.TmpRTBAtSumInport2_Buffer0_osgb =
     rtb_ReadParameter_o1_kh;
 
-  // MATLABSystem: '<S1471>/Read Parameter'
+  // MATLABSystem: '<S1478>/Read Parameter'
   b_varargout_2 = MW_ParamRead_Step
     (Hummingbird_Failure_Detectio_DW.obj_ni.MW_PARAMHANDLE, MW_SINGLE,
      &rtb_ReadParameter_o1_lo);
@@ -20063,9 +20129,9 @@ void Hummingbird_Failure_Detection_step1(void) // Sample time: [0.5s, 0.0s]
     rtb_ReadParameter_o1_lo = 0.0F;
   }
 
-  // End of MATLABSystem: '<S1471>/Read Parameter'
+  // End of MATLABSystem: '<S1478>/Read Parameter'
 
-  // MATLABSystem: '<S1471>/Read Parameter1'
+  // MATLABSystem: '<S1478>/Read Parameter1'
   b_varargout_2 = MW_ParamRead_Step
     (Hummingbird_Failure_Detectio_DW.obj_bi.MW_PARAMHANDLE, MW_SINGLE,
      &ParamStep);
@@ -20073,18 +20139,18 @@ void Hummingbird_Failure_Detection_step1(void) // Sample time: [0.5s, 0.0s]
     ParamStep = 0.0F;
   }
 
-  // RateTransition generated from: '<S1471>/Divide' incorporates:
-  //   MATLABSystem: '<S1471>/Read Parameter1'
-  //   Sum: '<S1471>/Sum1'
+  // RateTransition generated from: '<S1478>/Divide' incorporates:
+  //   MATLABSystem: '<S1478>/Read Parameter1'
+  //   Sum: '<S1478>/Sum1'
   //
   Hummingbird_Failure_Detectio_DW.TmpRTBAtDivideInport2_Buf_lzhxe = ParamStep -
     rtb_ReadParameter_o1_lo;
 
-  // RateTransition generated from: '<S1471>/Sum'
+  // RateTransition generated from: '<S1478>/Sum'
   Hummingbird_Failure_Detectio_DW.TmpRTBAtSumInport2_Buffer_osgbz =
     rtb_ReadParameter_o1_lo;
 
-  // MATLABSystem: '<S1472>/Read Parameter'
+  // MATLABSystem: '<S1479>/Read Parameter'
   b_varargout_2 = MW_ParamRead_Step
     (Hummingbird_Failure_Detectio_DW.obj_ip.MW_PARAMHANDLE, MW_SINGLE,
      &rtb_ReadParameter_o1_n);
@@ -20092,9 +20158,9 @@ void Hummingbird_Failure_Detection_step1(void) // Sample time: [0.5s, 0.0s]
     rtb_ReadParameter_o1_n = 0.0F;
   }
 
-  // End of MATLABSystem: '<S1472>/Read Parameter'
+  // End of MATLABSystem: '<S1479>/Read Parameter'
 
-  // MATLABSystem: '<S1472>/Read Parameter1'
+  // MATLABSystem: '<S1479>/Read Parameter1'
   b_varargout_2 = MW_ParamRead_Step
     (Hummingbird_Failure_Detectio_DW.obj_j1.MW_PARAMHANDLE, MW_SINGLE,
      &ParamStep);
@@ -20102,20 +20168,20 @@ void Hummingbird_Failure_Detection_step1(void) // Sample time: [0.5s, 0.0s]
     ParamStep = 0.0F;
   }
 
-  // Sum: '<S1472>/Sum1' incorporates:
-  //   MATLABSystem: '<S1472>/Read Parameter1'
+  // Sum: '<S1479>/Sum1' incorporates:
+  //   MATLABSystem: '<S1479>/Read Parameter1'
   //
   rtb_ReadParameter_o1_lo = ParamStep - rtb_ReadParameter_o1_n;
 
-  // RateTransition generated from: '<S1472>/Divide'
+  // RateTransition generated from: '<S1479>/Divide'
   Hummingbird_Failure_Detectio_DW.TmpRTBAtDivideInport2_Bu_lzhxel =
     rtb_ReadParameter_o1_lo;
 
-  // RateTransition generated from: '<S1472>/Sum'
+  // RateTransition generated from: '<S1479>/Sum'
   Hummingbird_Failure_Detectio_DW.TmpRTBAtSumInport2_Buffe_osgbzt =
     rtb_ReadParameter_o1_n;
 
-  // MATLABSystem: '<S1473>/Read Parameter'
+  // MATLABSystem: '<S1480>/Read Parameter'
   b_varargout_2 = MW_ParamRead_Step
     (Hummingbird_Failure_Detectio_DW.obj_ci.MW_PARAMHANDLE, MW_SINGLE,
      &rtb_ReadParameter_o1_it);
@@ -20123,9 +20189,9 @@ void Hummingbird_Failure_Detection_step1(void) // Sample time: [0.5s, 0.0s]
     rtb_ReadParameter_o1_it = 0.0F;
   }
 
-  // End of MATLABSystem: '<S1473>/Read Parameter'
+  // End of MATLABSystem: '<S1480>/Read Parameter'
 
-  // MATLABSystem: '<S1473>/Read Parameter1'
+  // MATLABSystem: '<S1480>/Read Parameter1'
   b_varargout_2 = MW_ParamRead_Step
     (Hummingbird_Failure_Detectio_DW.obj_lk.MW_PARAMHANDLE, MW_SINGLE,
      &ParamStep);
@@ -20133,20 +20199,20 @@ void Hummingbird_Failure_Detection_step1(void) // Sample time: [0.5s, 0.0s]
     ParamStep = 0.0F;
   }
 
-  // Sum: '<S1473>/Sum1' incorporates:
-  //   MATLABSystem: '<S1473>/Read Parameter1'
+  // Sum: '<S1480>/Sum1' incorporates:
+  //   MATLABSystem: '<S1480>/Read Parameter1'
   //
   rtb_ReadParameter_o1_n = ParamStep - rtb_ReadParameter_o1_it;
 
-  // RateTransition generated from: '<S1473>/Divide'
+  // RateTransition generated from: '<S1480>/Divide'
   Hummingbird_Failure_Detectio_DW.TmpRTBAtDivideInport2_B_lzhxel2 =
     rtb_ReadParameter_o1_n;
 
-  // RateTransition generated from: '<S1473>/Sum'
+  // RateTransition generated from: '<S1480>/Sum'
   Hummingbird_Failure_Detectio_DW.TmpRTBAtSumInport2_Buff_osgbztg =
     rtb_ReadParameter_o1_it;
 
-  // MATLABSystem: '<S1474>/Read Parameter'
+  // MATLABSystem: '<S1481>/Read Parameter'
   b_varargout_2 = MW_ParamRead_Step
     (Hummingbird_Failure_Detectio_DW.obj_dj.MW_PARAMHANDLE, MW_SINGLE,
      &rtb_ReadParameter_o1);
@@ -20154,9 +20220,9 @@ void Hummingbird_Failure_Detection_step1(void) // Sample time: [0.5s, 0.0s]
     rtb_ReadParameter_o1 = 0.0F;
   }
 
-  // End of MATLABSystem: '<S1474>/Read Parameter'
+  // End of MATLABSystem: '<S1481>/Read Parameter'
 
-  // MATLABSystem: '<S1474>/Read Parameter1'
+  // MATLABSystem: '<S1481>/Read Parameter1'
   b_varargout_2 = MW_ParamRead_Step
     (Hummingbird_Failure_Detectio_DW.obj_ii.MW_PARAMHANDLE, MW_SINGLE,
      &ParamStep);
@@ -20164,16 +20230,16 @@ void Hummingbird_Failure_Detection_step1(void) // Sample time: [0.5s, 0.0s]
     ParamStep = 0.0F;
   }
 
-  // Sum: '<S1474>/Sum1' incorporates:
-  //   MATLABSystem: '<S1474>/Read Parameter1'
+  // Sum: '<S1481>/Sum1' incorporates:
+  //   MATLABSystem: '<S1481>/Read Parameter1'
   //
   rtb_ReadParameter_o1_it = ParamStep - rtb_ReadParameter_o1;
 
-  // RateTransition generated from: '<S1474>/Divide'
+  // RateTransition generated from: '<S1481>/Divide'
   Hummingbird_Failure_Detectio_DW.TmpRTBAtDivideInport2__lzhxel2b =
     rtb_ReadParameter_o1_it;
 
-  // RateTransition generated from: '<S1474>/Sum'
+  // RateTransition generated from: '<S1481>/Sum'
   Hummingbird_Failure_Detectio_DW.TmpRTBAtSumInport2_Buf_osgbztgq =
     rtb_ReadParameter_o1;
 }
@@ -20233,75 +20299,75 @@ void Hummingbird_Failure_Detection_initialize(void)
     static const char_T ParameterNameStr_o[9] = "B_P_GAIN";
     int32_T i;
 
-    // Start for RateTransition generated from: '<S1468>/Sum'
+    // Start for RateTransition generated from: '<S1475>/Sum'
     Hummingbird_Failure_Detection_B.TmpRTBAtSumInport2 =
       Hummingbird_Failure_Detection_P.TmpRTBAtSumInport2_InitialCondi;
 
-    // Start for RateTransition generated from: '<S1468>/Divide'
+    // Start for RateTransition generated from: '<S1475>/Divide'
     Hummingbird_Failure_Detection_B.TmpRTBAtDivideInport2 =
       Hummingbird_Failure_Detection_P.TmpRTBAtDivideInport2_InitialCo;
 
-    // Start for RateTransition generated from: '<S1466>/Sum'
+    // Start for RateTransition generated from: '<S1473>/Sum'
     Hummingbird_Failure_Detection_B.TmpRTBAtSumInport2_m =
       Hummingbird_Failure_Detection_P.TmpRTBAtSumInport2_InitialCon_j;
 
-    // Start for RateTransition generated from: '<S1466>/Divide'
+    // Start for RateTransition generated from: '<S1473>/Divide'
     Hummingbird_Failure_Detection_B.TmpRTBAtDivideInport2_p =
       Hummingbird_Failure_Detection_P.TmpRTBAtDivideInport2_Initial_j;
 
-    // Start for RateTransition generated from: '<S1467>/Sum'
+    // Start for RateTransition generated from: '<S1474>/Sum'
     Hummingbird_Failure_Detection_B.TmpRTBAtSumInport2_mb =
       Hummingbird_Failure_Detection_P.TmpRTBAtSumInport2_InitialCo_jx;
 
-    // Start for RateTransition generated from: '<S1467>/Divide'
+    // Start for RateTransition generated from: '<S1474>/Divide'
     Hummingbird_Failure_Detection_B.TmpRTBAtDivideInport2_py =
       Hummingbird_Failure_Detection_P.TmpRTBAtDivideInport2_Initia_jx;
 
-    // Start for RateTransition generated from: '<S1469>/Sum'
+    // Start for RateTransition generated from: '<S1476>/Sum'
     Hummingbird_Failure_Detection_B.TmpRTBAtSumInport2_mbd =
       Hummingbird_Failure_Detection_P.TmpRTBAtSumInport2_InitialC_jxk;
 
-    // Start for RateTransition generated from: '<S1469>/Divide'
+    // Start for RateTransition generated from: '<S1476>/Divide'
     Hummingbird_Failure_Detection_B.TmpRTBAtDivideInport2_pyt =
       Hummingbird_Failure_Detection_P.TmpRTBAtDivideInport2_Initi_jxk;
 
-    // Start for RateTransition generated from: '<S1470>/Sum'
+    // Start for RateTransition generated from: '<S1477>/Sum'
     Hummingbird_Failure_Detection_B.TmpRTBAtSumInport2_mbdz =
       Hummingbird_Failure_Detection_P.TmpRTBAtSumInport2_Initial_jxkx;
 
-    // Start for RateTransition generated from: '<S1470>/Divide'
+    // Start for RateTransition generated from: '<S1477>/Divide'
     Hummingbird_Failure_Detection_B.TmpRTBAtDivideInport2_pyts =
       Hummingbird_Failure_Detection_P.TmpRTBAtDivideInport2_Init_jxkx;
 
-    // Start for RateTransition generated from: '<S1471>/Sum'
+    // Start for RateTransition generated from: '<S1478>/Sum'
     Hummingbird_Failure_Detection_B.TmpRTBAtSumInport2_mbdzh =
       Hummingbird_Failure_Detection_P.TmpRTBAtSumInport2_Initia_jxkxj;
 
-    // Start for RateTransition generated from: '<S1471>/Divide'
+    // Start for RateTransition generated from: '<S1478>/Divide'
     Hummingbird_Failure_Detection_B.TmpRTBAtDivideInport2_pytsl =
       Hummingbird_Failure_Detection_P.TmpRTBAtDivideInport2_Ini_jxkxj;
 
-    // Start for RateTransition generated from: '<S1472>/Sum'
+    // Start for RateTransition generated from: '<S1479>/Sum'
     Hummingbird_Failure_Detection_B.TmpRTBAtSumInport2_mbdzha =
       Hummingbird_Failure_Detection_P.TmpRTBAtSumInport2_Initi_jxkxj0;
 
-    // Start for RateTransition generated from: '<S1472>/Divide'
+    // Start for RateTransition generated from: '<S1479>/Divide'
     Hummingbird_Failure_Detection_B.TmpRTBAtDivideInport2_pytslg =
       Hummingbird_Failure_Detection_P.TmpRTBAtDivideInport2_In_jxkxj0;
 
-    // Start for RateTransition generated from: '<S1473>/Sum'
+    // Start for RateTransition generated from: '<S1480>/Sum'
     Hummingbird_Failure_Detection_B.TmpRTBAtSumInport2_mbdzhaq =
       Hummingbird_Failure_Detection_P.TmpRTBAtSumInport2_Init_jxkxj0l;
 
-    // Start for RateTransition generated from: '<S1473>/Divide'
+    // Start for RateTransition generated from: '<S1480>/Divide'
     Hummingbird_Failure_Detection_B.TmpRTBAtDivideInport2_pytslgw =
       Hummingbird_Failure_Detection_P.TmpRTBAtDivideInport2_I_jxkxj0l;
 
-    // Start for RateTransition generated from: '<S1474>/Sum'
+    // Start for RateTransition generated from: '<S1481>/Sum'
     Hummingbird_Failure_Detection_B.TmpRTBAtSumInport2_mbdzhaqa =
       Hummingbird_Failure_Detection_P.TmpRTBAtSumInport2_Ini_jxkxj0lw;
 
-    // Start for RateTransition generated from: '<S1474>/Divide'
+    // Start for RateTransition generated from: '<S1481>/Divide'
     Hummingbird_Failure_Detection_B.TmpRTBAtDivideInport2_pytslgwp =
       Hummingbird_Failure_Detection_P.TmpRTBAtDivideInport2__jxkxj0lw;
 
@@ -20313,84 +20379,96 @@ void Hummingbird_Failure_Detection_initialize(void)
     Hummingbird_Failure_Detectio_DW.mission_start[2] =
       Hummingbird_Failure_Detection_P.DataStoreMemory_InitialValue;
 
-    // InitializeConditions for RateTransition generated from: '<S1468>/Sum'
+    // InitializeConditions for RateTransition generated from: '<S1475>/Sum'
     Hummingbird_Failure_Detectio_DW.TmpRTBAtSumInport2_Buffer0 =
       Hummingbird_Failure_Detection_P.TmpRTBAtSumInport2_InitialCondi;
 
-    // InitializeConditions for RateTransition generated from: '<S1468>/Divide'
+    // InitializeConditions for RateTransition generated from: '<S1475>/Divide'
     Hummingbird_Failure_Detectio_DW.TmpRTBAtDivideInport2_Buffer0 =
       Hummingbird_Failure_Detection_P.TmpRTBAtDivideInport2_InitialCo;
 
-    // InitializeConditions for RateTransition generated from: '<S1466>/Sum'
+    // InitializeConditions for RateTransition generated from: '<S1473>/Sum'
     Hummingbird_Failure_Detectio_DW.TmpRTBAtSumInport2_Buffer0_o =
       Hummingbird_Failure_Detection_P.TmpRTBAtSumInport2_InitialCon_j;
 
-    // InitializeConditions for RateTransition generated from: '<S1466>/Divide'
+    // InitializeConditions for RateTransition generated from: '<S1473>/Divide'
     Hummingbird_Failure_Detectio_DW.TmpRTBAtDivideInport2_Buffer0_l =
       Hummingbird_Failure_Detection_P.TmpRTBAtDivideInport2_Initial_j;
 
-    // InitializeConditions for RateTransition generated from: '<S1467>/Sum'
+    // InitializeConditions for RateTransition generated from: '<S1474>/Sum'
     Hummingbird_Failure_Detectio_DW.TmpRTBAtSumInport2_Buffer0_os =
       Hummingbird_Failure_Detection_P.TmpRTBAtSumInport2_InitialCo_jx;
 
-    // InitializeConditions for RateTransition generated from: '<S1467>/Divide'
+    // InitializeConditions for RateTransition generated from: '<S1474>/Divide'
     Hummingbird_Failure_Detectio_DW.TmpRTBAtDivideInport2_Buffer_lz =
       Hummingbird_Failure_Detection_P.TmpRTBAtDivideInport2_Initia_jx;
 
-    // InitializeConditions for RateTransition generated from: '<S1469>/Sum'
+    // InitializeConditions for RateTransition generated from: '<S1476>/Sum'
     Hummingbird_Failure_Detectio_DW.TmpRTBAtSumInport2_Buffer0_osg =
       Hummingbird_Failure_Detection_P.TmpRTBAtSumInport2_InitialC_jxk;
 
-    // InitializeConditions for RateTransition generated from: '<S1469>/Divide'
+    // InitializeConditions for RateTransition generated from: '<S1476>/Divide'
     Hummingbird_Failure_Detectio_DW.TmpRTBAtDivideInport2_Buffe_lzh =
       Hummingbird_Failure_Detection_P.TmpRTBAtDivideInport2_Initi_jxk;
 
-    // InitializeConditions for RateTransition generated from: '<S1470>/Sum'
+    // InitializeConditions for RateTransition generated from: '<S1477>/Sum'
     Hummingbird_Failure_Detectio_DW.TmpRTBAtSumInport2_Buffer0_osgb =
       Hummingbird_Failure_Detection_P.TmpRTBAtSumInport2_Initial_jxkx;
 
-    // InitializeConditions for RateTransition generated from: '<S1470>/Divide'
+    // InitializeConditions for RateTransition generated from: '<S1477>/Divide'
     Hummingbird_Failure_Detectio_DW.TmpRTBAtDivideInport2_Buff_lzhx =
       Hummingbird_Failure_Detection_P.TmpRTBAtDivideInport2_Init_jxkx;
 
-    // InitializeConditions for RateTransition generated from: '<S1471>/Sum'
+    // InitializeConditions for RateTransition generated from: '<S1478>/Sum'
     Hummingbird_Failure_Detectio_DW.TmpRTBAtSumInport2_Buffer_osgbz =
       Hummingbird_Failure_Detection_P.TmpRTBAtSumInport2_Initia_jxkxj;
 
-    // InitializeConditions for RateTransition generated from: '<S1471>/Divide'
+    // InitializeConditions for RateTransition generated from: '<S1478>/Divide'
     Hummingbird_Failure_Detectio_DW.TmpRTBAtDivideInport2_Buf_lzhxe =
       Hummingbird_Failure_Detection_P.TmpRTBAtDivideInport2_Ini_jxkxj;
 
-    // InitializeConditions for RateTransition generated from: '<S1472>/Sum'
+    // InitializeConditions for RateTransition generated from: '<S1479>/Sum'
     Hummingbird_Failure_Detectio_DW.TmpRTBAtSumInport2_Buffe_osgbzt =
       Hummingbird_Failure_Detection_P.TmpRTBAtSumInport2_Initi_jxkxj0;
 
-    // InitializeConditions for RateTransition generated from: '<S1472>/Divide'
+    // InitializeConditions for RateTransition generated from: '<S1479>/Divide'
     Hummingbird_Failure_Detectio_DW.TmpRTBAtDivideInport2_Bu_lzhxel =
       Hummingbird_Failure_Detection_P.TmpRTBAtDivideInport2_In_jxkxj0;
 
-    // InitializeConditions for RateTransition generated from: '<S1473>/Sum'
+    // InitializeConditions for RateTransition generated from: '<S1480>/Sum'
     Hummingbird_Failure_Detectio_DW.TmpRTBAtSumInport2_Buff_osgbztg =
       Hummingbird_Failure_Detection_P.TmpRTBAtSumInport2_Init_jxkxj0l;
 
-    // InitializeConditions for RateTransition generated from: '<S1473>/Divide'
+    // InitializeConditions for RateTransition generated from: '<S1480>/Divide'
     Hummingbird_Failure_Detectio_DW.TmpRTBAtDivideInport2_B_lzhxel2 =
       Hummingbird_Failure_Detection_P.TmpRTBAtDivideInport2_I_jxkxj0l;
 
-    // InitializeConditions for RateTransition generated from: '<S1474>/Sum'
+    // InitializeConditions for RateTransition generated from: '<S1481>/Sum'
     Hummingbird_Failure_Detectio_DW.TmpRTBAtSumInport2_Buf_osgbztgq =
       Hummingbird_Failure_Detection_P.TmpRTBAtSumInport2_Ini_jxkxj0lw;
 
-    // InitializeConditions for RateTransition generated from: '<S1474>/Divide'
+    // InitializeConditions for RateTransition generated from: '<S1481>/Divide'
     Hummingbird_Failure_Detectio_DW.TmpRTBAtDivideInport2__lzhxel2b =
       Hummingbird_Failure_Detection_P.TmpRTBAtDivideInport2__jxkxj0lw;
+
+    // InitializeConditions for UnitDelay: '<S13>/Unit Delay'
+    Hummingbird_Failure_Detectio_DW.UnitDelay_DSTATE =
+      Hummingbird_Failure_Detection_P.UnitDelay_InitialCondition;
+
+    // InitializeConditions for DiscreteIntegrator: '<S13>/Discrete-Time Integrator' 
+    Hummingbird_Failure_Detectio_DW.DiscreteTimeIntegrator_DSTATE =
+      Hummingbird_Failure_Detection_P.DiscreteTimeIntegrator_IC;
+
+    // InitializeConditions for Delay: '<S13>/Delay'
+    Hummingbird_Failure_Detectio_DW.Delay_DSTATE =
+      Hummingbird_Failure_Detection_P.Delay_InitialCondition;
 
     // SystemInitialize for Enabled SubSystem: '<S8>/Enabled Subsystem'
     // SystemInitialize for SignalConversion generated from: '<S1451>/In1' incorporates:
     //   Outport: '<S1451>/Out1'
 
     Hummingbird_Failure_Detection_B.In1_mj =
-      Hummingbird_Failure_Detection_P.Out1_Y0_o;
+      Hummingbird_Failure_Detection_P.Out1_Y0_oz;
 
     // End of SystemInitialize for SubSystem: '<S8>/Enabled Subsystem'
 
@@ -20430,7 +20508,7 @@ void Hummingbird_Failure_Detection_initialize(void)
 
     // End of SystemInitialize for SubSystem: '<S1>/Flight_controller.MR_Nav'
 
-    // InitializeConditions for DiscreteIntegrator: '<S1510>/Filter'
+    // InitializeConditions for DiscreteIntegrator: '<S1519>/Filter'
     Hummingbird_Failure_Detectio_DW.Filter_DSTATE[0] =
       Hummingbird_Failure_Detection_P.PIDController_InitialConditi_gy;
 
@@ -20467,7 +20545,7 @@ void Hummingbird_Failure_Detection_initialize(void)
 
     // End of SystemInitialize for SubSystem: '<S1>/Flight_controller.MR_Nav'
 
-    // InitializeConditions for DiscreteIntegrator: '<S1510>/Filter'
+    // InitializeConditions for DiscreteIntegrator: '<S1519>/Filter'
     Hummingbird_Failure_Detectio_DW.Filter_DSTATE[1] =
       Hummingbird_Failure_Detection_P.PIDController_InitialConditi_gy;
 
@@ -20504,7 +20582,7 @@ void Hummingbird_Failure_Detection_initialize(void)
 
     // End of SystemInitialize for SubSystem: '<S1>/Flight_controller.MR_Nav'
 
-    // InitializeConditions for DiscreteIntegrator: '<S1510>/Filter'
+    // InitializeConditions for DiscreteIntegrator: '<S1519>/Filter'
     Hummingbird_Failure_Detectio_DW.Filter_DSTATE[2] =
       Hummingbird_Failure_Detection_P.PIDController_InitialConditi_gy;
 
@@ -20952,8 +21030,9 @@ void Hummingbird_Failure_Detection_initialize(void)
     Hummi_ReadParameter2_h_Init
       (&Hummingbird_Failure_Detectio_DW.ReadParameter2_b3r);
     Humming_ReadParameter4_Init(&Hummingbird_Failure_Detectio_DW.ReadParameter4);
-    Hummingbir_SinkBlock_o_Init(&Hummingbird_Failure_Detection_B.BusAssignment_b,
-      &Hummingbird_Failure_Detectio_DW.SinkBlock_j);
+    Hummingbir_SinkBlock_o_Init
+      (&Hummingbird_Failure_Detection_B.BusAssignment_b0,
+       &Hummingbird_Failure_Detectio_DW.SinkBlock_j);
     Hummi_ReadParameter1_i_Init
       (&Hummingbird_Failure_Detectio_DW.ReadParameter1_b3rgae);
     Hummin_ReadParameter_j_Init
@@ -21108,113 +21187,134 @@ void Hummingbird_Failure_Detection_initialize(void)
 
     // End of SystemInitialize for SubSystem: '<S2>/Controller.Controlled'
 
-    // SystemInitialize for Enabled SubSystem: '<S1479>/Enabled Subsystem'
-    // SystemInitialize for SignalConversion generated from: '<S1480>/In1' incorporates:
-    //   Outport: '<S1480>/Out1'
+    // SystemInitialize for Enabled SubSystem: '<S1486>/Enabled Subsystem'
+    // SystemInitialize for SignalConversion generated from: '<S1487>/In1' incorporates:
+    //   Outport: '<S1487>/Out1'
 
     Hummingbird_Failure_Detection_B.In1_i =
       Hummingbird_Failure_Detection_P.Out1_Y0_c;
 
-    // End of SystemInitialize for SubSystem: '<S1479>/Enabled Subsystem'
+    // End of SystemInitialize for SubSystem: '<S1486>/Enabled Subsystem'
 
-    // SystemInitialize for Enabled SubSystem: '<S1459>/Enabled Subsystem'
-    // SystemInitialize for SignalConversion generated from: '<S1535>/In1' incorporates:
-    //   Outport: '<S1535>/Out1'
+    // SystemInitialize for Enabled SubSystem: '<S1465>/Enabled Subsystem'
+    // SystemInitialize for SignalConversion generated from: '<S1546>/In1' incorporates:
+    //   Outport: '<S1546>/Out1'
 
     Hummingbird_Failure_Detection_B.In1_fv =
       Hummingbird_Failure_Detection_P.Out1_Y0_n3;
 
-    // End of SystemInitialize for SubSystem: '<S1459>/Enabled Subsystem'
+    // End of SystemInitialize for SubSystem: '<S1465>/Enabled Subsystem'
 
-    // SystemInitialize for Enabled SubSystem: '<S1461>/Enabled Subsystem'
-    // SystemInitialize for SignalConversion generated from: '<S1537>/In1' incorporates:
-    //   Outport: '<S1537>/Out1'
+    // SystemInitialize for Enabled SubSystem: '<S1467>/Enabled Subsystem'
+    // SystemInitialize for SignalConversion generated from: '<S1548>/In1' incorporates:
+    //   Outport: '<S1548>/Out1'
 
     Hummingbird_Failure_Detection_B.In1_p =
       Hummingbird_Failure_Detection_P.Out1_Y0_f;
 
-    // End of SystemInitialize for SubSystem: '<S1461>/Enabled Subsystem'
+    // End of SystemInitialize for SubSystem: '<S1467>/Enabled Subsystem'
 
-    // SystemInitialize for Enabled SubSystem: '<S1465>/Enabled Subsystem'
-    // SystemInitialize for SignalConversion generated from: '<S1541>/In1' incorporates:
-    //   Outport: '<S1541>/Out1'
+    // SystemInitialize for Enabled SubSystem: '<S1471>/Enabled Subsystem'
+    // SystemInitialize for SignalConversion generated from: '<S1552>/In1' incorporates:
+    //   Outport: '<S1552>/Out1'
 
     Hummingbird_Failure_Detection_B.In1_fm =
       Hummingbird_Failure_Detection_P.Out1_Y0_k2;
 
-    // End of SystemInitialize for SubSystem: '<S1465>/Enabled Subsystem'
+    // End of SystemInitialize for SubSystem: '<S1471>/Enabled Subsystem'
 
-    // SystemInitialize for Enabled SubSystem: '<S1475>/Enabled Subsystem'
-    // SystemInitialize for SignalConversion generated from: '<S1542>/In1' incorporates:
-    //   Outport: '<S1542>/Out1'
+    // SystemInitialize for Enabled SubSystem: '<S1482>/Enabled Subsystem'
+    // SystemInitialize for SignalConversion generated from: '<S1554>/In1' incorporates:
+    //   Outport: '<S1554>/Out1'
 
     Hummingbird_Failure_Detection_B.In1_l =
       Hummingbird_Failure_Detection_P.Out1_Y0_k;
 
-    // End of SystemInitialize for SubSystem: '<S1475>/Enabled Subsystem'
+    // End of SystemInitialize for SubSystem: '<S1482>/Enabled Subsystem'
 
-    // SystemInitialize for Enabled SubSystem: '<S1476>/Enabled Subsystem'
-    // SystemInitialize for SignalConversion generated from: '<S1543>/In1' incorporates:
-    //   Outport: '<S1543>/Out1'
+    // SystemInitialize for Enabled SubSystem: '<S1483>/Enabled Subsystem'
+    // SystemInitialize for SignalConversion generated from: '<S1555>/In1' incorporates:
+    //   Outport: '<S1555>/Out1'
 
     Hummingbird_Failure_Detection_B.In1_f =
       Hummingbird_Failure_Detection_P.Out1_Y0_ds;
 
-    // End of SystemInitialize for SubSystem: '<S1476>/Enabled Subsystem'
+    // End of SystemInitialize for SubSystem: '<S1483>/Enabled Subsystem'
 
-    // SystemInitialize for Enabled SubSystem: '<S1477>/Enabled Subsystem'
-    // SystemInitialize for SignalConversion generated from: '<S1544>/In1' incorporates:
-    //   Outport: '<S1544>/Out1'
-
-    Hummingbird_Failure_Detection_B.In1_j =
-      Hummingbird_Failure_Detection_P.Out1_Y0_n;
-
-    // End of SystemInitialize for SubSystem: '<S1477>/Enabled Subsystem'
-
-    // SystemInitialize for Enabled SubSystem: '<S1478>/Enabled Subsystem'
-    // SystemInitialize for SignalConversion generated from: '<S1545>/In1' incorporates:
-    //   Outport: '<S1545>/Out1'
+    // SystemInitialize for Enabled SubSystem: '<S1484>/Enabled Subsystem'
+    // SystemInitialize for SignalConversion generated from: '<S1556>/In1' incorporates:
+    //   Outport: '<S1556>/Out1'
 
     Hummingbird_Failure_Detection_B.In1_a =
       Hummingbird_Failure_Detection_P.Out1_Y0_g;
 
-    // End of SystemInitialize for SubSystem: '<S1478>/Enabled Subsystem'
+    // End of SystemInitialize for SubSystem: '<S1484>/Enabled Subsystem'
 
-    // SystemInitialize for Enabled SubSystem: '<S1460>/Enabled Subsystem'
-    // SystemInitialize for SignalConversion generated from: '<S1536>/In1' incorporates:
-    //   Outport: '<S1536>/Out1'
+    // SystemInitialize for Enabled SubSystem: '<S1485>/Enabled Subsystem'
+    // SystemInitialize for SignalConversion generated from: '<S1557>/In1' incorporates:
+    //   Outport: '<S1557>/Out1'
+
+    Hummingbird_Failure_Detection_B.In1_j =
+      Hummingbird_Failure_Detection_P.Out1_Y0_n;
+
+    // End of SystemInitialize for SubSystem: '<S1485>/Enabled Subsystem'
+
+    // SystemInitialize for Enabled SubSystem: '<S1466>/Enabled Subsystem'
+    // SystemInitialize for SignalConversion generated from: '<S1547>/In1' incorporates:
+    //   Outport: '<S1547>/Out1'
 
     Hummingbird_Failure_Detection_B.In1_d =
       Hummingbird_Failure_Detection_P.Out1_Y0_ns;
 
-    // End of SystemInitialize for SubSystem: '<S1460>/Enabled Subsystem'
+    // End of SystemInitialize for SubSystem: '<S1466>/Enabled Subsystem'
 
-    // SystemInitialize for Enabled SubSystem: '<S1462>/Enabled Subsystem'
-    // SystemInitialize for SignalConversion generated from: '<S1538>/In1' incorporates:
-    //   Outport: '<S1538>/Out1'
+    // SystemInitialize for Enabled SubSystem: '<S1468>/Enabled Subsystem'
+    // SystemInitialize for SignalConversion generated from: '<S1549>/In1' incorporates:
+    //   Outport: '<S1549>/Out1'
 
     Hummingbird_Failure_Detection_B.In1 =
       Hummingbird_Failure_Detection_P.Out1_Y0;
 
-    // End of SystemInitialize for SubSystem: '<S1462>/Enabled Subsystem'
+    // End of SystemInitialize for SubSystem: '<S1468>/Enabled Subsystem'
 
-    // SystemInitialize for Enabled SubSystem: '<S1463>/Enabled Subsystem'
-    // SystemInitialize for SignalConversion generated from: '<S1539>/In1' incorporates:
-    //   Outport: '<S1539>/Out1'
+    // SystemInitialize for Enabled SubSystem: '<S1469>/Enabled Subsystem'
+    // SystemInitialize for SignalConversion generated from: '<S1550>/In1' incorporates:
+    //   Outport: '<S1550>/Out1'
 
     Hummingbird_Failure_Detection_B.In1_i4 =
       Hummingbird_Failure_Detection_P.Out1_Y0_d;
 
-    // End of SystemInitialize for SubSystem: '<S1463>/Enabled Subsystem'
+    // End of SystemInitialize for SubSystem: '<S1469>/Enabled Subsystem'
 
-    // SystemInitialize for Enabled SubSystem: '<S1464>/Enabled Subsystem'
-    // SystemInitialize for SignalConversion generated from: '<S1540>/In1' incorporates:
-    //   Outport: '<S1540>/Out1'
+    // SystemInitialize for Enabled SubSystem: '<S1470>/Enabled Subsystem'
+    // SystemInitialize for SignalConversion generated from: '<S1551>/In1' incorporates:
+    //   Outport: '<S1551>/Out1'
 
     Hummingbird_Failure_Detection_B.In1_m =
       Hummingbird_Failure_Detection_P.Out1_Y0_l;
 
-    // End of SystemInitialize for SubSystem: '<S1464>/Enabled Subsystem'
+    // End of SystemInitialize for SubSystem: '<S1470>/Enabled Subsystem'
+
+    // SystemInitialize for IfAction SubSystem: '<S13>/If Action Subsystem2'
+    PX4WriteParameterBlock_Init
+      (&Hummingbird_Failure_Detectio_DW.PX4WriteParameterBlock_g);
+
+    // End of SystemInitialize for SubSystem: '<S13>/If Action Subsystem2'
+
+    // SystemInitialize for IfAction SubSystem: '<S13>/If Action Subsystem4'
+    PX4WriteParameterBlock_Init
+      (&Hummingbird_Failure_Detectio_DW.PX4WriteParameterBlock);
+
+    // End of SystemInitialize for SubSystem: '<S13>/If Action Subsystem4'
+
+    // SystemInitialize for Enabled SubSystem: '<S1472>/Enabled Subsystem'
+    // SystemInitialize for SignalConversion generated from: '<S1553>/In1' incorporates:
+    //   Outport: '<S1553>/Out1'
+
+    Hummingbird_Failure_Detection_B.In1_k =
+      Hummingbird_Failure_Detection_P.Out1_Y0_o;
+
+    // End of SystemInitialize for SubSystem: '<S1472>/Enabled Subsystem'
 
     // SystemInitialize for Enabled SubSystem: '<S10>/Enabled Subsystem'
     // SystemInitialize for SignalConversion generated from: '<S1453>/In1' incorporates:
@@ -21280,7 +21380,7 @@ void Hummingbird_Failure_Detection_initialize(void)
                           &Hummingbird_Failure_Detection_B.BusAssignment_g, 1);
     Hummingbird_Failure_Detectio_DW.obj_b.isSetupComplete = true;
 
-    // Start for MATLABSystem: '<S1477>/SourceBlock'
+    // Start for MATLABSystem: '<S1485>/SourceBlock'
     Hummingbird_Failure_Detectio_DW.obj_o.matlabCodegenIsDeleted = false;
     Hummingbird_Failure_Detectio_DW.obj_o.isSetupComplete = false;
     Hummingbird_Failure_Detectio_DW.obj_o.isInitialized = 1;
@@ -21290,7 +21390,7 @@ void Hummingbird_Failure_Detection_initialize(void)
                          &Hummingbird_Failure_Detectio_DW.obj_o.eventStructObj);
     Hummingbird_Failure_Detectio_DW.obj_o.isSetupComplete = true;
 
-    // Start for MATLABSystem: '<S1475>/SourceBlock'
+    // Start for MATLABSystem: '<S1482>/SourceBlock'
     Hummingbird_Failure_Detectio_DW.obj_k.matlabCodegenIsDeleted = false;
     Hummingbird_Failure_Detectio_DW.obj_k.isSetupComplete = false;
     Hummingbird_Failure_Detectio_DW.obj_k.isInitialized = 1;
@@ -21299,6 +21399,16 @@ void Hummingbird_Failure_Detection_initialize(void)
     uORB_read_initialize(Hummingbird_Failure_Detectio_DW.obj_k.orbMetadataObj,
                          &Hummingbird_Failure_Detectio_DW.obj_k.eventStructObj);
     Hummingbird_Failure_Detectio_DW.obj_k.isSetupComplete = true;
+
+    // Start for MATLABSystem: '<S1483>/SourceBlock'
+    Hummingbird_Failure_Detectio_DW.obj_a.matlabCodegenIsDeleted = false;
+    Hummingbird_Failure_Detectio_DW.obj_a.isSetupComplete = false;
+    Hummingbird_Failure_Detectio_DW.obj_a.isInitialized = 1;
+    Hummingbird_Failure_Detectio_DW.obj_a.orbMetadataObj = ORB_ID
+      (sensor_combined);
+    uORB_read_initialize(Hummingbird_Failure_Detectio_DW.obj_a.orbMetadataObj,
+                         &Hummingbird_Failure_Detectio_DW.obj_a.eventStructObj);
+    Hummingbird_Failure_Detectio_DW.obj_a.isSetupComplete = true;
     Hummingbir_SourceBlock_Init(&Hummingbird_Failure_Detectio_DW.SourceBlock_kw);
 
     // Start for MATLABSystem: '<S13>/Read Parameter'
@@ -21308,26 +21418,16 @@ void Hummingbird_Failure_Detection_initialize(void)
       (&ParameterNameStr[0], true, 200.0);
     Hummingbird_Failure_Detectio_DW.obj_cf.isSetupComplete = true;
 
-    // Start for MATLABSystem: '<S1476>/SourceBlock'
-    Hummingbird_Failure_Detectio_DW.obj_a.matlabCodegenIsDeleted = false;
-    Hummingbird_Failure_Detectio_DW.obj_a.isSetupComplete = false;
-    Hummingbird_Failure_Detectio_DW.obj_a.isInitialized = 1;
-    Hummingbird_Failure_Detectio_DW.obj_a.orbMetadataObj = ORB_ID
-      (sensor_combined);
-    uORB_read_initialize(Hummingbird_Failure_Detectio_DW.obj_a.orbMetadataObj,
-                         &Hummingbird_Failure_Detectio_DW.obj_a.eventStructObj);
-    Hummingbird_Failure_Detectio_DW.obj_a.isSetupComplete = true;
+    // Start for MATLABSystem: '<S1467>/SourceBlock'
+    Hummingbird_Failure_Detectio_DW.obj_me.matlabCodegenIsDeleted = false;
+    Hummingbird_Failure_Detectio_DW.obj_me.isSetupComplete = false;
+    Hummingbird_Failure_Detectio_DW.obj_me.isInitialized = 1;
+    Hummingbird_Failure_Detectio_DW.obj_me.orbMetadataObj = ORB_ID(airspeed);
+    uORB_read_initialize(Hummingbird_Failure_Detectio_DW.obj_me.orbMetadataObj,
+                         &Hummingbird_Failure_Detectio_DW.obj_me.eventStructObj);
+    Hummingbird_Failure_Detectio_DW.obj_me.isSetupComplete = true;
 
-    // Start for MATLABSystem: '<S1461>/SourceBlock'
-    Hummingbird_Failure_Detectio_DW.obj_m.matlabCodegenIsDeleted = false;
-    Hummingbird_Failure_Detectio_DW.obj_m.isSetupComplete = false;
-    Hummingbird_Failure_Detectio_DW.obj_m.isInitialized = 1;
-    Hummingbird_Failure_Detectio_DW.obj_m.orbMetadataObj = ORB_ID(airspeed);
-    uORB_read_initialize(Hummingbird_Failure_Detectio_DW.obj_m.orbMetadataObj,
-                         &Hummingbird_Failure_Detectio_DW.obj_m.eventStructObj);
-    Hummingbird_Failure_Detectio_DW.obj_m.isSetupComplete = true;
-
-    // Start for MATLABSystem: '<S1479>/SourceBlock'
+    // Start for MATLABSystem: '<S1486>/SourceBlock'
     Hummingbird_Failure_Detectio_DW.obj_gv.matlabCodegenIsDeleted = false;
     Hummingbird_Failure_Detectio_DW.obj_gv.isSetupComplete = false;
     Hummingbird_Failure_Detectio_DW.obj_gv.isInitialized = 1;
@@ -21336,7 +21436,7 @@ void Hummingbird_Failure_Detection_initialize(void)
                          &Hummingbird_Failure_Detectio_DW.obj_gv.eventStructObj);
     Hummingbird_Failure_Detectio_DW.obj_gv.isSetupComplete = true;
 
-    // Start for MATLABSystem: '<S1459>/SourceBlock'
+    // Start for MATLABSystem: '<S1465>/SourceBlock'
     Hummingbird_Failure_Detectio_DW.obj_h.matlabCodegenIsDeleted = false;
     Hummingbird_Failure_Detectio_DW.obj_h.isSetupComplete = false;
     Hummingbird_Failure_Detectio_DW.obj_h.isInitialized = 1;
@@ -21345,7 +21445,7 @@ void Hummingbird_Failure_Detection_initialize(void)
                          &Hummingbird_Failure_Detectio_DW.obj_h.eventStructObj);
     Hummingbird_Failure_Detectio_DW.obj_h.isSetupComplete = true;
 
-    // Start for MATLABSystem: '<S1478>/SourceBlock'
+    // Start for MATLABSystem: '<S1484>/SourceBlock'
     Hummingbird_Failure_Detectio_DW.obj_i.matlabCodegenIsDeleted = false;
     Hummingbird_Failure_Detectio_DW.obj_i.isSetupComplete = false;
     Hummingbird_Failure_Detectio_DW.obj_i.isInitialized = 1;
@@ -21355,7 +21455,7 @@ void Hummingbird_Failure_Detection_initialize(void)
                          &Hummingbird_Failure_Detectio_DW.obj_i.eventStructObj);
     Hummingbird_Failure_Detectio_DW.obj_i.isSetupComplete = true;
 
-    // Start for MATLABSystem: '<S1460>/SourceBlock'
+    // Start for MATLABSystem: '<S1466>/SourceBlock'
     Hummingbird_Failure_Detectio_DW.obj_p.matlabCodegenIsDeleted = false;
     Hummingbird_Failure_Detectio_DW.obj_p.isSetupComplete = false;
     Hummingbird_Failure_Detectio_DW.obj_p.isInitialized = 1;
@@ -21364,7 +21464,7 @@ void Hummingbird_Failure_Detection_initialize(void)
                          &Hummingbird_Failure_Detectio_DW.obj_p.eventStructObj);
     Hummingbird_Failure_Detectio_DW.obj_p.isSetupComplete = true;
 
-    // Start for MATLABSystem: '<S1462>/SourceBlock'
+    // Start for MATLABSystem: '<S1468>/SourceBlock'
     Hummingbird_Failure_Detectio_DW.obj_az.matlabCodegenIsDeleted = false;
     Hummingbird_Failure_Detectio_DW.obj_az.isSetupComplete = false;
     Hummingbird_Failure_Detectio_DW.obj_az.isInitialized = 1;
@@ -21374,7 +21474,7 @@ void Hummingbird_Failure_Detection_initialize(void)
                          &Hummingbird_Failure_Detectio_DW.obj_az.eventStructObj);
     Hummingbird_Failure_Detectio_DW.obj_az.isSetupComplete = true;
 
-    // Start for MATLABSystem: '<S1463>/SourceBlock'
+    // Start for MATLABSystem: '<S1469>/SourceBlock'
     Hummingbird_Failure_Detectio_DW.obj_g.matlabCodegenIsDeleted = false;
     Hummingbird_Failure_Detectio_DW.obj_g.isSetupComplete = false;
     Hummingbird_Failure_Detectio_DW.obj_g.isInitialized = 1;
@@ -21383,7 +21483,7 @@ void Hummingbird_Failure_Detection_initialize(void)
                          &Hummingbird_Failure_Detectio_DW.obj_g.eventStructObj);
     Hummingbird_Failure_Detectio_DW.obj_g.isSetupComplete = true;
 
-    // Start for MATLABSystem: '<S1464>/SourceBlock'
+    // Start for MATLABSystem: '<S1470>/SourceBlock'
     Hummingbird_Failure_Detectio_DW.obj_im.matlabCodegenIsDeleted = false;
     Hummingbird_Failure_Detectio_DW.obj_im.isSetupComplete = false;
     Hummingbird_Failure_Detectio_DW.obj_im.isInitialized = 1;
@@ -21425,8 +21525,8 @@ void Hummingbird_Failure_Detection_initialize(void)
     Hummingbird_Failure_Detectio_DW.obj_d.isSetupComplete = true;
     Hummingbi_PX4Timestamp_Init(&Hummingbird_Failure_Detectio_DW.PX4Timestamp_i);
 
-    // Start for MATLABSystem: '<S1534>/SinkBlock' incorporates:
-    //   BusAssignment: '<S1458>/Bus Assignment'
+    // Start for MATLABSystem: '<S1543>/SinkBlock' incorporates:
+    //   BusAssignment: '<S1463>/Bus Assignment'
 
     Hummingbird_Failure_Detectio_DW.obj_f.matlabCodegenIsDeleted = false;
     Hummingbird_Failure_Detectio_DW.obj_f.isSetupComplete = false;
@@ -21436,6 +21536,29 @@ void Hummingbird_Failure_Detection_initialize(void)
                           &Hummingbird_Failure_Detectio_DW.obj_f.orbAdvertiseObj,
                           &Hummingbird_Failure_Detection_B.BusAssignment_kr, 1);
     Hummingbird_Failure_Detectio_DW.obj_f.isSetupComplete = true;
+
+    // Start for MATLABSystem: '<S1472>/SourceBlock'
+    Hummingbird_Failure_Detectio_DW.obj_m.matlabCodegenIsDeleted = false;
+    Hummingbird_Failure_Detectio_DW.obj_m.isSetupComplete = false;
+    Hummingbird_Failure_Detectio_DW.obj_m.isInitialized = 1;
+    Hummingbird_Failure_Detectio_DW.obj_m.orbMetadataObj = ORB_ID(sensor_gyro);
+    uORB_read_initialize(Hummingbird_Failure_Detectio_DW.obj_m.orbMetadataObj,
+                         &Hummingbird_Failure_Detectio_DW.obj_m.eventStructObj);
+    Hummingbird_Failure_Detectio_DW.obj_m.isSetupComplete = true;
+    Hummingbi_PX4Timestamp_Init(&Hummingbird_Failure_Detectio_DW.PX4Timestamp_i2);
+
+    // Start for MATLABSystem: '<S1545>/SinkBlock' incorporates:
+    //   BusAssignment: '<S1464>/Bus Assignment'
+
+    Hummingbird_Failure_Detectio_DW.obj_is.matlabCodegenIsDeleted = false;
+    Hummingbird_Failure_Detectio_DW.obj_is.isSetupComplete = false;
+    Hummingbird_Failure_Detectio_DW.obj_is.isInitialized = 1;
+    Hummingbird_Failure_Detectio_DW.obj_is.orbMetadataObj = ORB_ID
+      (simulink_custom_message);
+    uORB_write_initialize(Hummingbird_Failure_Detectio_DW.obj_is.orbMetadataObj,
+                          &Hummingbird_Failure_Detectio_DW.obj_is.orbAdvertiseObj,
+                          &Hummingbird_Failure_Detection_B.BusAssignment_b, 1);
+    Hummingbird_Failure_Detectio_DW.obj_is.isSetupComplete = true;
     Hummingbi_PX4Timestamp_Init(&Hummingbird_Failure_Detectio_DW.PX4Timestamp_f);
     Hummingbir_SourceBlock_Init(&Hummingbird_Failure_Detectio_DW.SourceBlock_k);
 
@@ -21475,126 +21598,126 @@ void Hummingbird_Failure_Detection_initialize(void)
                           &Hummingbird_Failure_Detection_B.BusAssignment_fu, 1);
     Hummingbird_Failure_Detectio_DW.obj_an.isSetupComplete = true;
 
-    // Start for MATLABSystem: '<S1466>/Read Parameter'
+    // Start for MATLABSystem: '<S1473>/Read Parameter'
     Hummingbird_Failure_Detectio_DW.obj_ns.matlabCodegenIsDeleted = false;
     Hummingbird_Failure_Detectio_DW.obj_ns.isInitialized = 1;
     Hummingbird_Failure_Detectio_DW.obj_ns.MW_PARAMHANDLE = MW_Init_Param
       (&ParameterNameStr_0[0], true, 500.0);
     Hummingbird_Failure_Detectio_DW.obj_ns.isSetupComplete = true;
 
-    // Start for MATLABSystem: '<S1466>/Read Parameter1'
+    // Start for MATLABSystem: '<S1473>/Read Parameter1'
     Hummingbird_Failure_Detectio_DW.obj_g0.matlabCodegenIsDeleted = false;
     Hummingbird_Failure_Detectio_DW.obj_g0.isInitialized = 1;
     Hummingbird_Failure_Detectio_DW.obj_g0.MW_PARAMHANDLE = MW_Init_Param
       (&ParameterNameStr_1[0], true, 500.0);
     Hummingbird_Failure_Detectio_DW.obj_g0.isSetupComplete = true;
 
-    // Start for MATLABSystem: '<S1467>/Read Parameter'
+    // Start for MATLABSystem: '<S1474>/Read Parameter'
     Hummingbird_Failure_Detectio_DW.obj_er.matlabCodegenIsDeleted = false;
     Hummingbird_Failure_Detectio_DW.obj_er.isInitialized = 1;
     Hummingbird_Failure_Detectio_DW.obj_er.MW_PARAMHANDLE = MW_Init_Param
       (&ParameterNameStr_2[0], true, 500.0);
     Hummingbird_Failure_Detectio_DW.obj_er.isSetupComplete = true;
 
-    // Start for MATLABSystem: '<S1467>/Read Parameter1'
+    // Start for MATLABSystem: '<S1474>/Read Parameter1'
     Hummingbird_Failure_Detectio_DW.obj_ez.matlabCodegenIsDeleted = false;
     Hummingbird_Failure_Detectio_DW.obj_ez.isInitialized = 1;
     Hummingbird_Failure_Detectio_DW.obj_ez.MW_PARAMHANDLE = MW_Init_Param
       (&ParameterNameStr_3[0], true, 500.0);
     Hummingbird_Failure_Detectio_DW.obj_ez.isSetupComplete = true;
 
-    // Start for MATLABSystem: '<S1468>/Read Parameter'
+    // Start for MATLABSystem: '<S1475>/Read Parameter'
     Hummingbird_Failure_Detectio_DW.obj_ar.matlabCodegenIsDeleted = false;
     Hummingbird_Failure_Detectio_DW.obj_ar.isInitialized = 1;
     Hummingbird_Failure_Detectio_DW.obj_ar.MW_PARAMHANDLE = MW_Init_Param
       (&ParameterNameStr_4[0], true, 500.0);
     Hummingbird_Failure_Detectio_DW.obj_ar.isSetupComplete = true;
 
-    // Start for MATLABSystem: '<S1468>/Read Parameter1'
+    // Start for MATLABSystem: '<S1475>/Read Parameter1'
     Hummingbird_Failure_Detectio_DW.obj_iy.matlabCodegenIsDeleted = false;
     Hummingbird_Failure_Detectio_DW.obj_iy.isInitialized = 1;
     Hummingbird_Failure_Detectio_DW.obj_iy.MW_PARAMHANDLE = MW_Init_Param
       (&ParameterNameStr_5[0], true, 500.0);
     Hummingbird_Failure_Detectio_DW.obj_iy.isSetupComplete = true;
 
-    // Start for MATLABSystem: '<S1469>/Read Parameter'
+    // Start for MATLABSystem: '<S1476>/Read Parameter'
     Hummingbird_Failure_Detectio_DW.obj_mb.matlabCodegenIsDeleted = false;
     Hummingbird_Failure_Detectio_DW.obj_mb.isInitialized = 1;
     Hummingbird_Failure_Detectio_DW.obj_mb.MW_PARAMHANDLE = MW_Init_Param
       (&ParameterNameStr_6[0], true, 500.0);
     Hummingbird_Failure_Detectio_DW.obj_mb.isSetupComplete = true;
 
-    // Start for MATLABSystem: '<S1469>/Read Parameter1'
+    // Start for MATLABSystem: '<S1476>/Read Parameter1'
     Hummingbird_Failure_Detectio_DW.obj_et.matlabCodegenIsDeleted = false;
     Hummingbird_Failure_Detectio_DW.obj_et.isInitialized = 1;
     Hummingbird_Failure_Detectio_DW.obj_et.MW_PARAMHANDLE = MW_Init_Param
       (&ParameterNameStr_7[0], true, 500.0);
     Hummingbird_Failure_Detectio_DW.obj_et.isSetupComplete = true;
 
-    // Start for MATLABSystem: '<S1470>/Read Parameter'
+    // Start for MATLABSystem: '<S1477>/Read Parameter'
     Hummingbird_Failure_Detectio_DW.obj_iw.matlabCodegenIsDeleted = false;
     Hummingbird_Failure_Detectio_DW.obj_iw.isInitialized = 1;
     Hummingbird_Failure_Detectio_DW.obj_iw.MW_PARAMHANDLE = MW_Init_Param
       (&ParameterNameStr_8[0], true, 500.0);
     Hummingbird_Failure_Detectio_DW.obj_iw.isSetupComplete = true;
 
-    // Start for MATLABSystem: '<S1470>/Read Parameter1'
+    // Start for MATLABSystem: '<S1477>/Read Parameter1'
     Hummingbird_Failure_Detectio_DW.obj_hw.matlabCodegenIsDeleted = false;
     Hummingbird_Failure_Detectio_DW.obj_hw.isInitialized = 1;
     Hummingbird_Failure_Detectio_DW.obj_hw.MW_PARAMHANDLE = MW_Init_Param
       (&ParameterNameStr_9[0], true, 500.0);
     Hummingbird_Failure_Detectio_DW.obj_hw.isSetupComplete = true;
 
-    // Start for MATLABSystem: '<S1471>/Read Parameter'
+    // Start for MATLABSystem: '<S1478>/Read Parameter'
     Hummingbird_Failure_Detectio_DW.obj_ni.matlabCodegenIsDeleted = false;
     Hummingbird_Failure_Detectio_DW.obj_ni.isInitialized = 1;
     Hummingbird_Failure_Detectio_DW.obj_ni.MW_PARAMHANDLE = MW_Init_Param
       (&ParameterNameStr_a[0], true, 500.0);
     Hummingbird_Failure_Detectio_DW.obj_ni.isSetupComplete = true;
 
-    // Start for MATLABSystem: '<S1471>/Read Parameter1'
+    // Start for MATLABSystem: '<S1478>/Read Parameter1'
     Hummingbird_Failure_Detectio_DW.obj_bi.matlabCodegenIsDeleted = false;
     Hummingbird_Failure_Detectio_DW.obj_bi.isInitialized = 1;
     Hummingbird_Failure_Detectio_DW.obj_bi.MW_PARAMHANDLE = MW_Init_Param
       (&ParameterNameStr_b[0], true, 500.0);
     Hummingbird_Failure_Detectio_DW.obj_bi.isSetupComplete = true;
 
-    // Start for MATLABSystem: '<S1472>/Read Parameter'
+    // Start for MATLABSystem: '<S1479>/Read Parameter'
     Hummingbird_Failure_Detectio_DW.obj_ip.matlabCodegenIsDeleted = false;
     Hummingbird_Failure_Detectio_DW.obj_ip.isInitialized = 1;
     Hummingbird_Failure_Detectio_DW.obj_ip.MW_PARAMHANDLE = MW_Init_Param
       (&ParameterNameStr_c[0], true, 500.0);
     Hummingbird_Failure_Detectio_DW.obj_ip.isSetupComplete = true;
 
-    // Start for MATLABSystem: '<S1472>/Read Parameter1'
+    // Start for MATLABSystem: '<S1479>/Read Parameter1'
     Hummingbird_Failure_Detectio_DW.obj_j1.matlabCodegenIsDeleted = false;
     Hummingbird_Failure_Detectio_DW.obj_j1.isInitialized = 1;
     Hummingbird_Failure_Detectio_DW.obj_j1.MW_PARAMHANDLE = MW_Init_Param
       (&ParameterNameStr_d[0], true, 500.0);
     Hummingbird_Failure_Detectio_DW.obj_j1.isSetupComplete = true;
 
-    // Start for MATLABSystem: '<S1473>/Read Parameter'
+    // Start for MATLABSystem: '<S1480>/Read Parameter'
     Hummingbird_Failure_Detectio_DW.obj_ci.matlabCodegenIsDeleted = false;
     Hummingbird_Failure_Detectio_DW.obj_ci.isInitialized = 1;
     Hummingbird_Failure_Detectio_DW.obj_ci.MW_PARAMHANDLE = MW_Init_Param
       (&ParameterNameStr_e[0], true, 500.0);
     Hummingbird_Failure_Detectio_DW.obj_ci.isSetupComplete = true;
 
-    // Start for MATLABSystem: '<S1473>/Read Parameter1'
+    // Start for MATLABSystem: '<S1480>/Read Parameter1'
     Hummingbird_Failure_Detectio_DW.obj_lk.matlabCodegenIsDeleted = false;
     Hummingbird_Failure_Detectio_DW.obj_lk.isInitialized = 1;
     Hummingbird_Failure_Detectio_DW.obj_lk.MW_PARAMHANDLE = MW_Init_Param
       (&ParameterNameStr_f[0], true, 500.0);
     Hummingbird_Failure_Detectio_DW.obj_lk.isSetupComplete = true;
 
-    // Start for MATLABSystem: '<S1474>/Read Parameter'
+    // Start for MATLABSystem: '<S1481>/Read Parameter'
     Hummingbird_Failure_Detectio_DW.obj_dj.matlabCodegenIsDeleted = false;
     Hummingbird_Failure_Detectio_DW.obj_dj.isInitialized = 1;
     Hummingbird_Failure_Detectio_DW.obj_dj.MW_PARAMHANDLE = MW_Init_Param
       (&ParameterNameStr_g[0], true, 500.0);
     Hummingbird_Failure_Detectio_DW.obj_dj.isSetupComplete = true;
 
-    // Start for MATLABSystem: '<S1474>/Read Parameter1'
+    // Start for MATLABSystem: '<S1481>/Read Parameter1'
     Hummingbird_Failure_Detectio_DW.obj_ii.matlabCodegenIsDeleted = false;
     Hummingbird_Failure_Detectio_DW.obj_ii.isInitialized = 1;
     Hummingbird_Failure_Detectio_DW.obj_ii.MW_PARAMHANDLE = MW_Init_Param
@@ -21657,7 +21780,7 @@ void Hummingbird_Failure_Detection_terminate(void)
 
   // End of Terminate for MATLABSystem: '<S1446>/SinkBlock'
 
-  // Terminate for MATLABSystem: '<S1477>/SourceBlock'
+  // Terminate for MATLABSystem: '<S1485>/SourceBlock'
   if (!Hummingbird_Failure_Detectio_DW.obj_o.matlabCodegenIsDeleted) {
     Hummingbird_Failure_Detectio_DW.obj_o.matlabCodegenIsDeleted = true;
     if ((Hummingbird_Failure_Detectio_DW.obj_o.isInitialized == 1) &&
@@ -21666,9 +21789,9 @@ void Hummingbird_Failure_Detection_terminate(void)
     }
   }
 
-  // End of Terminate for MATLABSystem: '<S1477>/SourceBlock'
+  // End of Terminate for MATLABSystem: '<S1485>/SourceBlock'
 
-  // Terminate for MATLABSystem: '<S1475>/SourceBlock'
+  // Terminate for MATLABSystem: '<S1482>/SourceBlock'
   if (!Hummingbird_Failure_Detectio_DW.obj_k.matlabCodegenIsDeleted) {
     Hummingbird_Failure_Detectio_DW.obj_k.matlabCodegenIsDeleted = true;
     if ((Hummingbird_Failure_Detectio_DW.obj_k.isInitialized == 1) &&
@@ -21677,7 +21800,18 @@ void Hummingbird_Failure_Detection_terminate(void)
     }
   }
 
-  // End of Terminate for MATLABSystem: '<S1475>/SourceBlock'
+  // End of Terminate for MATLABSystem: '<S1482>/SourceBlock'
+
+  // Terminate for MATLABSystem: '<S1483>/SourceBlock'
+  if (!Hummingbird_Failure_Detectio_DW.obj_a.matlabCodegenIsDeleted) {
+    Hummingbird_Failure_Detectio_DW.obj_a.matlabCodegenIsDeleted = true;
+    if ((Hummingbird_Failure_Detectio_DW.obj_a.isInitialized == 1) &&
+        Hummingbird_Failure_Detectio_DW.obj_a.isSetupComplete) {
+      uORB_read_terminate(&Hummingbird_Failure_Detectio_DW.obj_a.eventStructObj);
+    }
+  }
+
+  // End of Terminate for MATLABSystem: '<S1483>/SourceBlock'
   Hummingbir_SourceBlock_Term(&Hummingbird_Failure_Detectio_DW.SourceBlock_kw);
 
   // Terminate for MATLABSystem: '<S13>/Read Parameter'
@@ -21687,29 +21821,18 @@ void Hummingbird_Failure_Detection_terminate(void)
 
   // End of Terminate for MATLABSystem: '<S13>/Read Parameter'
 
-  // Terminate for MATLABSystem: '<S1476>/SourceBlock'
-  if (!Hummingbird_Failure_Detectio_DW.obj_a.matlabCodegenIsDeleted) {
-    Hummingbird_Failure_Detectio_DW.obj_a.matlabCodegenIsDeleted = true;
-    if ((Hummingbird_Failure_Detectio_DW.obj_a.isInitialized == 1) &&
-        Hummingbird_Failure_Detectio_DW.obj_a.isSetupComplete) {
-      uORB_read_terminate(&Hummingbird_Failure_Detectio_DW.obj_a.eventStructObj);
+  // Terminate for MATLABSystem: '<S1467>/SourceBlock'
+  if (!Hummingbird_Failure_Detectio_DW.obj_me.matlabCodegenIsDeleted) {
+    Hummingbird_Failure_Detectio_DW.obj_me.matlabCodegenIsDeleted = true;
+    if ((Hummingbird_Failure_Detectio_DW.obj_me.isInitialized == 1) &&
+        Hummingbird_Failure_Detectio_DW.obj_me.isSetupComplete) {
+      uORB_read_terminate(&Hummingbird_Failure_Detectio_DW.obj_me.eventStructObj);
     }
   }
 
-  // End of Terminate for MATLABSystem: '<S1476>/SourceBlock'
+  // End of Terminate for MATLABSystem: '<S1467>/SourceBlock'
 
-  // Terminate for MATLABSystem: '<S1461>/SourceBlock'
-  if (!Hummingbird_Failure_Detectio_DW.obj_m.matlabCodegenIsDeleted) {
-    Hummingbird_Failure_Detectio_DW.obj_m.matlabCodegenIsDeleted = true;
-    if ((Hummingbird_Failure_Detectio_DW.obj_m.isInitialized == 1) &&
-        Hummingbird_Failure_Detectio_DW.obj_m.isSetupComplete) {
-      uORB_read_terminate(&Hummingbird_Failure_Detectio_DW.obj_m.eventStructObj);
-    }
-  }
-
-  // End of Terminate for MATLABSystem: '<S1461>/SourceBlock'
-
-  // Terminate for MATLABSystem: '<S1479>/SourceBlock'
+  // Terminate for MATLABSystem: '<S1486>/SourceBlock'
   if (!Hummingbird_Failure_Detectio_DW.obj_gv.matlabCodegenIsDeleted) {
     Hummingbird_Failure_Detectio_DW.obj_gv.matlabCodegenIsDeleted = true;
     if ((Hummingbird_Failure_Detectio_DW.obj_gv.isInitialized == 1) &&
@@ -21718,9 +21841,9 @@ void Hummingbird_Failure_Detection_terminate(void)
     }
   }
 
-  // End of Terminate for MATLABSystem: '<S1479>/SourceBlock'
+  // End of Terminate for MATLABSystem: '<S1486>/SourceBlock'
 
-  // Terminate for MATLABSystem: '<S1459>/SourceBlock'
+  // Terminate for MATLABSystem: '<S1465>/SourceBlock'
   if (!Hummingbird_Failure_Detectio_DW.obj_h.matlabCodegenIsDeleted) {
     Hummingbird_Failure_Detectio_DW.obj_h.matlabCodegenIsDeleted = true;
     if ((Hummingbird_Failure_Detectio_DW.obj_h.isInitialized == 1) &&
@@ -21729,9 +21852,9 @@ void Hummingbird_Failure_Detection_terminate(void)
     }
   }
 
-  // End of Terminate for MATLABSystem: '<S1459>/SourceBlock'
+  // End of Terminate for MATLABSystem: '<S1465>/SourceBlock'
 
-  // Terminate for MATLABSystem: '<S1478>/SourceBlock'
+  // Terminate for MATLABSystem: '<S1484>/SourceBlock'
   if (!Hummingbird_Failure_Detectio_DW.obj_i.matlabCodegenIsDeleted) {
     Hummingbird_Failure_Detectio_DW.obj_i.matlabCodegenIsDeleted = true;
     if ((Hummingbird_Failure_Detectio_DW.obj_i.isInitialized == 1) &&
@@ -21740,9 +21863,9 @@ void Hummingbird_Failure_Detection_terminate(void)
     }
   }
 
-  // End of Terminate for MATLABSystem: '<S1478>/SourceBlock'
+  // End of Terminate for MATLABSystem: '<S1484>/SourceBlock'
 
-  // Terminate for MATLABSystem: '<S1460>/SourceBlock'
+  // Terminate for MATLABSystem: '<S1466>/SourceBlock'
   if (!Hummingbird_Failure_Detectio_DW.obj_p.matlabCodegenIsDeleted) {
     Hummingbird_Failure_Detectio_DW.obj_p.matlabCodegenIsDeleted = true;
     if ((Hummingbird_Failure_Detectio_DW.obj_p.isInitialized == 1) &&
@@ -21751,9 +21874,9 @@ void Hummingbird_Failure_Detection_terminate(void)
     }
   }
 
-  // End of Terminate for MATLABSystem: '<S1460>/SourceBlock'
+  // End of Terminate for MATLABSystem: '<S1466>/SourceBlock'
 
-  // Terminate for MATLABSystem: '<S1462>/SourceBlock'
+  // Terminate for MATLABSystem: '<S1468>/SourceBlock'
   if (!Hummingbird_Failure_Detectio_DW.obj_az.matlabCodegenIsDeleted) {
     Hummingbird_Failure_Detectio_DW.obj_az.matlabCodegenIsDeleted = true;
     if ((Hummingbird_Failure_Detectio_DW.obj_az.isInitialized == 1) &&
@@ -21762,9 +21885,9 @@ void Hummingbird_Failure_Detection_terminate(void)
     }
   }
 
-  // End of Terminate for MATLABSystem: '<S1462>/SourceBlock'
+  // End of Terminate for MATLABSystem: '<S1468>/SourceBlock'
 
-  // Terminate for MATLABSystem: '<S1463>/SourceBlock'
+  // Terminate for MATLABSystem: '<S1469>/SourceBlock'
   if (!Hummingbird_Failure_Detectio_DW.obj_g.matlabCodegenIsDeleted) {
     Hummingbird_Failure_Detectio_DW.obj_g.matlabCodegenIsDeleted = true;
     if ((Hummingbird_Failure_Detectio_DW.obj_g.isInitialized == 1) &&
@@ -21773,7 +21896,7 @@ void Hummingbird_Failure_Detection_terminate(void)
     }
   }
 
-  // End of Terminate for MATLABSystem: '<S1463>/SourceBlock'
+  // End of Terminate for MATLABSystem: '<S1469>/SourceBlock'
 
   // Terminate for IfAction SubSystem: '<S1>/Flight_controller.MR_Nav'
   // Terminate for Chart: '<Root>/Chart'
@@ -22061,7 +22184,7 @@ void Hummingbird_Failure_Detection_terminate(void)
 
   // End of Terminate for SubSystem: '<S1>/Flight_controller.FW_Stabilize'
 
-  // Terminate for MATLABSystem: '<S1464>/SourceBlock'
+  // Terminate for MATLABSystem: '<S1470>/SourceBlock'
   if (!Hummingbird_Failure_Detectio_DW.obj_im.matlabCodegenIsDeleted) {
     Hummingbird_Failure_Detectio_DW.obj_im.matlabCodegenIsDeleted = true;
     if ((Hummingbird_Failure_Detectio_DW.obj_im.isInitialized == 1) &&
@@ -22070,7 +22193,7 @@ void Hummingbird_Failure_Detection_terminate(void)
     }
   }
 
-  // End of Terminate for MATLABSystem: '<S1464>/SourceBlock'
+  // End of Terminate for MATLABSystem: '<S1470>/SourceBlock'
 
   // Terminate for IfAction SubSystem: '<S2>/Controller.Controlled'
   // Terminate for Chart: '<Root>/Chart1'
@@ -22134,7 +22257,7 @@ void Hummingbird_Failure_Detection_terminate(void)
     if ((Hummingbird_Failure_Detectio_DW.obj.isInitialized == 1) &&
         Hummingbird_Failure_Detectio_DW.obj.isSetupComplete) {
       for (i = 0; i < 12; i++) {
-        Hummingbird_Failure_Detection_B.motorValues_c[i] = (rtNaNF);
+        Hummingbird_Failure_Detection_B.motorValues_m[i] = (rtNaNF);
       }
 
       for (i = 0; i < 8; i++) {
@@ -22143,7 +22266,7 @@ void Hummingbird_Failure_Detection_terminate(void)
 
       for (i = 0; i < 12; i++) {
         if (Hummingbird_Failure_Detectio_DW.obj.ValidMotorIdx[i]) {
-          Hummingbird_Failure_Detection_B.motorValues_c[i] = 0.0F;
+          Hummingbird_Failure_Detection_B.motorValues_m[i] = 0.0F;
         }
       }
 
@@ -22153,7 +22276,7 @@ void Hummingbird_Failure_Detection_terminate(void)
         }
       }
 
-      MW_actuators_set(false, &Hummingbird_Failure_Detection_B.motorValues_c[0],
+      MW_actuators_set(false, &Hummingbird_Failure_Detection_B.motorValues_m[0],
                        &servoValues[0]);
       MW_actuators_terminate();
     }
@@ -22175,7 +22298,7 @@ void Hummingbird_Failure_Detection_terminate(void)
   // End of Terminate for MATLABSystem: '<S1444>/SinkBlock'
   Hummingbi_PX4Timestamp_Term(&Hummingbird_Failure_Detectio_DW.PX4Timestamp_i);
 
-  // Terminate for MATLABSystem: '<S1534>/SinkBlock'
+  // Terminate for MATLABSystem: '<S1543>/SinkBlock'
   if (!Hummingbird_Failure_Detectio_DW.obj_f.matlabCodegenIsDeleted) {
     Hummingbird_Failure_Detectio_DW.obj_f.matlabCodegenIsDeleted = true;
     if ((Hummingbird_Failure_Detectio_DW.obj_f.isInitialized == 1) &&
@@ -22185,7 +22308,43 @@ void Hummingbird_Failure_Detection_terminate(void)
     }
   }
 
-  // End of Terminate for MATLABSystem: '<S1534>/SinkBlock'
+  // End of Terminate for MATLABSystem: '<S1543>/SinkBlock'
+
+  // Terminate for MATLABSystem: '<S1472>/SourceBlock'
+  if (!Hummingbird_Failure_Detectio_DW.obj_m.matlabCodegenIsDeleted) {
+    Hummingbird_Failure_Detectio_DW.obj_m.matlabCodegenIsDeleted = true;
+    if ((Hummingbird_Failure_Detectio_DW.obj_m.isInitialized == 1) &&
+        Hummingbird_Failure_Detectio_DW.obj_m.isSetupComplete) {
+      uORB_read_terminate(&Hummingbird_Failure_Detectio_DW.obj_m.eventStructObj);
+    }
+  }
+
+  // End of Terminate for MATLABSystem: '<S1472>/SourceBlock'
+
+  // Terminate for IfAction SubSystem: '<S13>/If Action Subsystem4'
+  PX4WriteParameterBlock_Term
+    (&Hummingbird_Failure_Detectio_DW.PX4WriteParameterBlock);
+
+  // End of Terminate for SubSystem: '<S13>/If Action Subsystem4'
+
+  // Terminate for IfAction SubSystem: '<S13>/If Action Subsystem2'
+  PX4WriteParameterBlock_Term
+    (&Hummingbird_Failure_Detectio_DW.PX4WriteParameterBlock_g);
+
+  // End of Terminate for SubSystem: '<S13>/If Action Subsystem2'
+  Hummingbi_PX4Timestamp_Term(&Hummingbird_Failure_Detectio_DW.PX4Timestamp_i2);
+
+  // Terminate for MATLABSystem: '<S1545>/SinkBlock'
+  if (!Hummingbird_Failure_Detectio_DW.obj_is.matlabCodegenIsDeleted) {
+    Hummingbird_Failure_Detectio_DW.obj_is.matlabCodegenIsDeleted = true;
+    if ((Hummingbird_Failure_Detectio_DW.obj_is.isInitialized == 1) &&
+        Hummingbird_Failure_Detectio_DW.obj_is.isSetupComplete) {
+      uORB_write_terminate
+        (&Hummingbird_Failure_Detectio_DW.obj_is.orbAdvertiseObj);
+    }
+  }
+
+  // End of Terminate for MATLABSystem: '<S1545>/SinkBlock'
   Hummingbi_PX4Timestamp_Term(&Hummingbird_Failure_Detectio_DW.PX4Timestamp_f);
   Hummingbir_SourceBlock_Term(&Hummingbird_Failure_Detectio_DW.SourceBlock_k);
 
@@ -22225,131 +22384,131 @@ void Hummingbird_Failure_Detection_terminate(void)
 
   // End of Terminate for MATLABSystem: '<S1450>/SinkBlock'
 
-  // Terminate for MATLABSystem: '<S1466>/Read Parameter'
+  // Terminate for MATLABSystem: '<S1473>/Read Parameter'
   if (!Hummingbird_Failure_Detectio_DW.obj_ns.matlabCodegenIsDeleted) {
     Hummingbird_Failure_Detectio_DW.obj_ns.matlabCodegenIsDeleted = true;
-  }
-
-  // End of Terminate for MATLABSystem: '<S1466>/Read Parameter'
-
-  // Terminate for MATLABSystem: '<S1466>/Read Parameter1'
-  if (!Hummingbird_Failure_Detectio_DW.obj_g0.matlabCodegenIsDeleted) {
-    Hummingbird_Failure_Detectio_DW.obj_g0.matlabCodegenIsDeleted = true;
-  }
-
-  // End of Terminate for MATLABSystem: '<S1466>/Read Parameter1'
-
-  // Terminate for MATLABSystem: '<S1467>/Read Parameter'
-  if (!Hummingbird_Failure_Detectio_DW.obj_er.matlabCodegenIsDeleted) {
-    Hummingbird_Failure_Detectio_DW.obj_er.matlabCodegenIsDeleted = true;
-  }
-
-  // End of Terminate for MATLABSystem: '<S1467>/Read Parameter'
-
-  // Terminate for MATLABSystem: '<S1467>/Read Parameter1'
-  if (!Hummingbird_Failure_Detectio_DW.obj_ez.matlabCodegenIsDeleted) {
-    Hummingbird_Failure_Detectio_DW.obj_ez.matlabCodegenIsDeleted = true;
-  }
-
-  // End of Terminate for MATLABSystem: '<S1467>/Read Parameter1'
-
-  // Terminate for MATLABSystem: '<S1468>/Read Parameter'
-  if (!Hummingbird_Failure_Detectio_DW.obj_ar.matlabCodegenIsDeleted) {
-    Hummingbird_Failure_Detectio_DW.obj_ar.matlabCodegenIsDeleted = true;
-  }
-
-  // End of Terminate for MATLABSystem: '<S1468>/Read Parameter'
-
-  // Terminate for MATLABSystem: '<S1468>/Read Parameter1'
-  if (!Hummingbird_Failure_Detectio_DW.obj_iy.matlabCodegenIsDeleted) {
-    Hummingbird_Failure_Detectio_DW.obj_iy.matlabCodegenIsDeleted = true;
-  }
-
-  // End of Terminate for MATLABSystem: '<S1468>/Read Parameter1'
-
-  // Terminate for MATLABSystem: '<S1469>/Read Parameter'
-  if (!Hummingbird_Failure_Detectio_DW.obj_mb.matlabCodegenIsDeleted) {
-    Hummingbird_Failure_Detectio_DW.obj_mb.matlabCodegenIsDeleted = true;
-  }
-
-  // End of Terminate for MATLABSystem: '<S1469>/Read Parameter'
-
-  // Terminate for MATLABSystem: '<S1469>/Read Parameter1'
-  if (!Hummingbird_Failure_Detectio_DW.obj_et.matlabCodegenIsDeleted) {
-    Hummingbird_Failure_Detectio_DW.obj_et.matlabCodegenIsDeleted = true;
-  }
-
-  // End of Terminate for MATLABSystem: '<S1469>/Read Parameter1'
-
-  // Terminate for MATLABSystem: '<S1470>/Read Parameter'
-  if (!Hummingbird_Failure_Detectio_DW.obj_iw.matlabCodegenIsDeleted) {
-    Hummingbird_Failure_Detectio_DW.obj_iw.matlabCodegenIsDeleted = true;
-  }
-
-  // End of Terminate for MATLABSystem: '<S1470>/Read Parameter'
-
-  // Terminate for MATLABSystem: '<S1470>/Read Parameter1'
-  if (!Hummingbird_Failure_Detectio_DW.obj_hw.matlabCodegenIsDeleted) {
-    Hummingbird_Failure_Detectio_DW.obj_hw.matlabCodegenIsDeleted = true;
-  }
-
-  // End of Terminate for MATLABSystem: '<S1470>/Read Parameter1'
-
-  // Terminate for MATLABSystem: '<S1471>/Read Parameter'
-  if (!Hummingbird_Failure_Detectio_DW.obj_ni.matlabCodegenIsDeleted) {
-    Hummingbird_Failure_Detectio_DW.obj_ni.matlabCodegenIsDeleted = true;
-  }
-
-  // End of Terminate for MATLABSystem: '<S1471>/Read Parameter'
-
-  // Terminate for MATLABSystem: '<S1471>/Read Parameter1'
-  if (!Hummingbird_Failure_Detectio_DW.obj_bi.matlabCodegenIsDeleted) {
-    Hummingbird_Failure_Detectio_DW.obj_bi.matlabCodegenIsDeleted = true;
-  }
-
-  // End of Terminate for MATLABSystem: '<S1471>/Read Parameter1'
-
-  // Terminate for MATLABSystem: '<S1472>/Read Parameter'
-  if (!Hummingbird_Failure_Detectio_DW.obj_ip.matlabCodegenIsDeleted) {
-    Hummingbird_Failure_Detectio_DW.obj_ip.matlabCodegenIsDeleted = true;
-  }
-
-  // End of Terminate for MATLABSystem: '<S1472>/Read Parameter'
-
-  // Terminate for MATLABSystem: '<S1472>/Read Parameter1'
-  if (!Hummingbird_Failure_Detectio_DW.obj_j1.matlabCodegenIsDeleted) {
-    Hummingbird_Failure_Detectio_DW.obj_j1.matlabCodegenIsDeleted = true;
-  }
-
-  // End of Terminate for MATLABSystem: '<S1472>/Read Parameter1'
-
-  // Terminate for MATLABSystem: '<S1473>/Read Parameter'
-  if (!Hummingbird_Failure_Detectio_DW.obj_ci.matlabCodegenIsDeleted) {
-    Hummingbird_Failure_Detectio_DW.obj_ci.matlabCodegenIsDeleted = true;
   }
 
   // End of Terminate for MATLABSystem: '<S1473>/Read Parameter'
 
   // Terminate for MATLABSystem: '<S1473>/Read Parameter1'
-  if (!Hummingbird_Failure_Detectio_DW.obj_lk.matlabCodegenIsDeleted) {
-    Hummingbird_Failure_Detectio_DW.obj_lk.matlabCodegenIsDeleted = true;
+  if (!Hummingbird_Failure_Detectio_DW.obj_g0.matlabCodegenIsDeleted) {
+    Hummingbird_Failure_Detectio_DW.obj_g0.matlabCodegenIsDeleted = true;
   }
 
   // End of Terminate for MATLABSystem: '<S1473>/Read Parameter1'
 
   // Terminate for MATLABSystem: '<S1474>/Read Parameter'
-  if (!Hummingbird_Failure_Detectio_DW.obj_dj.matlabCodegenIsDeleted) {
-    Hummingbird_Failure_Detectio_DW.obj_dj.matlabCodegenIsDeleted = true;
+  if (!Hummingbird_Failure_Detectio_DW.obj_er.matlabCodegenIsDeleted) {
+    Hummingbird_Failure_Detectio_DW.obj_er.matlabCodegenIsDeleted = true;
   }
 
   // End of Terminate for MATLABSystem: '<S1474>/Read Parameter'
 
   // Terminate for MATLABSystem: '<S1474>/Read Parameter1'
+  if (!Hummingbird_Failure_Detectio_DW.obj_ez.matlabCodegenIsDeleted) {
+    Hummingbird_Failure_Detectio_DW.obj_ez.matlabCodegenIsDeleted = true;
+  }
+
+  // End of Terminate for MATLABSystem: '<S1474>/Read Parameter1'
+
+  // Terminate for MATLABSystem: '<S1475>/Read Parameter'
+  if (!Hummingbird_Failure_Detectio_DW.obj_ar.matlabCodegenIsDeleted) {
+    Hummingbird_Failure_Detectio_DW.obj_ar.matlabCodegenIsDeleted = true;
+  }
+
+  // End of Terminate for MATLABSystem: '<S1475>/Read Parameter'
+
+  // Terminate for MATLABSystem: '<S1475>/Read Parameter1'
+  if (!Hummingbird_Failure_Detectio_DW.obj_iy.matlabCodegenIsDeleted) {
+    Hummingbird_Failure_Detectio_DW.obj_iy.matlabCodegenIsDeleted = true;
+  }
+
+  // End of Terminate for MATLABSystem: '<S1475>/Read Parameter1'
+
+  // Terminate for MATLABSystem: '<S1476>/Read Parameter'
+  if (!Hummingbird_Failure_Detectio_DW.obj_mb.matlabCodegenIsDeleted) {
+    Hummingbird_Failure_Detectio_DW.obj_mb.matlabCodegenIsDeleted = true;
+  }
+
+  // End of Terminate for MATLABSystem: '<S1476>/Read Parameter'
+
+  // Terminate for MATLABSystem: '<S1476>/Read Parameter1'
+  if (!Hummingbird_Failure_Detectio_DW.obj_et.matlabCodegenIsDeleted) {
+    Hummingbird_Failure_Detectio_DW.obj_et.matlabCodegenIsDeleted = true;
+  }
+
+  // End of Terminate for MATLABSystem: '<S1476>/Read Parameter1'
+
+  // Terminate for MATLABSystem: '<S1477>/Read Parameter'
+  if (!Hummingbird_Failure_Detectio_DW.obj_iw.matlabCodegenIsDeleted) {
+    Hummingbird_Failure_Detectio_DW.obj_iw.matlabCodegenIsDeleted = true;
+  }
+
+  // End of Terminate for MATLABSystem: '<S1477>/Read Parameter'
+
+  // Terminate for MATLABSystem: '<S1477>/Read Parameter1'
+  if (!Hummingbird_Failure_Detectio_DW.obj_hw.matlabCodegenIsDeleted) {
+    Hummingbird_Failure_Detectio_DW.obj_hw.matlabCodegenIsDeleted = true;
+  }
+
+  // End of Terminate for MATLABSystem: '<S1477>/Read Parameter1'
+
+  // Terminate for MATLABSystem: '<S1478>/Read Parameter'
+  if (!Hummingbird_Failure_Detectio_DW.obj_ni.matlabCodegenIsDeleted) {
+    Hummingbird_Failure_Detectio_DW.obj_ni.matlabCodegenIsDeleted = true;
+  }
+
+  // End of Terminate for MATLABSystem: '<S1478>/Read Parameter'
+
+  // Terminate for MATLABSystem: '<S1478>/Read Parameter1'
+  if (!Hummingbird_Failure_Detectio_DW.obj_bi.matlabCodegenIsDeleted) {
+    Hummingbird_Failure_Detectio_DW.obj_bi.matlabCodegenIsDeleted = true;
+  }
+
+  // End of Terminate for MATLABSystem: '<S1478>/Read Parameter1'
+
+  // Terminate for MATLABSystem: '<S1479>/Read Parameter'
+  if (!Hummingbird_Failure_Detectio_DW.obj_ip.matlabCodegenIsDeleted) {
+    Hummingbird_Failure_Detectio_DW.obj_ip.matlabCodegenIsDeleted = true;
+  }
+
+  // End of Terminate for MATLABSystem: '<S1479>/Read Parameter'
+
+  // Terminate for MATLABSystem: '<S1479>/Read Parameter1'
+  if (!Hummingbird_Failure_Detectio_DW.obj_j1.matlabCodegenIsDeleted) {
+    Hummingbird_Failure_Detectio_DW.obj_j1.matlabCodegenIsDeleted = true;
+  }
+
+  // End of Terminate for MATLABSystem: '<S1479>/Read Parameter1'
+
+  // Terminate for MATLABSystem: '<S1480>/Read Parameter'
+  if (!Hummingbird_Failure_Detectio_DW.obj_ci.matlabCodegenIsDeleted) {
+    Hummingbird_Failure_Detectio_DW.obj_ci.matlabCodegenIsDeleted = true;
+  }
+
+  // End of Terminate for MATLABSystem: '<S1480>/Read Parameter'
+
+  // Terminate for MATLABSystem: '<S1480>/Read Parameter1'
+  if (!Hummingbird_Failure_Detectio_DW.obj_lk.matlabCodegenIsDeleted) {
+    Hummingbird_Failure_Detectio_DW.obj_lk.matlabCodegenIsDeleted = true;
+  }
+
+  // End of Terminate for MATLABSystem: '<S1480>/Read Parameter1'
+
+  // Terminate for MATLABSystem: '<S1481>/Read Parameter'
+  if (!Hummingbird_Failure_Detectio_DW.obj_dj.matlabCodegenIsDeleted) {
+    Hummingbird_Failure_Detectio_DW.obj_dj.matlabCodegenIsDeleted = true;
+  }
+
+  // End of Terminate for MATLABSystem: '<S1481>/Read Parameter'
+
+  // Terminate for MATLABSystem: '<S1481>/Read Parameter1'
   if (!Hummingbird_Failure_Detectio_DW.obj_ii.matlabCodegenIsDeleted) {
     Hummingbird_Failure_Detectio_DW.obj_ii.matlabCodegenIsDeleted = true;
   }
 
-  // End of Terminate for MATLABSystem: '<S1474>/Read Parameter1'
+  // End of Terminate for MATLABSystem: '<S1481>/Read Parameter1'
 }
 
 uint16_T &RT_MODEL_Hummingbird_Failure__T::TaskCounter(int32_T idx)
